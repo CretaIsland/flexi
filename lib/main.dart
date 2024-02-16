@@ -138,6 +138,10 @@ class _FlexiHomePageState extends State<FlexiHomePage> {
                   '$_counter',
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
+                Text(
+                  'hostCount = ${hostManager.modelList.length}',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
                 ListView(
                   children: hostManager.modelList.map((ele) {
                     HostModel hostModel = ele as HostModel;
