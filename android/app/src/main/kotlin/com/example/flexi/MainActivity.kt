@@ -1,4 +1,4 @@
-package com.example.flexi
+package com.sqisoft.flexi
 
 import io.flutter.embedding.android.FlutterActivity
 
