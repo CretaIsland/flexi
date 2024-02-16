@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
-import 'model/host_model.dart';
+//import 'model/host_model.dart';
 
 void main() {
   Logger.root.level = Level.INFO;
@@ -142,12 +142,12 @@ class _FlexiHomePageState extends State<FlexiHomePage> {
                   'hostCount = ${hostManager.modelList.length}',
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
-                ListView(
-                  children: hostManager.modelList.map((ele) {
-                    HostModel hostModel = ele as HostModel;
-                    return Text('${hostModel.hostName}, ${hostModel.ip}, ${hostModel.isConnected}');
-                  }).toList(),
-                )
+                // ListView(
+                //   children: hostManager.modelList.map((ele) {
+                //     HostModel hostModel = ele as HostModel;
+                //     return Text('${hostModel.hostName}, ${hostModel.ip}, ${hostModel.isConnected}');
+                //   }).toList(),
+                // )
               ],
             ),
           );
