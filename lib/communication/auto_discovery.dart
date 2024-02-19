@@ -1,31 +1,32 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:async';
+//import 'dart:async';
 
 //import 'package:flutter/material.dart';
 import 'package:hycop_light/common/util/logger.dart';
 
 class AutoDiscovery {
-  Timer? _autoDiscoveryTimer;
+  //Timer? _autoDiscoveryTimer;
   RawDatagramSocket? _socket;
 
   void startBroadcast() {
+    logger.info('startBroadcast');
     RawDatagramSocket.bind(InternetAddress.anyIPv4, 0).then((RawDatagramSocket socket) {
       socket.broadcastEnabled = true;
       logger.info('UDP Broadcast started on ${socket.address.address}:${socket.port}');
       _socket = socket;
-      _autoDiscoveryTimer?.cancel();
-      _autoDiscoveryTimer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
-        String message = 'flexi:discovery';
-        List<int> data = const Utf8Encoder().convert(message);
-        socket.send(data, InternetAddress('255.255.255.255'), 8888);
-        logger.info('Broadcasting: $message');
-      });
+      //_autoDiscoveryTimer?.cancel();
+      //_autoDiscoveryTimer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
+      String message = 'flexi:discovery';
+      List<int> data = const Utf8Encoder().convert(message);
+      socket.send(data, InternetAddress('255.255.255.255'), 8888);
+      logger.info('Broadcasting: $message');
+      //});
     });
   }
 
   void stopBroadcast() {
-    _autoDiscoveryTimer?.cancel();
+    //_autoDiscoveryTimer?.cancel();
     _socket?.close();
   }
 

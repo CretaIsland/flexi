@@ -1,12 +1,16 @@
 import 'package:flexi/data_io/host_manager.dart';
+import 'package:hycop_light/hycop.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
+import 'model/host_model.dart';
+
 //import 'model/host_model.dart';
 
 void main() {
+  setupLogger();
   Logger.root.level = Level.INFO;
   runApp(const FlexiApp());
 }
@@ -142,12 +146,18 @@ class _FlexiHomePageState extends State<FlexiHomePage> {
                   'hostCount = ${hostManager.modelList.length}',
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
-                // ListView(
-                //   children: hostManager.modelList.map((ele) {
-                //     HostModel hostModel = ele as HostModel;
-                //     return Text('${hostModel.hostName}, ${hostModel.ip}, ${hostModel.isConnected}');
-                //   }).toList(),
-                // )
+                hostManager.modelList.isNotEmpty
+                    ? ListView(
+                        children: hostManager.modelList.map((ele) {
+                          HostModel hostModel = ele as HostModel;
+                          return Text(
+                              '${hostModel.hostName}, ${hostModel.ip}, ${hostModel.isConnected}');
+                        }).toList(),
+                      )
+                    : Text(
+                        'no device found',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
               ],
             ),
           );
