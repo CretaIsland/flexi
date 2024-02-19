@@ -1,4 +1,4 @@
-import 'package:flexi/data_io/host_manager.dart';
+import 'data_io/host_manager.dart';
 import 'package:hycop_light/hycop.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
@@ -73,7 +73,12 @@ class _FlexiHomePageState extends State<FlexiHomePage> {
   void _incrementCounter() {
     setState(() {
       FlexiHomePage.hostManagerHolder.autoDiscovery.stopBroadcast();
-      FlexiHomePage.hostManagerHolder.autoDiscovery.startBroadcast();
+      FlexiHomePage.hostManagerHolder.autoDiscovery.startBroadcast(callback: (message) {
+        logger.info('-----($message) recieved');
+        _counter++;
+        FlexiHomePage.hostManagerHolder.udpCallback(message);
+        //FlexiHomePage.hostManagerHolder.notify();
+      });
 
       // This call to se
       //tState tells the Flutter framework that something has
@@ -81,8 +86,17 @@ class _FlexiHomePageState extends State<FlexiHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      _counter++;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // FlexiHomePage.hostManagerHolder.autoDiscovery.listenForResponses(callback: (message) {
+    //   logger.info('-----($message) recieved');
+    //   _counter++;
+    //   FlexiHomePage.hostManagerHolder.notify();
+    // });
   }
 
   @override
@@ -135,19 +149,16 @@ class _FlexiHomePageState extends State<FlexiHomePage> {
               // wireframe for each widget.
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const Text(
-                  'You have pushed the button this many times:',
-                ),
                 Text(
-                  '$_counter',
+                  'ping count = $_counter',
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 Text(
-                  'hostCount = ${hostManager.modelList.length}',
+                  'host count = ${hostManager.modelList.length}',
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 hostManager.modelList.isNotEmpty
-                    ? ListView(
+                    ? Column(
                         children: hostManager.modelList.map((ele) {
                           HostModel hostModel = ele as HostModel;
                           return Text(

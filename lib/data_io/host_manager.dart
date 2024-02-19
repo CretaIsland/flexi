@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 
-import 'package:flexi/communication/auto_discovery.dart';
+import '../communication/auto_discovery.dart';
 import 'package:hycop_light/hycop.dart';
 import '../model/host_model.dart';
 //import 'frame_manager.dart';
@@ -41,7 +41,7 @@ class HostManager extends AbsExModelManager {
   }
 
   void udpCallback(String message) {
-    Map<String, String> jsonMap = jsonDecode(message);
+    Map<String, dynamic> jsonMap = jsonDecode(message);
 
     HostModel model = HostModel();
     model.fromMap(jsonMap);

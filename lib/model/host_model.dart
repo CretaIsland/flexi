@@ -43,10 +43,10 @@ class HostModel extends AbsExModel {
 
   @override
   void fromMap(Map<String, dynamic> map) {
-    super.fromMap(map);
+    //super.fromMap(map);
     hostName = map["hostName"] ?? '';
     ip = map["ip"] ?? '';
-    isConnected = map["isConnected"] ?? '';
+    isConnected = map["isConnected"] ?? false;
   }
 
   @override
