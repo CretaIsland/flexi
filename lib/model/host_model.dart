@@ -4,12 +4,14 @@ import 'package:hycop_light/hycop.dart';
 class HostModel extends AbsExModel {
   String hostName = '';
   String ip = '';
+  String interfaceName = '';
   bool isConnected = false;
 
   HostModel({
     super.type = ExModelType.host,
     super.parent = 'local',
     this.hostName = '',
+    this.interfaceName = '',
     this.ip = '',
     this.isConnected = false,
   });
@@ -18,6 +20,7 @@ class HostModel extends AbsExModel {
   List<Object?> get props => [
         ...super.props,
         hostName,
+        interfaceName,
         ip,
         isConnected,
       ];
@@ -28,6 +31,7 @@ class HostModel extends AbsExModel {
     HostModel srcHost = src as HostModel;
 
     hostName = srcHost.hostName;
+    interfaceName = srcHost.interfaceName;
     ip = srcHost.ip;
     isConnected = srcHost.isConnected;
   }
@@ -37,6 +41,7 @@ class HostModel extends AbsExModel {
     super.updateFrom(src);
     HostModel srcHost = src as HostModel;
     hostName = srcHost.hostName;
+    interfaceName = srcHost.interfaceName;
     ip = srcHost.ip;
     isConnected = srcHost.isConnected;
   }
@@ -45,6 +50,7 @@ class HostModel extends AbsExModel {
   void fromMap(Map<String, dynamic> map) {
     //super.fromMap(map);
     hostName = map["hostName"] ?? '';
+    interfaceName = map["interfaceName"] ?? '';
     ip = map["ip"] ?? '';
     isConnected = map["isConnected"] ?? false;
   }
@@ -54,6 +60,7 @@ class HostModel extends AbsExModel {
     return super.toMap()
       ..addEntries({
         "hostName": hostName,
+        "interfaceName": interfaceName,
         "ip": ip,
         "isConnected": isConnected,
       }.entries);

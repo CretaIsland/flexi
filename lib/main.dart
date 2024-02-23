@@ -161,8 +161,13 @@ class _FlexiHomePageState extends State<FlexiHomePage> {
                     ? Column(
                         children: hostManager.modelList.map((ele) {
                           HostModel hostModel = ele as HostModel;
-                          return Text(
-                              '${hostModel.hostName}, ${hostModel.ip}, ${hostModel.isConnected}');
+                          return Column(
+                            children: [
+                              Text(hostModel.hostName),
+                              Text(
+                                  '${hostModel.ip},${hostModel.interfaceName}, ${hostModel.isConnected}'),
+                            ],
+                          );
                         }).toList(),
                       )
                     : Text(
