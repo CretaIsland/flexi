@@ -1,6 +1,6 @@
 import 'package:wifi_iot/wifi_iot.dart';
 import 'package:wifi_scan/wifi_scan.dart';
-import 'package:wifi_test/model/wifi_model.dart';
+import 'package:flexi/model/wifi_model.dart';
 
 
 class WifiDiscovery {
