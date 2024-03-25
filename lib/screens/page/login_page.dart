@@ -2,6 +2,10 @@ import 'package:flexi/screens/utils/flexi_color.dart';
 import 'package:flexi/screens/utils/flexi_font.dart';
 import 'package:flutter/material.dart';
 
+
+
+
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -11,18 +15,17 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
+  // text style
+  late TextStyle titleStyle;
+  late TextStyle descriptionStyle;
+  late TextStyle textFieldLabelStyle;
+  late TextStyle textFieldStyle;
+  late TextStyle buttonStyle;
+
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
   bool passwordVisibility = false;
   Icon passwordVisibilityIcon = const Icon(Icons.visibility_off_outlined, color: Colors.white, size: 20);
-
-  // text style
-  TextStyle titleStyle = const TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.medium, fontSize: 24, color: Colors.white);
-  TextStyle descriptionStyle = const TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.regular, fontSize: 12, color: Colors.white);
-  TextStyle textFieldLabelStyle = TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.regular, fontSize: 16, color: Colors.white.withOpacity(0.5));
-  TextStyle textFieldStyle = const TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.regular, fontSize: 16, color: Colors.white);
-  TextStyle buttonStyle = const TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.medium, fontSize: 16, color: Colors.white);
-
 
 
   @override
@@ -54,79 +57,101 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    
+    double width = MediaQuery.sizeOf(context).width;
+    double height = MediaQuery.sizeOf(context).height;
+
+    titleStyle = TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.medium, fontSize: height * .035, color: Colors.white);
+    descriptionStyle = TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.regular, fontSize: height * .015, color: Colors.white);
+    textFieldLabelStyle = TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.regular, fontSize: height * .02, color: Colors.white.withOpacity(0.5));
+    textFieldStyle = TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.regular, fontSize: height * .02, color: Colors.white);
+    buttonStyle = TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.medium, fontSize: height * .02, color: Colors.white);
+
+
     return Container(
-      width: MediaQuery.sizeOf(context).width,
+      width: width,
+      height: height,
       color: FlexiColor.primary,
       child: Column(
         children: [
-          const SizedBox(height: 10.0),
-          const Expanded(
-            flex: 5,
-            child: Image(
-              image: AssetImage("assets/image/login_illustration.png"),
-              fit: BoxFit.fitWidth,
-              alignment: Alignment.topCenter,
-            ),
+          SizedBox(height: height * .05),
+          Image(
+            height: height * .51,
+            image: const AssetImage("assets/image/login_illustration.png"),
+            alignment: Alignment.topCenter,
           ),
-          Expanded(
-            flex: 4,
+          SizedBox(height: height * .03),
+          SizedBox(
+            width: width * .82,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: MediaQuery.sizeOf(context).height * .04),
                 Text("Sign in", style: titleStyle),
-                const SizedBox(height: 4),
+                SizedBox(height: height * .005,),
                 Text("Hi there! Nice to see you.", style: descriptionStyle),
-                SizedBox(height: MediaQuery.sizeOf(context).height * .025),
-                loginTextFieldFrame(
-                  TextField(
-                    controller: _emailController,
-                    style: textFieldStyle,
-                    decoration: InputDecoration(
-                      hintText: "Email",
-                      hintStyle: textFieldLabelStyle,
-                      border: InputBorder.none,
+                SizedBox(height: height * .025),
+                textFieldFrame(
+                  width: width * .82,
+                  height: height * .06,
+                  childWidget: Container(
+                    margin: const EdgeInsets.only(left: 12),
+                    height: height * .02,
+                    width: (width * .82) - 12,
+                    child: TextField(
+                      style: textFieldStyle,
+                      decoration: InputDecoration(
+                        hintText: "Email",
+                        hintStyle: textFieldLabelStyle,
+                        border: InputBorder.none
+                      ),
                     ),
                   )
                 ),
-                SizedBox(height: MediaQuery.sizeOf(context).height * .02),
-                loginTextFieldFrame(
-                  Row(
+                SizedBox(height: height * .02),
+                textFieldFrame(
+                  width: width * .82,
+                  height: height * .06,
+                  childWidget: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                        width: MediaQuery.sizeOf(context).width * .5,
+                      Container(
+                        margin: const EdgeInsets.only(left: 12),
+                        height: height * .02,
+                        width: (width * .6),
                         child: TextField(
-                          controller: _passwordController,
                           style: textFieldStyle,
                           decoration: InputDecoration(
                             hintText: "Password",
                             hintStyle: textFieldLabelStyle,
-                            border: InputBorder.none,
+                            border: InputBorder.none
                           ),
                         ),
                       ),
                       IconButton(
-                        onPressed: () => switchPasswordVisibility(), 
-                        icon: passwordVisibilityIcon
-                      )
+                        padding: const EdgeInsets.only(right: 12),
+                        onPressed: switchPasswordVisibility, 
+                        icon: passwordVisibilityIcon,
+                        iconSize: height * .02,
+                      ),
                     ],
                   )
                 ),
-                SizedBox(height: MediaQuery.sizeOf(context).height * .045),
+                SizedBox(height: height * .045),
                 GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, "/home");
+                  },
                   child: Container(
-                    width: MediaQuery.sizeOf(context).width * .8,
-                    height: MediaQuery.sizeOf(context).height * .06,
+                    width: width * .82,
+                    height: height * .06,
                     decoration: BoxDecoration(
                       color: FlexiColor.secondary,
                       borderRadius: BorderRadius.circular(8)
                     ),
-                    child: Center(child: Text("Sign in", style: buttonStyle)),
+                    child: Center(
+                      child: Text("Login", style: buttonStyle),
+                    ),
                   ),
-                  onTap: () {
-                    Navigator.pushNamed(context, "/home");
-                  },
                 )
               ],
             ),
@@ -136,19 +161,20 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget loginTextFieldFrame(Widget childWidget) {
+  Widget textFieldFrame({required double width, required double height, required Widget childWidget}) {
     return Container(
-      width: MediaQuery.sizeOf(context).width * .8,
-      height: MediaQuery.sizeOf(context).height * .06,
+      width: width,
+      height: height,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.white),
-        borderRadius: BorderRadius.circular(8)
+        borderRadius: BorderRadius.circular(height / 6)
       ),
-      child: Center(child: Padding(
-        padding: const EdgeInsets.only(left: 12),
+      child: Center(
         child: childWidget,
-      )),
+      ),
     );
   }
+
+
 
 }
