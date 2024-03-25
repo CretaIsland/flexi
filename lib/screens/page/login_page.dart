@@ -98,6 +98,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: height * .02,
                     width: (width * .82) - 12,
                     child: TextField(
+                      controller: _emailController,
                       style: textFieldStyle,
                       decoration: InputDecoration(
                         hintText: "Email",
@@ -119,6 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: height * .02,
                         width: (width * .6),
                         child: TextField(
+                          controller: _passwordController,
                           style: textFieldStyle,
                           decoration: InputDecoration(
                             hintText: "Password",
