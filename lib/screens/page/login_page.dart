@@ -93,18 +93,14 @@ class _LoginPageState extends State<LoginPage> {
                 textFieldFrame(
                   width: width * .82,
                   height: height * .06,
-                  childWidget: Container(
-                    margin: const EdgeInsets.only(left: 12),
-                    height: height * .02,
-                    width: (width * .82) - 12,
-                    child: TextField(
-                      controller: _emailController,
-                      style: textFieldStyle,
-                      decoration: InputDecoration(
-                        hintText: "Email",
-                        hintStyle: textFieldLabelStyle,
-                        border: InputBorder.none
-                      ),
+                  childWidget: TextField(
+                    controller: _emailController,
+                    style: textFieldStyle,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(left: 12, top: height * .02, bottom: height * .02),
+                      hintText: "Email",
+                      hintStyle: textFieldLabelStyle,
+                      border: InputBorder.none
                     ),
                   )
                 ),
@@ -115,14 +111,14 @@ class _LoginPageState extends State<LoginPage> {
                   childWidget: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        margin: const EdgeInsets.only(left: 12),
-                        height: height * .02,
-                        width: (width * .6),
+                      SizedBox(
+                        width: width * .6,
+                        height: height * .06,
                         child: TextField(
                           controller: _passwordController,
                           style: textFieldStyle,
                           decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(left: 12, top: height * .02, bottom: height * .02),
                             hintText: "Password",
                             hintStyle: textFieldLabelStyle,
                             border: InputBorder.none
@@ -171,9 +167,7 @@ class _LoginPageState extends State<LoginPage> {
         border: Border.all(color: Colors.white),
         borderRadius: BorderRadius.circular(height / 6)
       ),
-      child: Center(
-        child: childWidget,
-      ),
+      child: childWidget
     );
   }
 
