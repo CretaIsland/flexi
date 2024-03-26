@@ -62,6 +62,7 @@ class _FlexiHomePageState extends State<FlexiHomePage> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
+      resizeToAvoidBottomInset: false,
       body: LoginPage()
     );
   }
