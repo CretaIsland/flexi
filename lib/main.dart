@@ -7,6 +7,9 @@ import 'package:flexi/screens/page/device/set_timezone_page.dart';
 import 'package:flexi/screens/page/device/set_wifi_page.dart';
 import 'package:flexi/screens/page/home_page.dart';
 import 'package:flexi/screens/page/login_page.dart';
+import 'package:flexi/screens/page/setting/account_detail_page.dart';
+import 'package:flexi/screens/page/setting/app_update_page.dart';
+import 'package:flexi/screens/page/setting/device_recovery_page.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -34,7 +37,10 @@ class FlexiApp extends StatelessWidget {
         "/contentDetail" : (context) => const ContentDetailPage(),
         "/content/text" : (context) => const EditTextPage(),
         "/content/background" : (context) => const EditBackgroundPage(),
-        "/content/send" : (context) => const SendContentPage()
+        "/content/send" : (context) => const SendContentPage(),
+        "/setting/account" :(context) => const AccountDetailPage(),
+        "/setting/device/recovery" :(context) => const DeviceRecoveryPage(),
+        "/setting/app/version" :(context) => const AppUpdatePage()
       },
       home: const FlexiHomePage(),
     );
