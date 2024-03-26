@@ -1,5 +1,6 @@
 import 'package:flexi/screens/utils/flexi_color.dart';
 import 'package:flexi/screens/utils/flexi_font.dart';
+import 'package:flexi/screens/widget/text_button.dart';
 import 'package:flutter/material.dart';
 
 
@@ -135,21 +136,14 @@ class _LoginPageState extends State<LoginPage> {
                   )
                 ),
                 SizedBox(height: height * .045),
-                GestureDetector(
+                FlexiTextButton(
+                  width: width * .82,
+                  height: height * .06,
+                  text: Text("Login", style: buttonStyle),
+                  fillColor: FlexiColor.secondary,
                   onTap: () {
                     Navigator.pushNamed(context, "/home");
                   },
-                  child: Container(
-                    width: width * .82,
-                    height: height * .06,
-                    decoration: BoxDecoration(
-                      color: FlexiColor.secondary,
-                      borderRadius: BorderRadius.circular(8)
-                    ),
-                    child: Center(
-                      child: Text("Login", style: buttonStyle),
-                    ),
-                  ),
                 )
               ],
             ),
