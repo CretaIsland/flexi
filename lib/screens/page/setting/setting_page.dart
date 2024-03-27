@@ -1,6 +1,6 @@
-import 'package:flexi/screens/utils/flexi_color.dart';
 import 'package:flexi/screens/utils/flexi_font.dart';
 import 'package:flutter/material.dart';
+
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});

@@ -1,3 +1,4 @@
+import 'package:flexi/main.dart';
 import 'package:flutter/material.dart';
 
 class FlexiFont {
@@ -12,13 +13,12 @@ class FlexiFont {
   static const FontWeight bold = FontWeight.w700;
   static const FontWeight black = FontWeight.w900;
 
-  static TextStyle buttonExtraSmall = const TextStyle(
+  static TextStyle textFieldRegular = TextStyle(
     fontFamily: fontFamily,
-    fontWeight: thin,
-    fontSize: 12,
+    fontWeight: regular,
+    fontSize: screenHeight * .02,
     color: Colors.black
   );
-  static TextStyle buttonSmall = buttonExtraSmall.copyWith(fontWeight: light, fontSize: 14);
 
   
 

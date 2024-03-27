@@ -15,6 +15,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 
+
+late double screenWidth;
+late double screenHeight;
+
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -67,9 +71,14 @@ class _FlexiHomePageState extends State<FlexiHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    screenWidth = MediaQuery.sizeOf(context).width;
+    screenHeight = MediaQuery.sizeOf(context).height;
+
     return const Scaffold(
       resizeToAvoidBottomInset: false,
       body: LoginPage()
     );
   }
+  
 }

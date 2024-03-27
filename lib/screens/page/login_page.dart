@@ -1,6 +1,9 @@
+import 'package:flexi/main.dart';
 import 'package:flexi/screens/utils/flexi_color.dart';
 import 'package:flexi/screens/utils/flexi_font.dart';
-import 'package:flexi/screens/widget/text_button.dart';
+import 'package:flexi/screens/widget/button/text_button.dart';
+import 'package:flexi/screens/widget/text_field/button_text_field.dart';
+import 'package:flexi/screens/widget/text_field/text_field.dart';
 import 'package:flutter/material.dart';
 
 
@@ -58,87 +61,69 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    
-    double width = MediaQuery.sizeOf(context).width;
-    double height = MediaQuery.sizeOf(context).height;
 
-    titleStyle = TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.medium, fontSize: height * .035, color: Colors.white);
-    descriptionStyle = TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.regular, fontSize: height * .015, color: Colors.white);
-    textFieldLabelStyle = TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.regular, fontSize: height * .02, color: Colors.white.withOpacity(0.5));
-    textFieldStyle = TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.regular, fontSize: height * .02, color: Colors.white);
-    buttonStyle = TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.medium, fontSize: height * .02, color: Colors.white);
+    titleStyle = TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.medium, fontSize: screenHeight * .035, color: Colors.white);
+    descriptionStyle = TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.regular, fontSize: screenHeight * .015, color: Colors.white);
+    textFieldLabelStyle = TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.regular, fontSize: screenHeight * .02, color: Colors.white.withOpacity(0.5));
+    textFieldStyle = TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.regular, fontSize: screenHeight * .02, color: Colors.white);
+    buttonStyle = TextStyle(fontFamily: FlexiFont.fontFamily, fontWeight: FlexiFont.medium, fontSize: screenHeight * .02, color: Colors.white);
 
 
     return Container(
-      width: width,
-      height: height,
+      width: screenWidth,
+      height: screenHeight,
       color: FlexiColor.primary,
       child: Column(
         children: [
-          SizedBox(height: height * .05),
+          SizedBox(height: screenHeight * .05),
           Image(
-            height: height * .51,
+            height: screenHeight * .51,
             image: const AssetImage("assets/image/login_illustration.png"),
             alignment: Alignment.topCenter,
           ),
-          SizedBox(height: height * .03),
+          SizedBox(height: screenHeight * .03),
           SizedBox(
-            width: width * .82,
+            width: screenWidth * .82,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Sign in", style: titleStyle),
-                SizedBox(height: height * .005,),
+                SizedBox(height: screenHeight * .005,),
                 Text("Hi there! Nice to see you.", style: descriptionStyle),
-                SizedBox(height: height * .025),
-                textFieldFrame(
-                  width: width * .82,
-                  height: height * .06,
-                  childWidget: TextField(
-                    controller: _emailController,
-                    style: textFieldStyle,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(left: 12, top: height * .02, bottom: height * .02),
-                      hintText: "Email",
-                      hintStyle: textFieldLabelStyle,
-                      border: InputBorder.none
-                    ),
+                SizedBox(height: screenHeight * .025),
+                FlexiTextField(
+                  textEditingController: _emailController,
+                  width: screenWidth * .82, 
+                  height: screenHeight * .06,
+                  border: Border.all(color: Colors.white),
+                  borderRadius: BorderRadius.circular(screenHeight * .01),
+                  labelTextStyle: FlexiFont.textFieldRegular.copyWith(color: Colors.white.withOpacity(0.5)),
+                  valueTextStyle: FlexiFont.textFieldRegular.copyWith(color: Colors.white),
+                  label: "Email",
+                  contentPadding: EdgeInsets.only(left: 12, top: screenHeight * .02, bottom: screenHeight * .02)
+                ),
+                SizedBox(height: screenHeight * .02),
+                FlexiButtonTextField(
+                  textEditingController: _passwordController, 
+                  width: screenWidth * .82, 
+                  height: screenHeight * .06, 
+                  border: Border.all(color: Colors.white),
+                  borderRadius: BorderRadius.circular(screenHeight * .01),
+                  labelTextStyle: FlexiFont.textFieldRegular.copyWith(color: Colors.white.withOpacity(0.5)),
+                  valueTextStyle: FlexiFont.textFieldRegular.copyWith(color: Colors.white),
+                  label: "Password",
+                  contentPadding: EdgeInsets.only(left: 12, top: screenHeight * .02, bottom: screenHeight * .02),
+                  iconButton: IconButton(
+                    padding: const EdgeInsets.only(right: 12),
+                    onPressed: switchPasswordVisibility,
+                    icon: passwordVisibilityIcon,
+                    iconSize: screenHeight * .02,
                   )
                 ),
-                SizedBox(height: height * .02),
-                textFieldFrame(
-                  width: width * .82,
-                  height: height * .06,
-                  childWidget: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: width * .6,
-                        height: height * .06,
-                        child: TextField(
-                          controller: _passwordController,
-                          style: textFieldStyle,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.only(left: 12, top: height * .02, bottom: height * .02),
-                            hintText: "Password",
-                            hintStyle: textFieldLabelStyle,
-                            border: InputBorder.none
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        padding: const EdgeInsets.only(right: 12),
-                        onPressed: switchPasswordVisibility, 
-                        icon: passwordVisibilityIcon,
-                        iconSize: height * .02,
-                      ),
-                    ],
-                  )
-                ),
-                SizedBox(height: height * .045),
+                SizedBox(height: screenHeight * .045),
                 FlexiTextButton(
-                  width: width * .82,
-                  height: height * .06,
+                  width: screenWidth * .82,
+                  height: screenHeight * .06,
                   text: Text("Login", style: buttonStyle),
                   fillColor: FlexiColor.secondary,
                   onTap: () {
@@ -152,19 +137,5 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
-  Widget textFieldFrame({required double width, required double height, required Widget childWidget}) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.white),
-        borderRadius: BorderRadius.circular(height / 6)
-      ),
-      child: childWidget
-    );
-  }
-
-
 
 }
