@@ -1,4 +1,4 @@
-import 'package:flexi/screens/utils/flexi_font.dart';
+import 'package:flexi/screen/utils/flexi_font.dart';
 import 'package:flutter/material.dart';
 
 

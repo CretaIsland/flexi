@@ -1,4 +1,4 @@
-import 'package:flexi/screens/utils/flexi_font.dart';
+import 'package:flexi/screen/utils/flexi_font.dart';
 import 'package:flutter/material.dart';
 
 
@@ -16,7 +16,7 @@ class FlexiButtonTextField extends StatefulWidget {
     this.border, 
     this.borderRadius, 
     this.fillColor,
-    required this.iconButton
+    required this.actionButton
   });
 
   final double width;
@@ -29,7 +29,7 @@ class FlexiButtonTextField extends StatefulWidget {
   final Border? border;
   final BorderRadius? borderRadius;
   final Color? fillColor;
-  final IconButton iconButton;
+  final Widget actionButton;
 
   @override
   State<FlexiButtonTextField> createState() => _FlexiButtonTextFieldState();
@@ -63,7 +63,7 @@ class _FlexiButtonTextFieldState extends State<FlexiButtonTextField> {
               ),
             ),
           ),
-          widget.iconButton
+          widget.actionButton
         ],
       ),
     );

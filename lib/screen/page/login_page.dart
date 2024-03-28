@@ -1,9 +1,10 @@
 import 'package:flexi/main.dart';
-import 'package:flexi/screens/utils/flexi_color.dart';
-import 'package:flexi/screens/utils/flexi_font.dart';
-import 'package:flexi/screens/widget/button/text_button.dart';
-import 'package:flexi/screens/widget/text_field/button_text_field.dart';
-import 'package:flexi/screens/widget/text_field/text_field.dart';
+import 'package:flexi/screen/page/home_page.dart';
+import 'package:flexi/screen/utils/flexi_color.dart';
+import 'package:flexi/screen/utils/flexi_font.dart';
+import 'package:flexi/screen/widget/button/text_button.dart';
+import 'package:flexi/screen/widget/text_field/button_text_field.dart';
+import 'package:flexi/screen/widget/text_field/text_field.dart';
 import 'package:flutter/material.dart';
 
 
@@ -113,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                   valueTextStyle: FlexiFont.textFieldRegular.copyWith(color: Colors.white),
                   label: "Password",
                   contentPadding: EdgeInsets.only(left: 12, top: screenHeight * .02, bottom: screenHeight * .02),
-                  iconButton: IconButton(
+                  actionButton: IconButton(
                     padding: const EdgeInsets.only(right: 12),
                     onPressed: switchPasswordVisibility,
                     icon: passwordVisibilityIcon,
@@ -127,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                   text: Text("Login", style: buttonStyle),
                   fillColor: FlexiColor.secondary,
                   onTap: () {
-                    Navigator.pushNamed(context, "/home");
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
                   },
                 )
               ],
