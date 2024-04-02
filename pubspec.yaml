@@ -13,15 +13,10 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
-  flutter_native_splash: ^2.3.7
-  provider: ^6.1.2
-  equatable: ^2.0.5
-  flutter_bloc: ^7.3.3
-  hycop_light: ^0.4.26
-  logging: ^1.0.2
-  wifi_iot: ^0.3.19
-  wifi_scan: ^0.4.1
-
+  flutter_riverpod: ^2.4.9
+  riverpod: ^2.4.9
+  go_router: ^13.2.0
+  
 
 dev_dependencies:
   flutter_test:
