@@ -45,7 +45,7 @@ class FileUploader {
     Response response;
     try {
       response = await post(
-        Uri.parse("http://localhost:8021/content/upload"),
+        Uri.parse("http://220.76.251.164:8021/content/upload"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "fileName": fileName,
