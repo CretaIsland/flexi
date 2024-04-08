@@ -1,4 +1,4 @@
-import 'package:flexi/common/utils/colors.dart';
+import 'package:flexi/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

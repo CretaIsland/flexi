@@ -3,7 +3,10 @@ import 'package:flexi/view/content/content_list_screen.dart';
 import 'package:flexi/view/content/edit_background_screen.dart';
 import 'package:flexi/view/content/edit_text_screen.dart';
 import 'package:flexi/view/content/send_content_screen.dart';
+import 'package:flexi/view/device/device_info_screen.dart';
 import 'package:flexi/view/device/device_list_screen.dart';
+import 'package:flexi/view/device/device_timezone_set_screen.dart';
+import 'package:flexi/view/device/device_wifi_set_screen.dart';
 import 'package:flexi/view/login_screen.dart';
 import 'package:flexi/view/setting/account_info_screen.dart';
 import 'package:flexi/view/setting/app_info_screen.dart';
@@ -19,75 +22,69 @@ GoRouter router = GoRouter(
     GoRoute(
       path: "/",
       pageBuilder: (context, state) => const NoTransitionPage(child: LoginScreen()),
-    ),
-    GoRoute(
-      path: "/device",
-      redirect: (context, state) {
-        return "/device/list";
-      },
       routes: [
         GoRoute(
-          path: "list",
+          path: "device",
+          redirect: (context, state) => "/device/list",
+        ),
+        GoRoute(
+          path: "device/list",
           pageBuilder: (context, state) => const NoTransitionPage(child: DeviceListScreen()),
         ),
         GoRoute(
-          path: "info",
-          pageBuilder: (context, state) => const NoTransitionPage(child: DeviceListScreen()),
+          path: "device/info",
+          pageBuilder: (context, state) => const NoTransitionPage(child: DeviceInfoScreen()),
         ),
         GoRoute(
-          path: "setTimezone",
-          pageBuilder: (context, state) => const NoTransitionPage(child: DeviceListScreen()),
+          path: "device/setTimezone",
+          pageBuilder: (context, state) => const NoTransitionPage(child: DeviceTimezoneSetScreen()),
         ),
         GoRoute(
-          path: "setWifi",
-          pageBuilder: (context, state) => const NoTransitionPage(child: DeviceListScreen()),
-        )
-      ]
-    ),
-    GoRoute(
-      path: "/content",
-      redirect: (context, state) => "/content/list",
-      routes: [
+          path: "device/setWifi",
+          pageBuilder: (context, state) => const NoTransitionPage(child: DeviceWifiSetScreen()),
+        ),
         GoRoute(
-          path: "list",
+          path: "content",
+          redirect: (context, state) => "/content/list",
+        ),
+        GoRoute(
+          path: "content/list",
           pageBuilder: (context, state) => const NoTransitionPage(child: ContentListScreen()),
         ),
         GoRoute(
-          path: "info",
+          path: "content/info",
           pageBuilder: (context, state) => const NoTransitionPage(child: ContentInfoScreen()),
         ),
         GoRoute(
-          path: "editText",
+          path: "content/editText",
           pageBuilder: (context, state) => const NoTransitionPage(child: EditTextScreen()),
         ),
         GoRoute(
-          path: "editBackground",
+          path: "content/editBackground",
           pageBuilder: (context, state) => const NoTransitionPage(child: EditBackgroundScreen()),
         ),
         GoRoute(
-          path: "sendDevice",
+          path: "content/sendDevice",
           pageBuilder: (context, state) => const NoTransitionPage(child: SendContentScreen()),
-        )
-      ]
-    ),
-    GoRoute(
-      path: "/setting",
-      redirect: (context, state) => "/setting/menu",
-      routes: [
+        ),
         GoRoute(
-          path: "menu",
+          path: "setting",
+          redirect: (context, state) => "/setting/menu",
+        ),
+        GoRoute(
+          path: "setting/menu",
           pageBuilder: (context, state) => const NoTransitionPage(child: SettingMenuScreen()),
         ),
         GoRoute(
-          path: "accountInfo",
+          path: "setting/accountInfo",
           pageBuilder: (context, state) => const NoTransitionPage(child: AccountInfoScreen()),
         ),
         GoRoute(
-          path: "appInfo",
+          path: "setting/appInfo",
           pageBuilder: (context, state) => const NoTransitionPage(child: AppInfoScreen()),
         ),
         GoRoute(
-          path: "deviceRecovery",
+          path: "setting/deviceRecovery",
           pageBuilder: (context, state) => const NoTransitionPage(child: DeviceRecoveryScreen()),
         ),
       ]

@@ -16,41 +16,64 @@ class FlexiFont {
   static const FontWeight black = FontWeight.w900;
 
 
-  // display text style
-  static TextStyle displayRegular12 = TextStyle(
+  // regular
+  static TextStyle regular12 = TextStyle(
     fontFamily: fontFamily,
     fontWeight: regular,
     fontSize: screenHeight * .0175,
     color: Colors.black
   );
   
-  static TextStyle displayRegular16 = TextStyle(
+  static TextStyle regular16 = TextStyle(
     fontFamily: fontFamily,
     fontWeight: regular,
     fontSize: screenHeight * .02375,
     color: Colors.black
   );
 
-  static TextStyle displaySemiBold24 = TextStyle(
+  static TextStyle regular20 = TextStyle(
     fontFamily: fontFamily,
     fontWeight: regular,
-    fontSize: screenHeight * .035,
+    fontSize: screenHeight * .0575,
     color: Colors.black
   );
 
 
-  // button text style
-  static TextStyle buttonMedium12 = TextStyle(
+  // medium
+  static TextStyle medium12 = TextStyle(
     fontFamily: fontFamily,
     fontWeight: medium,
     fontSize: screenHeight * .015,
     color: Colors.black
   );
 
-  static TextStyle buttonSemiBold16 = TextStyle(
+
+  // semiBold
+  static TextStyle semiBold16 = TextStyle(
     fontFamily: fontFamily,
     fontWeight: semiBold,
     fontSize: screenHeight * .02375,
+    color: Colors.black
+  );
+
+  static TextStyle semiBold20 = TextStyle(
+    fontFamily: fontFamily,
+    fontWeight: semiBold,
+    fontSize: screenHeight * .02875,
+    color: Colors.black
+  );
+
+  static TextStyle semiBold24 = TextStyle(
+    fontFamily: fontFamily,
+    fontWeight: semiBold,
+    fontSize: screenHeight * .035,
+    color: Colors.black
+  );
+
+  static TextStyle semiBold30 = TextStyle(
+    fontFamily: fontFamily,
+    fontWeight: semiBold,
+    fontSize: screenHeight * .04375,
     color: Colors.black
   );
 

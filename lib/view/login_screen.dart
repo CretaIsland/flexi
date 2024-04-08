@@ -1,5 +1,5 @@
-import 'package:flexi/common/utils/colors.dart';
-import 'package:flexi/common/utils/fonts.dart';
+import 'package:flexi/utils/colors.dart';
+import 'package:flexi/utils/fonts.dart';
 import 'package:flexi/main.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -66,16 +66,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: screenHeight * .03),
-                  Text("Sign in", style: FlexiFont.displaySemiBold24.copyWith(color: Colors.white)),
+                  Text("Sign in", style: FlexiFont.semiBold24.copyWith(color: Colors.white)),
                   SizedBox(height: screenHeight * .005,),
-                  Text("Hi there! Nice to see you.", style: FlexiFont.displayRegular12.copyWith(color: Colors.white)),
+                  Text("Hi there! Nice to see you.", style: FlexiFont.regular12.copyWith(color: Colors.white)),
                   SizedBox(height: screenHeight * .025),
                   SizedBox(
                     width: screenWidth * .82,
                     height: screenHeight * .06,
                     child: TextField(
                       controller: _emailController,
-                      style: FlexiFont.displayRegular16.copyWith(color: Colors.white),
+                      style: FlexiFont.regular16.copyWith(color: Colors.white),
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(screenHeight * .01),
@@ -88,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.only(left: 12, top: screenHeight * .018125, bottom: screenHeight * .018125),
                         hintText: "Email",
-                        hintStyle: FlexiFont.displayRegular16.copyWith(color: Colors.white.withOpacity(.5)),
+                        hintStyle: FlexiFont.regular16.copyWith(color: Colors.white.withOpacity(.5)),
                       ),
                     ),
                   ),
@@ -107,12 +107,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: screenWidth * .6,
                           child: TextField(
                             controller: _passwordController,
-                            style: FlexiFont.displayRegular16.copyWith(color: Colors.white),
+                            style: FlexiFont.regular16.copyWith(color: Colors.white),
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.only(left: 12, top: screenHeight * .018125, bottom: screenHeight * .018125),
                               hintText: "Password",
-                              hintStyle: FlexiFont.displayRegular16.copyWith(color: Colors.white.withOpacity(.5)),
+                              hintStyle: FlexiFont.regular16.copyWith(color: Colors.white.withOpacity(.5)),
                             ),
                           ),
                         ),
@@ -139,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         backgroundColor: MaterialStateProperty.all(FlexiColor.secondary),
                       ), 
-                      child: Text("Sign in", style: FlexiFont.buttonSemiBold16.copyWith(color: Colors.white))
+                      child: Text("Sign in", style: FlexiFont.semiBold16.copyWith(color: Colors.white))
                     ),
                   )
                 ],

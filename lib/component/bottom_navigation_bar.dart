@@ -1,5 +1,5 @@
-import 'package:flexi/common/utils/colors.dart';
-import 'package:flexi/common/utils/fonts.dart';
+import 'package:flexi/utils/colors.dart';
+import 'package:flexi/utils/fonts.dart';
 import 'package:flexi/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,7 +46,7 @@ class _FlexiBottomNaviagtionBarState extends ConsumerState<FlexiBottomNaviagtion
         child: Column(
           children: [
             Icon(itemIcon, color: ref.watch(tabIndexProvider) == tabIndex? FlexiColor.primary : FlexiColor.grey[600], size: screenHeight * .035),
-            Text(itemLabel, style: FlexiFont.buttonMedium12.copyWith(color: ref.watch(tabIndexProvider) == tabIndex ? FlexiColor.primary : FlexiColor.grey[600]))
+            Text(itemLabel, style: FlexiFont.medium12.copyWith(color: ref.watch(tabIndexProvider) == tabIndex ? FlexiColor.primary : FlexiColor.grey[600]))
           ],
         ),
       ),
