@@ -9,34 +9,36 @@ class FlexiSearchBar extends StatelessWidget {
   final String hintText;
   final TextEditingController searchTextController;
 
+
   @override
   Widget build(BuildContext context) {
     return Container(
       width: screenWidth * .89,
-      height: screenHeight * .045,
+      height: screenHeight * .055,
       decoration: BoxDecoration(
-        color: FlexiColor.grey[400],
-        borderRadius: BorderRadius.circular(screenHeight * .025)
+        borderRadius: BorderRadius.circular(screenHeight * .035),
+        color: FlexiColor.grey[400]
       ),
       child: Row(
         children: [
           const SizedBox(width: 12),
           Icon(Icons.search, color: FlexiColor.grey[700], size: screenHeight * .025),
+          const SizedBox(width: 10),
           SizedBox(
-            width: screenWidth * .6,
+            width: screenWidth * .7,
             child: TextField(
               controller: searchTextController,
               style: FlexiFont.regular16,
               decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(left: 4, bottom: screenHeight * .010625),
+                border: InputBorder.none,
                 hintText: hintText,
                 hintStyle: FlexiFont.regular16.copyWith(color: FlexiColor.grey[700]),
-                border: InputBorder.none
               ),
             ),
-          )
+          ),        
         ],
-      ),
+      )
     );
   }
+
 }

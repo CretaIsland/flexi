@@ -86,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderSide: const BorderSide(color: Colors.white)
                         ),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.only(left: 12, top: screenHeight * .018125, bottom: screenHeight * .018125),
+                        contentPadding: const EdgeInsets.only(left: 12),
                         hintText: "Email",
                         hintStyle: FlexiFont.regular16.copyWith(color: Colors.white.withOpacity(.5)),
                       ),
@@ -110,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             style: FlexiFont.regular16.copyWith(color: Colors.white),
                             decoration: InputDecoration(
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.only(left: 12, top: screenHeight * .018125, bottom: screenHeight * .018125),
+                              contentPadding: const EdgeInsets.only(left: 12),
                               hintText: "Password",
                               hintStyle: FlexiFont.regular16.copyWith(color: Colors.white.withOpacity(.5)),
                             ),
