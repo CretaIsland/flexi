@@ -17,24 +17,52 @@ class FlexiFont {
 
 
   // regular
+  static TextStyle regular9 = TextStyle(
+    fontFamily: fontFamily,
+    fontWeight: regular,
+    fontSize: textScale.scale(9),
+    color: Colors.black
+  );
+
   static TextStyle regular12 = TextStyle(
     fontFamily: fontFamily,
     fontWeight: regular,
-    fontSize: screenHeight * .0175,
+    fontSize: textScale.scale(12),
+    color: Colors.black
+  );
+  
+  static TextStyle regular13 = TextStyle(
+    fontFamily: fontFamily,
+    fontWeight: regular,
+    fontSize: textScale.scale(13),
+    color: Colors.black
+  );
+
+  static TextStyle regular14 = TextStyle(
+    fontFamily: fontFamily,
+    fontWeight: regular,
+    fontSize: textScale.scale(14),
     color: Colors.black
   );
   
   static TextStyle regular16 = TextStyle(
     fontFamily: fontFamily,
     fontWeight: regular,
-    fontSize: screenHeight * .02375,
+    fontSize: textScale.scale(16),
     color: Colors.black
   );
 
   static TextStyle regular20 = TextStyle(
     fontFamily: fontFamily,
     fontWeight: regular,
-    fontSize: screenHeight * .0575,
+    fontSize: textScale.scale(20),
+    color: Colors.black
+  );
+
+  static TextStyle regular24 = TextStyle(
+    fontFamily: fontFamily,
+    fontWeight: regular,
+    fontSize: textScale.scale(24),
     color: Colors.black
   );
 
@@ -43,37 +71,51 @@ class FlexiFont {
   static TextStyle medium12 = TextStyle(
     fontFamily: fontFamily,
     fontWeight: medium,
-    fontSize: screenHeight * .015,
+    fontSize: textScale.scale(12),
     color: Colors.black
   );
 
 
   // semiBold
+  static TextStyle semiBold11 = TextStyle(
+    fontFamily: fontFamily,
+    fontWeight: semiBold,
+    fontSize: textScale.scale(11),
+    color: Colors.black
+  );
+
+  static TextStyle semiBold14 = TextStyle(
+    fontFamily: fontFamily,
+    fontWeight: semiBold,
+    fontSize: textScale.scale(14),
+    color: Colors.black
+  );
+
   static TextStyle semiBold16 = TextStyle(
     fontFamily: fontFamily,
     fontWeight: semiBold,
-    fontSize: screenHeight * .02375,
+    fontSize: textScale.scale(16),
     color: Colors.black
   );
 
   static TextStyle semiBold20 = TextStyle(
     fontFamily: fontFamily,
     fontWeight: semiBold,
-    fontSize: screenHeight * .02875,
+    fontSize: textScale.scale(20),
     color: Colors.black
   );
 
   static TextStyle semiBold24 = TextStyle(
     fontFamily: fontFamily,
     fontWeight: semiBold,
-    fontSize: screenHeight * .035,
+    fontSize: textScale.scale(24),
     color: Colors.black
   );
 
   static TextStyle semiBold30 = TextStyle(
     fontFamily: fontFamily,
     fontWeight: semiBold,
-    fontSize: screenHeight * .04375,
+    fontSize: textScale.scale(30),
     color: Colors.black
   );
 

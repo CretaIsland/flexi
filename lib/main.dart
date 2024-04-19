@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 late double screenWidth;
 late double screenHeight;
+late TextScaler textScale;
 
 void main() {
   runApp(const ProviderScope(child: FlexiApp()));
@@ -23,6 +24,7 @@ class _FlexiAppState extends ConsumerState<FlexiApp> {
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.sizeOf(context).width;
     screenHeight = MediaQuery.sizeOf(context).height;
+    textScale = MediaQuery.of(context).textScaler;
 
     return MaterialApp.router(
       routerConfig: router,
