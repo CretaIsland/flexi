@@ -37,20 +37,8 @@ GoRouter router = GoRouter(
       routes: [
         // 디바이스 관련 화면
         GoRoute(
-          path: "/device/list",
-          pageBuilder: (context, state) => const NoTransitionPage(child: DeviceListScreen()),
-        ),
-        GoRoute(
-          path: "/device/info",
-          pageBuilder: (context, state) => const NoTransitionPage(child: DeviceInfoScreen()),
-        ),
-        GoRoute(
           path: "/device/setTimezone",
           pageBuilder: (context, state) => const NoTransitionPage(child: DeviceTimezoneSetScreen()),
-        ),
-        GoRoute(
-          path: "/device/setWifi",
-          pageBuilder: (context, state) => const NoTransitionPage(child: DeviceWifiSetScreen()),
         ),
         // 콘텐츠 관련 화면
         GoRoute(
@@ -81,6 +69,18 @@ GoRouter router = GoRouter(
       ]
     ),
     // bottomNavigationBar가 없는 화면
+    GoRoute(
+      path: "/device/list",
+      pageBuilder: (context, state) => const NoTransitionPage(child: DeviceListScreen()),
+    ),
+    GoRoute(
+      path: "/device/info",
+      pageBuilder: (context, state) => const NoTransitionPage(child: DeviceInfoScreen()),
+    ),
+    GoRoute(
+      path: "/device/setWifi",
+      pageBuilder: (context, state) => const NoTransitionPage(child: DeviceWifiSetScreen()),
+    ),
     GoRoute(
       path: "/content/editText",
       pageBuilder: (context, state) => const NoTransitionPage(child: EditTextScreen()),

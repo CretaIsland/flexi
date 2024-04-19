@@ -1,87 +1,80 @@
-
-import 'package:flexi/component/search_bar.dart';
-import 'package:flexi/utils/colors.dart';
-import 'package:flexi/utils/fonts.dart';
-import 'package:flexi/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../component/search_bar.dart';
+import '../../main.dart';
+import '../../utils/colors.dart';
+import '../../utils/fonts.dart';
+
+
+final selectTimezoneProvider = StateProvider<int>((ref) => -1);
 
 class DeviceTimezoneSetScreen extends ConsumerStatefulWidget {
-  const DeviceTimezoneSetScreen({super.key});
-
+  const DeviceTimezoneSetScreen({Key? key}) : super(key: key);
   @override
   ConsumerState<DeviceTimezoneSetScreen> createState() => _DeviceTimezoneSetScreenState();
 }
 
+
 class _DeviceTimezoneSetScreenState extends ConsumerState<DeviceTimezoneSetScreen> {
-
-  int _currenetIndex = 0;
-
   
   @override
   Widget build(BuildContext context) {
     return Container(
       color: FlexiColor.screenColor,
-      padding: EdgeInsets.only(left: screenWidth * .055, top: screenHeight * .04, right: screenWidth * .055,),
+      padding: EdgeInsets.only(top: screenHeight * .04, left: screenWidth * .055, right: screenWidth * .055),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                onPressed: () {}, 
-                icon: Icon(Icons.arrow_back_ios, color: FlexiColor.primary, size: screenHeight * .02)
+                onPressed: () => context.go("/device/list"), 
+                icon: Icon(Icons.arrow_back_ios, size: screenHeight * .02, color: FlexiColor.primary)
               ),
               Text("Set Device Timezone", style: FlexiFont.semiBold20),
               TextButton(
-                onPressed: () {},
-                child: Text("OK", style: FlexiFont.regular16.copyWith(color: FlexiColor.primary)),
+                onPressed: () => context.go("/device/setWifi"), 
+                child: Text("OK", style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))
               )
             ],
           ),
           SizedBox(height: screenHeight * .03),
           FlexiSearchBar(hintText: "Search timezone", searchTextController: TextEditingController()),
           SizedBox(height: screenHeight * .02),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Container(
-                width: screenWidth * .89,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(screenHeight * .015)
-                ),
-                child: ListView.separated(
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _currenetIndex = index;
-                        });
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(screenHeight* .02),
-                        child: timezoneComponent(index),
-                      ),
-                    );
-                  }, 
-                  separatorBuilder: (context, index) => Divider(color: FlexiColor.grey[500]), 
-                  itemCount: 20
-                ),
-              ),
+          Container(
+            width: screenWidth * .89,
+            height: screenHeight * .7,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(screenHeight * .015),
+              color: Colors.white
             ),
+            child: ListView.separated(
+              padding: EdgeInsets.zero,
+              itemCount: 10,
+              itemBuilder:(context, index) {
+                return GestureDetector(
+                  onTap: () => ref.watch(selectTimezoneProvider.notifier).state = index,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: screenHeight * .02, left: 16, bottom: screenHeight * .02, right: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Africa", style: ref.watch(selectTimezoneProvider) == index ? FlexiFont.regular16.copyWith(color: FlexiColor.primary) : FlexiFont.regular16),
+                        ref.watch(selectTimezoneProvider) == index ? Icon(Icons.check, size: screenHeight * .02, color: FlexiColor.primary) : const SizedBox.shrink()
+                      ],
+                    ),
+                  ),
+                );
+              }, 
+              separatorBuilder:(context, index) {
+                return Divider(color: FlexiColor.grey[400]);
+              }),
           )
         ],
       ),
-    );
-  }
-
-  Widget timezoneComponent(int index) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text("Africa / Abidjan (GMT +00:00)", style: FlexiFont.regular16),
-        _currenetIndex == index ? Icon(Icons.check, color: FlexiColor.primary, size: screenHeight * .025) : const SizedBox.shrink()
-      ],
     );
   }
 

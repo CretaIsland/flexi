@@ -1,57 +1,54 @@
-import 'package:flexi/utils/colors.dart';
-import 'package:flexi/utils/fonts.dart';
-import 'package:flexi/main.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class DeviceResetModal extends StatelessWidget {
+import '../../main.dart';
+import '../../utils/colors.dart';
+import '../../utils/fonts.dart';
 
-  const DeviceResetModal({super.key});
+
+
+class DeviceResetModal extends StatelessWidget {
+  const DeviceResetModal({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: screenHeight * .34,
-      margin: EdgeInsets.only(left: screenWidth * .033, right: screenWidth * .033, bottom: screenHeight * .02),
-      padding: EdgeInsets.only(left: screenWidth * .055, right: screenWidth * .055, top: screenHeight * .05),
+      width: screenWidth * .93,
+      height: screenHeight * .33,
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.only(top: screenHeight * .05, left: screenWidth * .06),
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(screenHeight * .025),
         color: Colors.white,
-        borderRadius: BorderRadius.circular(screenHeight * .025)
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: EdgeInsets.only(left: screenWidth * .033),
-            child: Text("Are you sure?", style: FlexiFont.semiBold24),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: screenWidth * .033, top: screenHeight * .025, bottom: screenHeight * .04),
-            child: Text("This will reset the wifi credentials \nof the device(s)", style: FlexiFont.regular16),
-          ),
+          Text("Are you sure?", style: FlexiFont.semiBold24),
+          SizedBox(height: screenHeight * .025),
+          Text("This will reset the wifi credentials \nof the device(s)", style: FlexiFont.regular16,),
+          SizedBox(height: screenHeight * .035),
           SizedBox(
             width: screenWidth * .82,
             height: screenHeight * .06,
             child: TextButton(
-              onPressed: () { context.pop(); }, 
+              onPressed: () {
+                context.pop();
+              }, 
               style: ButtonStyle(
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(borderRadius: BorderRadius.circular(screenHeight * .01))
                 ),
                 backgroundColor: MaterialStateProperty.all(FlexiColor.secondary),
               ), 
-              child: Text("Add", style: FlexiFont.semiBold16.copyWith(color: Colors.white))
+              child: Text("Reset", style: FlexiFont.semiBold16.copyWith(color: Colors.white))
             ),
           ),
-          SizedBox(height: screenHeight * .01),
           SizedBox(
             width: screenWidth * .82,
-            height: screenHeight * .025,
+            height: screenHeight * .06,
             child: TextButton(
-              onPressed: () { context.pop(); }, 
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.white),
-              ), 
+              onPressed: () => context.pop(), 
               child: Text("Cancel", style: FlexiFont.regular16)
             ),
           )
