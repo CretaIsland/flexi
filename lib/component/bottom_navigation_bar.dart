@@ -21,15 +21,15 @@ class _FlexiBottomNaviagtionBarState extends ConsumerState<FlexiBottomNaviagtion
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: screenHeight * .075,
+      height: screenHeight * .08,
       color: FlexiColor.grey[300],
       padding: EdgeInsets.only(left: screenWidth * .1, right: screenWidth * .1),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          tabItem("Devices", Icons.connected_tv_outlined, "/device", 0),
-          tabItem("Contents", Icons.interests, "/content", 1),
-          tabItem("Setting", Icons.settings, "/setting", 2)
+          tabItem("Devices", Icons.connected_tv_outlined, "/device/list", 0),
+          tabItem("Contents", Icons.interests, "/content/list", 1),
+          tabItem("Setting", Icons.settings, "/setting/menu", 2)
         ],
       ),
     );
@@ -38,11 +38,12 @@ class _FlexiBottomNaviagtionBarState extends ConsumerState<FlexiBottomNaviagtion
   Widget tabItem(String itemLabel, IconData itemIcon, String routeName, int tabIndex) {
     return GestureDetector(
       onTap: () {
+        ref.read(tabIndexProvider.notifier).state = tabIndex;
         context.go(routeName);
       },
       child: SizedBox(
         width: screenWidth * .15,
-        height: screenHeight * .055,
+        height: screenHeight * .06,
         child: Column(
           children: [
             Icon(itemIcon, color: ref.watch(tabIndexProvider) == tabIndex? FlexiColor.primary : FlexiColor.grey[600], size: screenHeight * .035),

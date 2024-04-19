@@ -1,4 +1,3 @@
-import 'package:flexi/component/bottom_navigation_bar.dart';
 import 'package:flexi/component/circle_icon_button.dart';
 import 'package:flexi/component/search_bar.dart';
 import 'package:flexi/utils/colors.dart';
@@ -26,51 +25,43 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
   bool isSelectMode = false;
   bool selectAll = false;
 
-
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() => ref.read(tabIndexProvider.notifier).state = 0);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GestureDetector(
-        onTap: () => ref.watch(selectModeProvider.notifier).state = false,
-        child: Container(
-          color: FlexiColor.screenColor,
-          padding: EdgeInsets.only(top: screenHeight * .065, left: screenWidth * .055, right: screenWidth * .055),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Devices", style: FlexiFont.semiBold30),
-                  ref.watch(selectModeProvider) ? 
-                    CircleIconButton(
-                      size: screenHeight * .04, 
-                      icon: Icon(Icons.link_off, color: Colors.white, size: screenHeight * .03),
-                      fillColor: FlexiColor.secondary,
-                      onPressed: () => showModalBottomSheet(
-                        context: context, 
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) => DeviceResetModal()
-                      ),
-                    ) 
-                    : CircleIconButton(
-                      size: screenHeight * .04, 
-                      icon: Icon(Icons.add_rounded, color: Colors.white, size: screenHeight * .03),
-                      fillColor: FlexiColor.primary,
-                      onPressed: () => showModalBottomSheet(
-                        context: context, 
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) => const HotSpotListModal()
-                      ),
-                    )
+    return GestureDetector(
+      onTap: () => ref.watch(selectModeProvider.notifier).state = false,
+      child: Container(
+        color: FlexiColor.screenColor,
+        padding: EdgeInsets.only(top: screenHeight * .065, left: screenWidth * .055, right: screenWidth * .055),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Devices", style: FlexiFont.semiBold30),
+                ref.watch(selectModeProvider) ? 
+                  CircleIconButton(
+                    size: screenHeight * .04, 
+                    icon: Icon(Icons.link_off, color: Colors.white, size: screenHeight * .03),
+                    fillColor: FlexiColor.secondary,
+                    onPressed: () => showModalBottomSheet(
+                      context: context, 
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => const DeviceResetModal()
+                    ),
+                  ) 
+                  : CircleIconButton(
+                    size: screenHeight * .04, 
+                    icon: Icon(Icons.add_rounded, color: Colors.white, size: screenHeight * .03),
+                    fillColor: FlexiColor.primary,
+                    onPressed: () => showModalBottomSheet(
+                      context: context, 
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => const HotSpotListModal()
+                    ),
+                  )
                 ],
               ),
               SizedBox(height: screenHeight * .0175),
@@ -120,9 +111,7 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
             ],
           )
         ),
-      ),
-      bottomNavigationBar: const FlexiBottomNaviagtionBar(),
-    );
+      );
   }
 }
 

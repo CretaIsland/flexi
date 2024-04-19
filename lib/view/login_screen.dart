@@ -131,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: screenHeight * .06,
                     child: TextButton(
                       onPressed: () {
-                        context.go("/device");
+                        context.go("/device/list");
                       }, 
                       style: ButtonStyle(
                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
