@@ -53,6 +53,38 @@ final ipProvider = AutoDisposeFutureProvider<InternetAddress?>.internal(
 );
 
 typedef IpRef = AutoDisposeFutureProviderRef<InternetAddress?>;
+String _$networkInfoHash() => r'2888b522ff23fc4a4a3fc75e61fc649f0acd3bf2';
+
+/// See also [networkInfo].
+@ProviderFor(networkInfo)
+final networkInfoProvider = AutoDisposeFutureProvider<
+    ({
+      String? wifiName,
+      String? wifiBSSID,
+      String? wifiIP,
+      String? wifiIPv6,
+      String? wifiSubmask,
+      String? wifiBroadcast,
+      String? wifiGateway
+    })?>.internal(
+  networkInfo,
+  name: r'networkInfoProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$networkInfoHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef NetworkInfoRef = AutoDisposeFutureProviderRef<
+    ({
+      String? wifiName,
+      String? wifiBSSID,
+      String? wifiIP,
+      String? wifiIPv6,
+      String? wifiSubmask,
+      String? wifiBroadcast,
+      String? wifiGateway
+    })?>;
 String _$wifisHash() => r'61b23a177d2027c425a51d1f3d2213a79f0b7077';
 
 /// See also [wifis].

@@ -23,6 +23,20 @@ linter:
   rules:
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+    avoid_print: false
+    prefer_relative_imports: true
+    slash_for_doc_comments: false
+    use_build_context_synchronously: false
 
+analyzer:
+  errors:
+    invalid_annotation_target: ignore
+    # 사용자 정의 lint 플러그인을 등록합니다. 이 프로젝트에서는 custom_lint 플러그인을 사용합니다.
+  plugins:
+    - custom_lint
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
+custom_lint:
+  rules:
+    - missing_provider_scope: false
+    - avoid_build_context_in_providers: false

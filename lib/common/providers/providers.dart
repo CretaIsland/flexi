@@ -73,6 +73,71 @@ Future<InternetAddress?> ip(IpRef ref) async {
   return internetAddress;
 }
 
+// ** 네트워크 정보 가져오기
+/*
+권한 필요  위치 정보 액세스 권한 팝업
+--안드로이드
+ACCESS_FINE_LOCATION 안드로이드 10 이상
+ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION 안드로이드 10 미만
+ACCESS_NETWORK_STATE 안드로이드 12 이상
+--iOS
+Info.plist
+NSLocationWhenInUseUsageDescription
+Podfile
+'PERMISSION_LOCATION=1',
+Xcode Signing & Capabilities에서 Access Wi-Fi Information 추가
+*/
+@riverpod
+Future<
+    ({
+      String? wifiName,
+      String? wifiBSSID,
+      String? wifiIP,
+      String? wifiIPv6,
+      String? wifiSubmask,
+      String? wifiBroadcast,
+      String? wifiGateway,
+    })?> networkInfo(NetworkInfoRef ref) async {
+  try {
+    //인터넷이 연결 안되 있으면 null 반환
+    if (!await ref.watch(internetConnectionProvider.future)) {
+      return null;
+    }
+    if (await Permission.locationWhenInUse.request().isGranted) {
+      final info = NetworkInfo();
+      final wifiName = await info.getWifiName();
+      final wifiBSSID = await info.getWifiBSSID();
+      final wifiIP = await info.getWifiIP();
+      final wifiIPv6 = await info.getWifiIPv6();
+      final wifiSubmask = await info.getWifiSubmask();
+      final wifiBroadcast = await info.getWifiBroadcast();
+      final wifiGateway = await info.getWifiGatewayIP();
+      //print('network info wifiName:$wifiName');
+      //print('network info wifiBSSID:$wifiBSSID');
+      //print('network info wifiIP:$wifiIP');
+      //print('network info wifiIPv6:$wifiIPv6');
+      //print('network info wifiSubmask:$wifiSubmask');
+      //print('network info wifiBroadcast:$wifiBroadcast');
+      //print('network info wifiGateway:$wifiGateway');
+      return (
+        wifiName: wifiName,
+        wifiBSSID: wifiBSSID,
+        wifiIP: wifiIP,
+        wifiIPv6: wifiIPv6,
+        wifiSubmask: wifiSubmask,
+        wifiBroadcast: wifiBroadcast,
+        wifiGateway: wifiGateway
+      );
+    } else {
+      print('Unauthorized to get NetworkInfo');
+      return null;
+    }
+  } on PlatformException catch (e) {
+    print('error :$e');
+    return null;
+  }
+}
+
 // ** 주변 access 가능한 wifi ssid 목록 가져오기
 // 안드로이드만 가능 (iOS ??)
 // duplicated error 뜨면 https://velog.io/@mraz3068/Duplicate-class-kotlin.collections.jdk8.CollectionsJDK8Kt-found-in-modules-kotlin-stdlib-1.8.0-org.jetbrains.kotlinkotlin-stdlib1.8.0-and-kotlin-stdlib-jdk8-1.7.20-org.jetbrains.kotlinkotlin-stdlib-jdk81.7.20
