@@ -1,5 +1,6 @@
 import 'package:flexi/component/bottom_navigation_bar.dart';
 import 'package:flexi/utils/colors.dart';
+import 'package:flexi/view/modal/wifi_setup_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -34,7 +35,12 @@ class _DeviceWifiSetScreenState extends ConsumerState<DeviceWifiSetScreen> {
                 ),
                 Text("Wifi Setup", style: FlexiFont.semiBold20),
                 TextButton(
-                  onPressed: () => context.go("/device/list"), 
+                  onPressed: () => showModalBottomSheet(
+                    context: context, 
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => const WifiSetupModal()
+                  ),
                   child: Text("OK", style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))
                 )
               ],

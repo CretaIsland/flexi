@@ -33,7 +33,7 @@ GoRouter router = GoRouter(
     // bottomNavigationBar가 있는 화면
     ShellRoute(
       navigatorKey: shellNavKey,
-      builder: (context, state, child) => HomeScreen(state: state, child: child),
+      pageBuilder: (context, state, child) => NoTransitionPage(child: HomeScreen(state: state, child: child)),
       routes: [
         // 디바이스 관련 화면
         GoRoute(

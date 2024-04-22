@@ -69,7 +69,10 @@ class HotspotListModal extends ConsumerWidget {
             width: screenWidth * .88,
             height: screenHeight * .06,
             child: TextButton(
-              onPressed: () => context.go("/device/setTimezone"),
+              onPressed: () {
+                context.pop();
+                context.go("/device/setTimezone");
+              },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(borderRadius: BorderRadius.circular(screenHeight * .01))
