@@ -1,10 +1,13 @@
-
-import 'package:flexi/main.dart';
-import 'package:flexi/utils/colors.dart';
-import 'package:flexi/utils/fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../main.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/fonts.dart';
+
+
+
 
 class BluetoothListModal extends ConsumerWidget {
   const BluetoothListModal({super.key});

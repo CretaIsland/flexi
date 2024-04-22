@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../main.dart';
-import '../../utils/colors.dart';
-import '../../utils/fonts.dart';
+import '../../../main.dart';
+import '../../../utils/colors.dart';
+import '../../../utils/fonts.dart';
 
-
-
-class DeviceResetModal extends StatelessWidget {
-  const DeviceResetModal({Key? key}) : super(key: key);
-
+class WifiSetupModal extends StatelessWidget {
+  
+  const WifiSetupModal({super.key});
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -24,9 +23,9 @@ class DeviceResetModal extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Are you sure?", style: FlexiFont.semiBold24),
+          Text("Wifi Setup", style: FlexiFont.semiBold24),
           SizedBox(height: screenHeight * .025),
-          Text("This will reset the wifi credentials \nof the device(s)", style: FlexiFont.regular16,),
+          Text("Press Connect once \nthe device has rebooted.", style: FlexiFont.regular16,),
           SizedBox(height: screenHeight * .035),
           SizedBox(
             width: screenWidth * .82,
@@ -34,14 +33,15 @@ class DeviceResetModal extends StatelessWidget {
             child: TextButton(
               onPressed: () {
                 context.pop();
+                context.go("/device/list");
               }, 
               style: ButtonStyle(
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(borderRadius: BorderRadius.circular(screenHeight * .01))
                 ),
-                backgroundColor: MaterialStateProperty.all(FlexiColor.secondary),
+                backgroundColor: MaterialStateProperty.all(FlexiColor.primary),
               ), 
-              child: Text("Reset", style: FlexiFont.semiBold16.copyWith(color: Colors.white))
+              child: Text("Connect", style: FlexiFont.semiBold16.copyWith(color: Colors.white))
             ),
           ),
           SizedBox(

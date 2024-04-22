@@ -62,87 +62,89 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             Expanded(
               flex: 44,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: screenHeight * .03),
-                  Text("Sign in", style: FlexiFont.semiBold24.copyWith(color: Colors.white)),
-                  SizedBox(height: screenHeight * .005,),
-                  Text("Hi there! Nice to see you.", style: FlexiFont.regular12.copyWith(color: Colors.white)),
-                  SizedBox(height: screenHeight * .025),
-                  SizedBox(
-                    width: screenWidth * .82,
-                    height: screenHeight * .06,
-                    child: TextField(
-                      controller: _emailController,
-                      style: FlexiFont.regular16.copyWith(color: Colors.white),
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(screenHeight * .01),
-                          borderSide: const BorderSide(color: Colors.white)
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: screenHeight * .03),
+                    Text("Sign in", style: FlexiFont.semiBold24.copyWith(color: Colors.white)),
+                    SizedBox(height: screenHeight * .005,),
+                    Text("Hi there! Nice to see you.", style: FlexiFont.regular12.copyWith(color: Colors.white)),
+                    SizedBox(height: screenHeight * .025),
+                    SizedBox(
+                      width: screenWidth * .82,
+                      height: screenHeight * .06,
+                      child: TextField(
+                        controller: _emailController,
+                        style: FlexiFont.regular16.copyWith(color: Colors.white),
+                        decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(screenHeight * .01),
+                            borderSide: const BorderSide(color: Colors.white)
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(screenHeight * .01),
+                            borderSide: const BorderSide(color: Colors.white)
+                          ),
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.only(left: 12),
+                          hintText: "Email",
+                          hintStyle: FlexiFont.regular16.copyWith(color: Colors.white.withOpacity(.5)),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(screenHeight * .01),
-                          borderSide: const BorderSide(color: Colors.white)
-                        ),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.only(left: 12),
-                        hintText: "Email",
-                        hintStyle: FlexiFont.regular16.copyWith(color: Colors.white.withOpacity(.5)),
                       ),
                     ),
-                  ),
-                  SizedBox(height: screenHeight * .02),
-                  Container(
-                    width: screenWidth * .82,
-                    height: screenHeight * .06,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(screenHeight * .01),
-                      border: Border.all(color: Colors.white)
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          width: screenWidth * .6,
-                          child: TextField(
-                            controller: _passwordController,
-                            style: FlexiFont.regular16.copyWith(color: Colors.white),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.only(left: 12),
-                              hintText: "Password",
-                              hintStyle: FlexiFont.regular16.copyWith(color: Colors.white.withOpacity(.5)),
+                    SizedBox(height: screenHeight * .02),
+                    Container(
+                      width: screenWidth * .82,
+                      height: screenHeight * .06,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(screenHeight * .01),
+                        border: Border.all(color: Colors.white)
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: screenWidth * .6,
+                            child: TextField(
+                              controller: _passwordController,
+                              style: FlexiFont.regular16.copyWith(color: Colors.white),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: const EdgeInsets.only(left: 12),
+                                hintText: "Password",
+                                hintStyle: FlexiFont.regular16.copyWith(color: Colors.white.withOpacity(.5)),
+                              ),
                             ),
                           ),
-                        ),
-                        IconButton(
-                          onPressed: changePasswordVisibility, 
-                          icon: _passwordVisibility 
-                            ? Icon(Icons.visibility_outlined, color: Colors.white, size: screenHeight * .025) 
-                            : Icon(Icons.visibility_off_outlined, color: Colors.white, size: screenHeight * .025)
-                        )
-                      ],
+                          IconButton(
+                            onPressed: changePasswordVisibility, 
+                            icon: _passwordVisibility 
+                              ? Icon(Icons.visibility_outlined, color: Colors.white, size: screenHeight * .025) 
+                              : Icon(Icons.visibility_off_outlined, color: Colors.white, size: screenHeight * .025)
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(height: screenHeight * .045),
-                  SizedBox(
-                    width: screenWidth * .82,
-                    height: screenHeight * .06,
-                    child: TextButton(
-                      onPressed: () {
-                        context.go("/device/list");
-                      }, 
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(borderRadius: BorderRadius.circular(screenHeight * .01))
-                        ),
-                        backgroundColor: MaterialStateProperty.all(FlexiColor.secondary),
-                      ), 
-                      child: Text("Sign in", style: FlexiFont.semiBold16.copyWith(color: Colors.white))
-                    ),
-                  )
-                ],
+                    SizedBox(height: screenHeight * .045),
+                    SizedBox(
+                      width: screenWidth * .82,
+                      height: screenHeight * .06,
+                      child: TextButton(
+                        onPressed: () {
+                          context.go("/device/list");
+                        }, 
+                        style: ButtonStyle(
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(borderRadius: BorderRadius.circular(screenHeight * .01))
+                          ),
+                          backgroundColor: MaterialStateProperty.all(FlexiColor.secondary),
+                        ), 
+                        child: Text("Sign in", style: FlexiFont.semiBold16.copyWith(color: Colors.white))
+                      ),
+                    )
+                  ],
+                ),
               ),
             )
           ],

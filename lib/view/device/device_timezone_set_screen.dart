@@ -8,33 +8,34 @@ import '../../utils/colors.dart';
 import '../../utils/fonts.dart';
 
 
-final selectTimezoneProvider = StateProvider<int>((ref) => -1);
 
 class DeviceTimezoneSetScreen extends ConsumerStatefulWidget {
-  const DeviceTimezoneSetScreen({Key? key}) : super(key: key);
+  const DeviceTimezoneSetScreen({super.key});
+
   @override
   ConsumerState<DeviceTimezoneSetScreen> createState() => _DeviceTimezoneSetScreenState();
 }
 
-
 class _DeviceTimezoneSetScreenState extends ConsumerState<DeviceTimezoneSetScreen> {
-  
+
+  final selectedIndexProvider = StateProvider<int>((ref) => -1);
+
   @override
   Widget build(BuildContext context) {
     return Container(
       color: FlexiColor.screenColor,
-      padding: EdgeInsets.only(top: screenHeight * .04, left: screenWidth * .055, right: screenWidth * .055),
+      padding: EdgeInsets.only(top: screenHeight * .03, left: screenWidth * .055, right: screenWidth * .055),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                onPressed: () => context.go("/device/list"), 
-                icon: Icon(Icons.arrow_back_ios, size: screenHeight * .02, color: FlexiColor.primary)
+                onPressed: () => context.go("/device/list"),
+                icon: Icon(Icons.arrow_back_ios_new_rounded, color: FlexiColor.primary),
+                iconSize: screenHeight * .015,
               ),
-              Text("Set Device Timezone", style: FlexiFont.semiBold20),
+              Text("Set Device Timezone", style: FlexiFont.semiBold20,),
               TextButton(
                 onPressed: () => context.go("/device/setWifi"), 
                 child: Text("OK", style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))
@@ -46,32 +47,29 @@ class _DeviceTimezoneSetScreenState extends ConsumerState<DeviceTimezoneSetScree
           SizedBox(height: screenHeight * .02),
           Container(
             width: screenWidth * .89,
-            height: screenHeight * .7,
+            height: screenHeight * .72,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(screenHeight * .015),
-              color: Colors.white
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(screenHeight * .015)
             ),
             child: ListView.separated(
               padding: EdgeInsets.zero,
-              itemCount: 10,
-              itemBuilder:(context, index) {
-                return GestureDetector(
-                  onTap: () => ref.watch(selectTimezoneProvider.notifier).state = index,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: screenHeight * .02, left: 16, bottom: screenHeight * .02, right: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Africa", style: ref.watch(selectTimezoneProvider) == index ? FlexiFont.regular16.copyWith(color: FlexiColor.primary) : FlexiFont.regular16),
-                        ref.watch(selectTimezoneProvider) == index ? Icon(Icons.check, size: screenHeight * .02, color: FlexiColor.primary) : const SizedBox.shrink()
-                      ],
-                    ),
+              itemCount: 30,
+              itemBuilder: (context, index) => GestureDetector(
+                onTap: () => ref.watch(selectedIndexProvider.notifier).state = index,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(screenWidth * .045, screenHeight * .02, screenWidth * .045, screenHeight * .02),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Africa / Abidjan (GMT +00:00)", style: ref.watch(selectedIndexProvider) == index ? FlexiFont.regular16.copyWith(color: FlexiColor.primary) : FlexiFont.regular16),
+                      ref.watch(selectedIndexProvider) == index ? Icon(Icons.check_rounded, color: FlexiColor.primary, size: screenHeight * .025) : const SizedBox.shrink()
+                    ],
                   ),
-                );
-              }, 
-              separatorBuilder:(context, index) {
-                return Divider(color: FlexiColor.grey[400]);
-              }),
+                ),
+              ), 
+              separatorBuilder: (context, index) => Divider(color: FlexiColor.grey)
+            )
           )
         ],
       ),

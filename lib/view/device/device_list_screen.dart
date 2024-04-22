@@ -1,38 +1,39 @@
-import 'package:flexi/component/bottom_navigation_bar.dart';
-import 'package:flexi/component/circle_icon_button.dart';
-import 'package:flexi/component/search_bar.dart';
-import 'package:flexi/main.dart';
-import 'package:flexi/utils/colors.dart';
-import 'package:flexi/utils/fonts.dart';
-import 'package:flexi/view/modal/device_reset_modal.dart';
-import 'package:flexi/view/modal/hotspot_list_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../component/bottom_navigation_bar.dart';
+import '../../component/circle_icon_button.dart';
+import '../../component/search_bar.dart';
+import '../../main.dart';
+import '../../utils/colors.dart';
+import '../../utils/fonts.dart';
+import 'modal/device_reset_modal.dart';
+import 'modal/hotspot_list_modal.dart';
 
 
 
 final selectModeProvider = StateProvider<bool>((ref) => false);
-final selectAllProvider = StateProvider<bool>((ref) => false);
+final isAllSelectProvider = StateProvider<bool>((ref) => false);
 
 
 class DeviceListScreen extends ConsumerStatefulWidget {
   const DeviceListScreen({super.key});
+
   @override
   ConsumerState<DeviceListScreen> createState() => _DeviceListScreenState();
 }
 
 class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
-
+  
   @override
-  Widget build(BuildContext context, ) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
         onTap: () => ref.watch(selectModeProvider.notifier).state = false,
         child: Container(
           color: FlexiColor.screenColor,
-          padding: EdgeInsets.only(top: screenHeight * .065, left: screenWidth * .05, right: screenWidth * .05),
+          padding: EdgeInsets.only(top: screenHeight * .065, left: screenWidth * .055, right: screenWidth * .055),
           child: Column(
             children: [
               Row(
@@ -41,46 +42,46 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
                   Text('Devices', style: FlexiFont.semiBold30),
                   CircleIconButton(
                     size: screenHeight * .04, 
-                    icon: Icon(ref.watch(selectModeProvider) ? Icons.link_off : Icons.add_rounded, size: screenHeight * .03, color: Colors.white),
+                    icon: Icon(ref.watch(selectModeProvider) ? Icons.link_off_rounded : Icons.add_rounded, color: Colors.white),
                     fillColor: ref.watch(selectModeProvider) ? FlexiColor.secondary : FlexiColor.primary,
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context, 
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) => ref.watch(selectModeProvider) ? const DeviceResetModal() : const HotspotListModal()
-                      );
-                    },
+                    onPressed: () => showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => ref.watch(selectModeProvider) ? const DeviceResetModal() : HotspotListModal(),
+                    ),
                   )
                 ],
               ),
-              SizedBox(height: screenHeight * .0175),
-              FlexiSearchBar(hintText: "Search your device", searchTextController: TextEditingController()),
-              SizedBox(height: screenHeight * .0175),
+              SizedBox(height: screenHeight * .01625),
+              FlexiSearchBar(hintText: "Search your devices", searchTextController: TextEditingController()),
+              SizedBox(height: screenHeight * .0275),
               Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(" ${15} Devices", style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
+                  Text(" ${10} Devices", style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
                   IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.refresh, size: screenHeight * .02, color: FlexiColor.grey[600]),
+                    onPressed: () {}, 
+                    icon: Icon(Icons.refresh_rounded, color: FlexiColor.grey[600], size: screenHeight * .02)
                   ),
                   SizedBox(width: screenWidth * .43),
-                  ref.watch(selectModeProvider) ? Text("Select all", style: FlexiFont.regular12,) : const SizedBox.shrink(),
-                  const SizedBox(width: 4),
+                  ref.watch(selectModeProvider) ? Text("Select all", style: FlexiFont.regular12) : const SizedBox.shrink(),
+                  ref.watch(selectModeProvider) ? SizedBox(width: screenWidth * .011) : const SizedBox.shrink(),
                   ref.watch(selectModeProvider) ? CircleIconButton(
                     size: screenHeight * .02, 
-                    icon: Icon(Icons.check, size: screenHeight * .01, color: ref.watch(selectAllProvider) ? Colors.white : FlexiColor.grey[600]),
-                    fillColor: ref.watch(selectAllProvider) ? FlexiColor.secondary : Colors.transparent,
-                    border: ref.watch(selectAllProvider) ? null : Border.all(color: FlexiColor.grey[600]!),
-                    onPressed: () => ref.watch(selectAllProvider.notifier).state = !ref.watch(selectAllProvider),
-                  ) : const SizedBox.shrink()
+                    icon: Icon(Icons.check, color: ref.watch(isAllSelectProvider) ? Colors.white : FlexiColor.grey[600], size: screenHeight * .015),
+                    border: ref.watch(isAllSelectProvider) ? null : Border.all(color: FlexiColor.grey[600]!),
+                    fillColor: ref.watch(isAllSelectProvider) ? FlexiColor.secondary : null,
+                    onPressed: () => ref.watch(isAllSelectProvider.notifier).state = !ref.watch(isAllSelectProvider.notifier).state,
+                  ) : const SizedBox.shrink(),
                 ],
               ),
+              SizedBox(height: screenHeight * .0125),
               Expanded(
                 child: ListView.builder(
                   padding: EdgeInsets.zero,
                   itemCount: 10,
-                  itemBuilder:(context, index) {
+                  itemBuilder: (context, index) {
                     return DeviceComponentWidget(index: index);
                   },
                 ),
@@ -96,9 +97,7 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
 }
 
 
-// device component widget
 class DeviceComponentWidget extends ConsumerWidget {
-
   const DeviceComponentWidget({super.key, required this.index});
   final int index;
 
@@ -110,8 +109,8 @@ class DeviceComponentWidget extends ConsumerWidget {
       child: Container(
         width: screenWidth * .89,
         height: screenHeight * .1,
+        padding: EdgeInsets.only(top: screenHeight * .02, left: screenWidth * .045, right: screenWidth * .045),
         margin: EdgeInsets.only(bottom: screenHeight * .02),
-        padding: EdgeInsets.only(top: screenHeight * .02, left: 16, right: 16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(screenHeight * .01)
@@ -122,25 +121,27 @@ class DeviceComponentWidget extends ConsumerWidget {
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(Icons.link, size: screenHeight * .02, color: FlexiColor.primary,),
-                const SizedBox(width: 12),
+                Icon(Icons.link_rounded, color: FlexiColor.primary),
+                SizedBox(width: screenWidth * .033),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("Device Name", style: FlexiFont.regular16),
                     Text("Device ID", style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600]))
                   ],
-                )
+                ),
               ],
             ),
             ref.watch(selectModeProvider) ? Padding(
-              padding: EdgeInsets.only(top: screenHeight * .02),
+              padding: EdgeInsets.only(top: screenHeight * .0175),
               child: CircleIconButton(
                 size: screenHeight * .02, 
-                icon: Icon(Icons.check, size: screenHeight * .01, color: FlexiColor.grey[600]),
-                border: Border.all(color: FlexiColor.grey[600]!),
-                onPressed: () {},
+                icon: Icon(Icons.check, color: ref.watch(isAllSelectProvider) ? Colors.white : FlexiColor.grey[600], size: screenHeight * .015),
+                border: ref.watch(isAllSelectProvider) ? null : Border.all(color: FlexiColor.grey[600]!),
+                fillColor: ref.watch(isAllSelectProvider) ? FlexiColor.secondary : null,
+                onPressed: () {}
               ),
             ) : const SizedBox.shrink()
           ],
@@ -148,5 +149,5 @@ class DeviceComponentWidget extends ConsumerWidget {
       ),
     );
   }
-  
+
 }
