@@ -1,6 +1,6 @@
 import 'package:flexi/utils/colors.dart';
+import 'package:flexi/view/modal/bluetooth_list_modal.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -99,7 +99,12 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                     Text("Bluetooth", style: FlexiFont.regular14,),
                     SizedBox(height: screenHeight * .01),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () => showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => const BluetoothListModal(),
+                      ),
                       child: Container(
                         width: screenWidth * .43,
                         height: screenHeight * .125,
