@@ -147,5 +147,38 @@ final socketIOClientNotifierProvider =
 );
 
 typedef _$SocketIOClientNotifier = AutoDisposeAsyncNotifier<void>;
+String _$socketIOServerHash() => r'1f76f2b121df20a386846416c3aa660d98bc156f';
+
+/// See also [SocketIOServer].
+@ProviderFor(SocketIOServer)
+final socketIOServerProvider =
+    AutoDisposeStreamNotifierProvider<SocketIOServer, String>.internal(
+  SocketIOServer.new,
+  name: r'socketIOServerProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$socketIOServerHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$SocketIOServer = AutoDisposeStreamNotifier<String>;
+String _$socketIOServerNotifierHash() =>
+    r'f5e790a3bcf6d5a6ca464f1f2fb00e2481f378e4';
+
+/// See also [SocketIOServerNotifier].
+@ProviderFor(SocketIOServerNotifier)
+final socketIOServerNotifierProvider =
+    AutoDisposeAsyncNotifierProvider<SocketIOServerNotifier, void>.internal(
+  SocketIOServerNotifier.new,
+  name: r'socketIOServerNotifierProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$socketIOServerNotifierHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$SocketIOServerNotifier = AutoDisposeAsyncNotifier<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

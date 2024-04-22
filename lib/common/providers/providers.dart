@@ -9,7 +9,9 @@ import 'package:network_info_plus/network_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wifi_iot/wifi_iot.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart'
+    as IO; //socket io client
+import 'package:socket_io/socket_io.dart' as socketIOServer; //socket io server
 
 import '../constants/config.dart';
 
@@ -227,5 +229,61 @@ class SocketIOClientNotifier extends _$SocketIOClientNotifier {
   void sendData(String data) {
     developer.log('SocketIOClientNotifier sendData:$data');
     socketIO.emit('message', data);
+  }
+}
+
+// ** SocketIO Server Stream
+@riverpod
+class SocketIOServer extends _$SocketIOServer {
+  @override
+  Stream<String> build() {
+    developer.log('socketIOServerProvider build');
+    ref.onDispose(() {
+      developer.log('socketIOServerProvider dispose');
+      ref.invalidate(socketIOServerNotifierProvider);
+    });
+
+    final notifier = ref.watch(socketIOServerNotifierProvider.notifier);
+    return notifier.controller.stream;
+  }
+}
+
+// ** SocketIO Server Notifier
+@riverpod
+class SocketIOServerNotifier extends _$SocketIOServerNotifier {
+  late StreamController<String> controller;
+  late socketIOServer.Server server;
+
+  @override
+  FutureOr<void> build() async {
+    developer.log('socketIOServerNotifierProvider build');
+    ref.onDispose(() {
+      developer.log('socketIOServerNotifierProvider dispose');
+
+      server.close();
+
+      controller.close();
+    });
+
+    controller = StreamController<String>();
+    server = socketIOServer.Server();
+    server.on('connection', (client) {
+      developer.log('connection ${client.hashCode}');
+
+      client.on('message', (data) {
+        developer.log('message from client:$data');
+        controller.add(data);
+      });
+      client.on('disconnect', (_) {
+        developer.log('disconnect');
+      });
+    });
+    developer.log('socketIOServer open port:${Config.socketIOPort}');
+    server.listen(Config.socketIOPort);
+  }
+
+  void sendData(String data) {
+    developer.log('SocketIOServerNotifier sendData:$data');
+    server.emit('message', data);
   }
 }
