@@ -25,7 +25,14 @@ dependencies:
   crypto: ^3.0.3
 
   flutter_advanced_switch: ^3.1.0
-
+  network_info_plus: ^5.0.3
+  permission_handler: ^11.3.1
+  internet_connection_checker_plus: ^2.3.0
+  wifi_iot: ^0.3.19
+  freezed_annotation: ^2.4.1
+  
+  connectivity_plus: ^6.0.2
+  socket_io_client: ^1.0.2
 
 
 
@@ -38,7 +45,10 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   json_serializable: ^6.7.1
   build_runner: ^2.4.9
-  
+  custom_lint: ^0.6.4
+  riverpod_lint: ^2.3.10
+  riverpod_generator: ^2.4.0
+  freezed: ^2.5.2
 
 flutter:
 

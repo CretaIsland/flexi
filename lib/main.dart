@@ -2,13 +2,23 @@ import 'package:flexi/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 late double screenWidth;
 late double screenHeight;
 late TextScaler textScale;
 
 void main() {
-  runApp(const ProviderScope(child: FlexiApp()));
+  runApp(const ProviderScope(child: MyApp()));
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+    );
+  }
 }
 
 class FlexiApp extends ConsumerStatefulWidget {
@@ -19,7 +29,6 @@ class FlexiApp extends ConsumerStatefulWidget {
 }
 
 class _FlexiAppState extends ConsumerState<FlexiApp> {
-
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.sizeOf(context).width;
@@ -30,5 +39,4 @@ class _FlexiAppState extends ConsumerState<FlexiApp> {
       routerConfig: router,
     );
   }
-
 }
