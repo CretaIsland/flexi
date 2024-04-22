@@ -191,6 +191,26 @@ class WifiNetworkInfo with _$WifiNetworkInfo {
 }
 
 @riverpod
+class NetworkNotifier extends _$NetworkNotifier {
+  @override
+  void build() {}
+
+  Future<void> change({required String ssid, String? password}) async {
+    try {
+      if (await Permission.location.request().isGranted) {
+        final value = await WiFiForIoTPlugin.connect(ssid,
+            password: password, joinOnce: true, security: NetworkSecurity.WPA);
+        developer.log('connected initiated $value');
+      } else {
+        developer.log('Unauthorized to get change wifi');
+      }
+    } on PlatformException catch (e) {
+      developer.log('error :$e');
+    }
+  }
+}
+
+@riverpod
 class UDPMulticast extends _$UDPMulticast {
   @override
   Stream<String> build() {

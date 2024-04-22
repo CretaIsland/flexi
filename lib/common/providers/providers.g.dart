@@ -114,6 +114,22 @@ final wifisStreamProvider =
 );
 
 typedef WifisStreamRef = AutoDisposeStreamProviderRef<List<WifiNetworkInfo>>;
+String _$networkNotifierHash() => r'901b9dd04f8e62a27b40d034c54eadac6c8db36a';
+
+/// See also [NetworkNotifier].
+@ProviderFor(NetworkNotifier)
+final networkNotifierProvider =
+    AutoDisposeNotifierProvider<NetworkNotifier, void>.internal(
+  NetworkNotifier.new,
+  name: r'networkNotifierProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$networkNotifierHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$NetworkNotifier = AutoDisposeNotifier<void>;
 String _$uDPMulticastHash() => r'1d46f2e185b329ea7fe1fe7e9b5d8cf416fac8d3';
 
 /// See also [UDPMulticast].
