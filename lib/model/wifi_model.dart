@@ -1,21 +1,20 @@
-
 import 'package:json_annotation/json_annotation.dart';
+part 'wifi_model.g.dart';
 
-@JsonSerializable(checked: true, createFactory: true, fieldRename: FieldRename.snake)
+
+@JsonSerializable()
 class WifiModel {
-
-  String? ssid;
-  String? bssid;
-  bool? secure;
+  String ssid;
+  String password;
+  bool isSecure;
 
   WifiModel({
-    this.ssid,
-    this.bssid,
-    this.secure
+    required this.ssid,
+    this.password = "",
+    this.isSecure = false
   });
 
-  
-
-
+  factory WifiModel.fromJson(Map<String, dynamic> json) => _$WifiModelFromJson(json);
+  Map<String, dynamic> toJson() => _$WifiModelToJson(this);
 
 }
