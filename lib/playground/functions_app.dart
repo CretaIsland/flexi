@@ -75,9 +75,19 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
             //IP 정보
             Column(
               children: [
-                const Text(
-                  'IP',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'IP',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          ref.invalidate(ipProvider);
+                        },
+                        child: const Text('GET IP'))
+                  ],
                 ),
                 Consumer(
                   builder: (context, ref, child) {
@@ -200,9 +210,14 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
                                         password: 'sqisoft74307');
                               }
                               //새로 고침
+                              await Future.delayed(
+                                  const Duration(milliseconds: 2000));
                               ref.invalidate(networkInfoProvider);
                               ref.invalidate(ipProvider);
                               ref.invalidate(wifisProvider);
+                              ref.invalidate(uDPMulticastProvider);
+                              ref.invalidate(uDPBroadcastProvider);
+                              ref.invalidate(socketIOServerProvider);
                             },
                             child: const Text('change'))
                       ],
@@ -219,9 +234,19 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
             //UDP 멀티캐스트
             Column(
               children: [
-                const Text(
-                  'UDP MULTICAST',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'UDP MULTICAST',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          ref.invalidate(uDPMulticastProvider);
+                        },
+                        child: const Text('refresh'))
+                  ],
                 ),
                 Consumer(
                   builder: (context, ref, child) {
@@ -248,12 +273,64 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
             const SizedBox(
               height: 20,
             ),
+            //UDP 브로드캐스트
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'UDP BROADCAST',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          ref.invalidate(uDPBroadcastProvider);
+                        },
+                        child: const Text('refresh'))
+                  ],
+                ),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final uDPBroadcas = ref.watch(uDPBroadcastProvider);
+                    return uDPBroadcas.when(
+                      skipLoadingOnRefresh: false,
+                      skipLoadingOnReload: false,
+                      data: (data) {
+                        return Text(data);
+                      },
+                      error: (error, stackTrace) => Text(error.toString()),
+                      loading: () => const SizedBox.shrink(),
+                    );
+                  },
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      ref.read(uDPBroadcastProvider.notifier).sendData(
+                          'message UDP Broadcast B ${Random().nextInt(100)}');
+                    },
+                    child: const Text('send'))
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             //SocketIO Server
             Column(
               children: [
-                const Text(
-                  'SOCKET IO SERVER',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'SOCKET IO SERVER',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          ref.invalidate(socketIOServerProvider);
+                        },
+                        child: const Text('refresh'))
+                  ],
                 ),
                 Consumer(
                   builder: (context, ref, child) {

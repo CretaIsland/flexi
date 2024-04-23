@@ -35,7 +35,7 @@ Stream<List<ConnectivityResult>> networkChange(NetworkChangeRef ref) {
   return Connectivity().onConnectivityChanged;
 }
 
-// ** 아이피 정보 가져오기
+// ** 아이피 정보 가져오기  IOS에서 널인 경우 많음 networkInfoProvider를 사용하자
 @riverpod
 Future<InternetAddress?> ip(IpRef ref) async {
   developer.log('ipProvider');
@@ -269,6 +269,13 @@ class UDPBroadcast extends _$UDPBroadcast {
   late StreamController<String> controller;
   @override
   Stream<String> build() {
+    ref.onDispose(() {
+      developer.log('uDPBroadcastProvider dispose');
+
+      socket.close();
+
+      controller.close();
+    });
     developer.log('uDPBroadcastProvider');
     controller = StreamController<String>();
     _init();
@@ -276,7 +283,7 @@ class UDPBroadcast extends _$UDPBroadcast {
   }
 
   Future<void> _init() async {
-    socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
+    socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 8888);
 
     socket.listen((event) {
       Datagram? d = socket.receive();
@@ -288,7 +295,7 @@ class UDPBroadcast extends _$UDPBroadcast {
 
   void sendData(String data) {
     socket.broadcastEnabled = true;
-    socket.send(data.codeUnits, InternetAddress('255,255,255,255'), 4545);
+    socket.send(data.codeUnits, InternetAddress('255.255.255.255'), 8888);
   }
 }
 
@@ -305,6 +312,8 @@ class SocketIOClient extends _$SocketIOClient {
       developer.log('socketIOClientProvider dispose');
 
       socketIO.close();
+      socketIO.disconnect();
+      socketIO.dispose();
 
       controller.close();
     });
@@ -370,7 +379,7 @@ class SocketIOServer extends _$SocketIOServer {
   }
 
   void sendData(String data) {
-    developer.log('SocketIOServerNotifier sendData:$data');
+    developer.log('socketIOServer sendData:$data');
     server.emit('message', data);
   }
 }

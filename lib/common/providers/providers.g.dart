@@ -146,7 +146,7 @@ final uDPMulticastProvider =
 );
 
 typedef _$UDPMulticast = AutoDisposeStreamNotifier<String>;
-String _$uDPBroadcastHash() => r'feb13872ed8f0213b91d4c7b4b8ecb3c15924ba9';
+String _$uDPBroadcastHash() => r'cbe16618d5c0d39e837323caaabc284cc8e1a7e8';
 
 /// See also [UDPBroadcast].
 @ProviderFor(UDPBroadcast)
@@ -161,7 +161,7 @@ final uDPBroadcastProvider =
 );
 
 typedef _$UDPBroadcast = AutoDisposeStreamNotifier<String>;
-String _$socketIOClientHash() => r'99df95dfbbcb1a000d4bf770f3d22e8650fc923d';
+String _$socketIOClientHash() => r'47c7d1535c8e115cd1046a275c4b025b422e7fba';
 
 /// See also [SocketIOClient].
 @ProviderFor(SocketIOClient)
@@ -177,7 +177,7 @@ final socketIOClientProvider =
 );
 
 typedef _$SocketIOClient = AutoDisposeStreamNotifier<String>;
-String _$socketIOServerHash() => r'daf84525964ef105f28b07410c527ca6e086f79e';
+String _$socketIOServerHash() => r'cb269457d9955d9e35dbdfbb5e89d16f4db7ec55';
 
 /// See also [SocketIOServer].
 @ProviderFor(SocketIOServer)
