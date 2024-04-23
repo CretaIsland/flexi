@@ -86,7 +86,7 @@ typedef NetworkInfoRef = AutoDisposeFutureProviderRef<
       String? wifiBroadcast,
       String? wifiGateway
     })?>;
-String _$wifisHash() => r'b9fe00ebfd3b4dd60b45cfac9f98c4356b96fd6f';
+String _$wifisHash() => r'7c14ca6aaf5dc351d2e1ab7e3f0f6ead93401a3e';
 
 /// See also [wifis].
 @ProviderFor(wifis)
@@ -131,7 +131,7 @@ final networkNotifierProvider =
 );
 
 typedef _$NetworkNotifier = AutoDisposeNotifier<void>;
-String _$uDPMulticastHash() => r'f532ed8aaa6a0c6937ba045285d8b3868844218b';
+String _$uDPMulticastHash() => r'5a3373e0e38499365a4616c2847a93620aad9ad0';
 
 /// See also [UDPMulticast].
 @ProviderFor(UDPMulticast)
@@ -146,6 +146,21 @@ final uDPMulticastProvider =
 );
 
 typedef _$UDPMulticast = AutoDisposeStreamNotifier<String>;
+String _$uDPBroadcastHash() => r'feb13872ed8f0213b91d4c7b4b8ecb3c15924ba9';
+
+/// See also [UDPBroadcast].
+@ProviderFor(UDPBroadcast)
+final uDPBroadcastProvider =
+    AutoDisposeStreamNotifierProvider<UDPBroadcast, String>.internal(
+  UDPBroadcast.new,
+  name: r'uDPBroadcastProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$uDPBroadcastHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$UDPBroadcast = AutoDisposeStreamNotifier<String>;
 String _$socketIOClientHash() => r'99df95dfbbcb1a000d4bf770f3d22e8650fc923d';
 
 /// See also [SocketIOClient].

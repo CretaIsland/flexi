@@ -141,7 +141,7 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
                     final wifis = ref.watch(wifisProvider);
                     return SizedBox(
                       width: 300,
-                      height: 300,
+                      height: 200,
                       child: wifis.when(
                         data: (wifis) {
                           return ListView.builder(

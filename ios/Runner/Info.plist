@@ -47,6 +47,7 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Permission options for the `location` group START -->
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Need location when in use</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -57,5 +58,12 @@
 	<string>Can I have location always?</string>
 	<key>com.apple.security.network.client</key>
 	<true/>
+	<key>NSAllowsLocalNetworking</key>
+	<true/>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_bonsoirdemo._tcp</string>
+	</array>
+	<!-- Permission options for the `location` group END -->
 </dict>
 </plist>

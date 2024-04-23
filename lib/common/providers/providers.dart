@@ -141,17 +141,21 @@ Future<
 Future<List<WifiNetworkInfo>> wifis(WifisRef ref) async {
   developer.log('wifisProvider');
   try {
-    final wifiNetworks = await WiFiForIoTPlugin.loadWifiList();
-    return wifiNetworks
-        .map((e) => WifiNetworkInfo(
-            ssid: e.ssid,
-            bssid: e.bssid,
-            capabilities: e.capabilities,
-            frequency: e.frequency,
-            level: e.level,
-            timestamp: e.timestamp,
-            password: e.password))
-        .toList();
+    if (Platform.isAndroid) {
+      final wifiNetworks = await WiFiForIoTPlugin.loadWifiList();
+      return wifiNetworks
+          .map((e) => WifiNetworkInfo(
+              ssid: e.ssid,
+              bssid: e.bssid,
+              capabilities: e.capabilities,
+              frequency: e.frequency,
+              level: e.level,
+              timestamp: e.timestamp,
+              password: e.password))
+          .toList();
+    } else {
+      return [];
+    }
   } catch (e) {
     print('error :$e');
     return [];
@@ -248,8 +252,43 @@ class UDPMulticast extends _$UDPMulticast {
   }
 
   void sendData(String data) {
-    socket.send(
-        data.codeUnits, Config.udpMulticastAddress, Config.udpMulticastPort);
+    if (Platform.isAndroid) {
+      socket.send(
+          data.codeUnits, Config.udpMulticastAddress, Config.udpMulticastPort);
+    } else {
+      //iOS는 직접 상대 IP
+      socket.send(data.codeUnits, InternetAddress('192.169.1.7'),
+          Config.udpMulticastPort);
+    }
+  }
+}
+
+@riverpod
+class UDPBroadcast extends _$UDPBroadcast {
+  late RawDatagramSocket socket;
+  late StreamController<String> controller;
+  @override
+  Stream<String> build() {
+    developer.log('uDPBroadcastProvider');
+    controller = StreamController<String>();
+    _init();
+    return controller.stream;
+  }
+
+  Future<void> _init() async {
+    socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
+
+    socket.listen((event) {
+      Datagram? d = socket.receive();
+      if (d == null) return;
+      String message = String.fromCharCodes(d.data).trim();
+      controller.add(message);
+    });
+  }
+
+  void sendData(String data) {
+    socket.broadcastEnabled = true;
+    socket.send(data.codeUnits, InternetAddress('255,255,255,255'), 4545);
   }
 }
 
