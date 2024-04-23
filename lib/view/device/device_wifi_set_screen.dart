@@ -75,6 +75,7 @@ class _DeviceWifiSetScreenState extends ConsumerState<DeviceWifiSetScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
+                    onTap: () => context.go("/qrcode/scan"),
                     child: Container(
                       width: screenWidth * .43,
                       height: screenHeight * .25,

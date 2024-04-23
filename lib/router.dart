@@ -1,20 +1,22 @@
-import 'package:flexi/view/content/content_info_screen.dart';
-import 'package:flexi/view/content/content_list_screen.dart';
-import 'package:flexi/view/content/edit_background_screen.dart';
-import 'package:flexi/view/content/edit_text_screen.dart';
-import 'package:flexi/view/content/send_content_screen.dart';
-import 'package:flexi/view/device/device_info_screen.dart';
-import 'package:flexi/view/device/device_list_screen.dart';
-import 'package:flexi/view/device/device_timezone_set_screen.dart';
-import 'package:flexi/view/device/device_wifi_set_screen.dart';
-import 'package:flexi/view/home_screen.dart';
-import 'package:flexi/view/login_screen.dart';
-import 'package:flexi/view/setting/account_info_screen.dart';
-import 'package:flexi/view/setting/app_info_screen.dart';
-import 'package:flexi/view/setting/device_recovery_screen.dart';
-import 'package:flexi/view/setting/setting_menu_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import 'view/content/content_info_screen.dart';
+import 'view/content/content_list_screen.dart';
+import 'view/content/edit_background_screen.dart';
+import 'view/content/edit_text_screen.dart';
+import 'view/content/send_content_screen.dart';
+import 'view/device/device_info_screen.dart';
+import 'view/device/device_list_screen.dart';
+import 'view/device/device_timezone_set_screen.dart';
+import 'view/device/device_wifi_set_screen.dart';
+import 'view/device/qrcode_scan_screen.dart';
+import 'view/home_screen.dart';
+import 'view/login_screen.dart';
+import 'view/setting/account_info_screen.dart';
+import 'view/setting/app_info_screen.dart';
+import 'view/setting/device_recovery_screen.dart';
+import 'view/setting/setting_menu_screen.dart';
 
 
 
@@ -80,6 +82,10 @@ GoRouter router = GoRouter(
     GoRoute(
       path: "/device/setWifi",
       pageBuilder: (context, state) => const NoTransitionPage(child: DeviceWifiSetScreen()),
+    ),
+    GoRoute(
+      path: "/qrcode/scan",
+      pageBuilder: (context, state) => const NoTransitionPage(child: QrcodeScanScreen()),
     ),
     GoRoute(
       path: "/content/editText",
