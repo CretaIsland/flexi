@@ -224,7 +224,7 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
                         return Text(data);
                       },
                       error: (error, stackTrace) => Text(error.toString()),
-                      loading: () => const CircularProgressIndicator(),
+                      loading: () => const SizedBox.shrink(),
                     );
                   },
                 ),

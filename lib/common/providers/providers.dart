@@ -162,6 +162,7 @@ Future<List<WifiNetworkInfo>> wifis(WifisRef ref) async {
 // 안드로이드만 가능 (iOS ??)
 @riverpod
 Stream<List<WifiNetworkInfo>> wifisStream(WifisStreamRef ref) {
+  developer.log('wifisStreamProvider');
   return WiFiForIoTPlugin.onWifiScanResultReady.map((event) => event
       .map((e) => WifiNetworkInfo(
           ssid: e.ssid,

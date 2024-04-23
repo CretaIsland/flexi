@@ -100,7 +100,7 @@ final wifisProvider = AutoDisposeFutureProvider<List<WifiNetworkInfo>>.internal(
 );
 
 typedef WifisRef = AutoDisposeFutureProviderRef<List<WifiNetworkInfo>>;
-String _$wifisStreamHash() => r'fdb38b45b142787e7244ba1ad1f6f8bf9b3bb36f';
+String _$wifisStreamHash() => r'32e2029292a2f1c857cf06c06e9b701e987a5067';
 
 /// See also [wifisStream].
 @ProviderFor(wifisStream)
