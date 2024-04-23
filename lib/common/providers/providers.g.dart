@@ -131,7 +131,7 @@ final networkNotifierProvider =
 );
 
 typedef _$NetworkNotifier = AutoDisposeNotifier<void>;
-String _$uDPMulticastHash() => r'c7174cd25f5b9e8233d527e281f88c0433aba5d2';
+String _$uDPMulticastHash() => r'f532ed8aaa6a0c6937ba045285d8b3868844218b';
 
 /// See also [UDPMulticast].
 @ProviderFor(UDPMulticast)

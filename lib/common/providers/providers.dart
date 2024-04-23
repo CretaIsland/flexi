@@ -212,7 +212,6 @@ class NetworkNotifier extends _$NetworkNotifier {
 }
 
 // ** UDP Multicast
-
 @riverpod
 class UDPMulticast extends _$UDPMulticast {
   late RawDatagramSocket socket;
@@ -220,13 +219,13 @@ class UDPMulticast extends _$UDPMulticast {
   @override
   Stream<String> build() {
     ref.onDispose(() {
-      developer.log('uDPMulticastNotifierProvider dispose');
+      developer.log('uDPMulticastProvider dispose');
       socket.leaveMulticast(Config.udpMulticastAddress);
       socket.close();
 
       controller.close();
     });
-
+    developer.log('uDPMulticastProvider');
     controller = StreamController<String>();
 
     _init();
