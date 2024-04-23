@@ -24,18 +24,21 @@ part 'providers.g.dart';
 // wifi도 꺼지고 통신사 셀룰러도 안되면 false
 @riverpod
 Stream<InternetStatus> internetConnection(InternetConnectionRef ref) {
+  developer.log('internetConnectionProvider');
   return InternetConnection().onStatusChange;
 }
 
 // ** 네트워크 변화 감지 (Wifi <=> Hotspot)
 @riverpod
 Stream<List<ConnectivityResult>> networkChange(NetworkChangeRef ref) {
+  developer.log('networkChangeProvider');
   return Connectivity().onConnectivityChanged;
 }
 
 // ** 아이피 정보 가져오기
 @riverpod
 Future<InternetAddress?> ip(IpRef ref) async {
+  developer.log('ipProvider');
   InternetAddress? internetAddress;
   try {
     // 네트워크 인터페이스 정보 가져오기
@@ -95,6 +98,7 @@ Future<
       String? wifiGateway,
     })?> networkInfo(NetworkInfoRef ref) async {
   try {
+    developer.log('networkInfoProvider');
     if (await Permission.locationWhenInUse.request().isGranted) {
       final info = NetworkInfo();
       final wifiName = await info.getWifiName();
@@ -135,6 +139,7 @@ Future<
 // duplicated error 뜨면 https://velog.io/@mraz3068/Duplicate-class-kotlin.collections.jdk8.CollectionsJDK8Kt-found-in-modules-kotlin-stdlib-1.8.0-org.jetbrains.kotlinkotlin-stdlib1.8.0-and-kotlin-stdlib-jdk8-1.7.20-org.jetbrains.kotlinkotlin-stdlib-jdk81.7.20
 @riverpod
 Future<List<WifiNetworkInfo>> wifis(WifisRef ref) async {
+  developer.log('wifisProvider');
   try {
     final wifiNetworks = await WiFiForIoTPlugin.loadWifiList();
     return wifiNetworks
@@ -185,9 +190,12 @@ class WifiNetworkInfo with _$WifiNetworkInfo {
 @riverpod
 class NetworkNotifier extends _$NetworkNotifier {
   @override
-  void build() {}
+  void build() {
+    developer.log('networkNotifierProvider');
+  }
 
   Future<void> change({required String ssid, String? password}) async {
+    developer.log('networkNotifierProvider change($ssid, $password)');
     try {
       if (await Permission.location.request().isGranted) {
         final value = await WiFiForIoTPlugin.connect(ssid,

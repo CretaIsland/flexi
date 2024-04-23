@@ -7,7 +7,7 @@ part of 'providers.dart';
 // **************************************************************************
 
 String _$internetConnectionHash() =>
-    r'7836c85109e37c4b96bde8fad2eafce0fe42cf42';
+    r'f67c16677fdb446b657050f54051bb35f458dd1c';
 
 /// See also [internetConnection].
 @ProviderFor(internetConnection)
@@ -23,7 +23,7 @@ final internetConnectionProvider =
 );
 
 typedef InternetConnectionRef = AutoDisposeStreamProviderRef<InternetStatus>;
-String _$networkChangeHash() => r'599486ec328162268c4141f92cbf66494482fd84';
+String _$networkChangeHash() => r'f4065fc5b5f5b5e7b382ee8ab091f560222d576b';
 
 /// See also [networkChange].
 @ProviderFor(networkChange)
@@ -40,7 +40,7 @@ final networkChangeProvider =
 
 typedef NetworkChangeRef
     = AutoDisposeStreamProviderRef<List<ConnectivityResult>>;
-String _$ipHash() => r'fb249f1bf4dece0dbf110eb4e216740f59d07d15';
+String _$ipHash() => r'78286999eae44df4bdd0ec7d373297b2d850c4d4';
 
 /// See also [ip].
 @ProviderFor(ip)
@@ -54,7 +54,7 @@ final ipProvider = AutoDisposeFutureProvider<InternetAddress?>.internal(
 );
 
 typedef IpRef = AutoDisposeFutureProviderRef<InternetAddress?>;
-String _$networkInfoHash() => r'e0911d88dd11068fba00643f61821f9f139ec0dd';
+String _$networkInfoHash() => r'843113dd8a098875c341fb9d85ee5f139aae3e00';
 
 /// See also [networkInfo].
 @ProviderFor(networkInfo)
@@ -86,7 +86,7 @@ typedef NetworkInfoRef = AutoDisposeFutureProviderRef<
       String? wifiBroadcast,
       String? wifiGateway
     })?>;
-String _$wifisHash() => r'61b23a177d2027c425a51d1f3d2213a79f0b7077';
+String _$wifisHash() => r'b9fe00ebfd3b4dd60b45cfac9f98c4356b96fd6f';
 
 /// See also [wifis].
 @ProviderFor(wifis)
@@ -115,7 +115,7 @@ final wifisStreamProvider =
 );
 
 typedef WifisStreamRef = AutoDisposeStreamProviderRef<List<WifiNetworkInfo>>;
-String _$networkNotifierHash() => r'901b9dd04f8e62a27b40d034c54eadac6c8db36a';
+String _$networkNotifierHash() => r'05f4ded280fe137c86a6aa930e8dacbc18396ea8';
 
 /// See also [NetworkNotifier].
 @ProviderFor(NetworkNotifier)
