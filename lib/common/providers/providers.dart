@@ -23,12 +23,8 @@ part 'providers.g.dart';
 // iOS <key>com.apple.security.network.client</key><true/>
 // wifi도 꺼지고 통신사 셀룰러도 안되면 false
 @riverpod
-Future<bool> internetConnection(InternetConnectionRef ref) async {
-  try {
-    return await InternetConnection().hasInternetAccess;
-  } catch (e) {
-    return false;
-  }
+Stream<InternetStatus> internetConnection(InternetConnectionRef ref) {
+  return InternetConnection().onStatusChange;
 }
 
 // ** 네트워크 변화 감지 (Wifi <=> Hotspot)
@@ -99,10 +95,6 @@ Future<
       String? wifiGateway,
     })?> networkInfo(NetworkInfoRef ref) async {
   try {
-    //인터넷이 연결 안되 있으면 null 반환
-    if (!await ref.watch(internetConnectionProvider.future)) {
-      return null;
-    }
     if (await Permission.locationWhenInUse.request().isGranted) {
       final info = NetworkInfo();
       final wifiName = await info.getWifiName();

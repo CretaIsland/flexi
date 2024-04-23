@@ -95,9 +95,18 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
             ),
             Column(
               children: [
-                const Text(
-                  'NETWORK INFO',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Row(
+                  children: [
+                    const Text(
+                      'NETWORK INFO',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          ref.invalidate(networkInfoProvider);
+                        },
+                        child: const Text('GET NETWORK INFO'))
+                  ],
                 ),
                 Consumer(
                   builder: (context, ref, child) {
@@ -126,6 +135,7 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
                   builder: (context, ref, child) {
                     final wifis = ref.watch(wifisProvider);
                     return SizedBox(
+                      width: 300,
                       height: 300,
                       child: wifis.when(
                         data: (wifis) {

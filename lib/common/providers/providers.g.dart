@@ -7,11 +7,12 @@ part of 'providers.dart';
 // **************************************************************************
 
 String _$internetConnectionHash() =>
-    r'ef224f4dcb7c6be02a4d6df1511281ad8b40da94';
+    r'7836c85109e37c4b96bde8fad2eafce0fe42cf42';
 
 /// See also [internetConnection].
 @ProviderFor(internetConnection)
-final internetConnectionProvider = AutoDisposeFutureProvider<bool>.internal(
+final internetConnectionProvider =
+    AutoDisposeStreamProvider<InternetStatus>.internal(
   internetConnection,
   name: r'internetConnectionProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,7 +22,7 @@ final internetConnectionProvider = AutoDisposeFutureProvider<bool>.internal(
   allTransitiveDependencies: null,
 );
 
-typedef InternetConnectionRef = AutoDisposeFutureProviderRef<bool>;
+typedef InternetConnectionRef = AutoDisposeStreamProviderRef<InternetStatus>;
 String _$networkChangeHash() => r'599486ec328162268c4141f92cbf66494482fd84';
 
 /// See also [networkChange].
@@ -53,7 +54,7 @@ final ipProvider = AutoDisposeFutureProvider<InternetAddress?>.internal(
 );
 
 typedef IpRef = AutoDisposeFutureProviderRef<InternetAddress?>;
-String _$networkInfoHash() => r'2888b522ff23fc4a4a3fc75e61fc649f0acd3bf2';
+String _$networkInfoHash() => r'e0911d88dd11068fba00643f61821f9f139ec0dd';
 
 /// See also [networkInfo].
 @ProviderFor(networkInfo)
