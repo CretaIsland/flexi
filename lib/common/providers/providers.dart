@@ -211,25 +211,14 @@ class NetworkNotifier extends _$NetworkNotifier {
   }
 }
 
-@riverpod
-class UDPMulticast extends _$UDPMulticast {
-  @override
-  Stream<String> build() {
-    ref.onDispose(() {
-      developer.log('uDPMulticastProvider dispose');
-      ref.invalidate(uDPMulticastNotifierProvider);
-    });
-    final notifier = ref.watch(uDPMulticastNotifierProvider.notifier);
-    return notifier.controller.stream;
-  }
-}
+// ** UDP Multicast
 
 @riverpod
-class UDPMulticastNotifier extends _$UDPMulticastNotifier {
+class UDPMulticast extends _$UDPMulticast {
   late RawDatagramSocket socket;
   late StreamController<String> controller;
   @override
-  FutureOr<void> build() async {
+  Stream<String> build() {
     ref.onDispose(() {
       developer.log('uDPMulticastNotifierProvider dispose');
       socket.leaveMulticast(Config.udpMulticastAddress);
@@ -240,6 +229,12 @@ class UDPMulticastNotifier extends _$UDPMulticastNotifier {
 
     controller = StreamController<String>();
 
+    _init();
+
+    return controller.stream;
+  }
+
+  Future<void> _init() async {
     socket = await RawDatagramSocket.bind(
         InternetAddress.anyIPv4, Config.udpMulticastPort);
 
@@ -259,34 +254,17 @@ class UDPMulticastNotifier extends _$UDPMulticastNotifier {
   }
 }
 
-// ** SocketIO Client Stream
+// ** SocketIO Client
 @riverpod
 class SocketIOClient extends _$SocketIOClient {
+  late StreamController<String> controller;
+  late IO.Socket socketIO;
+
   @override
   Stream<String> build() {
     developer.log('socketIOClientProvider build');
     ref.onDispose(() {
       developer.log('socketIOClientProvider dispose');
-      ref.invalidate(socketIOClientNotifierProvider);
-    });
-
-    final notifier = ref.watch(socketIOClientNotifierProvider.notifier);
-
-    return notifier.controller.stream;
-  }
-}
-
-// ** SocketIO Client Notifier
-@riverpod
-class SocketIOClientNotifier extends _$SocketIOClientNotifier {
-  late StreamController<String> controller;
-  late IO.Socket socketIO;
-
-  @override
-  FutureOr<void> build() async {
-    developer.log('socketIOClientNotifierProvider build');
-    ref.onDispose(() {
-      developer.log('socketIOClientNotifierProvider dispose');
 
       socketIO.close();
 
@@ -294,14 +272,13 @@ class SocketIOClientNotifier extends _$SocketIOClientNotifier {
     });
 
     socketIO = IO.io(
-      'http://192.169.1.11:9999',
+      'http://192.169.1.7:9999',
       IO.OptionBuilder().setTransports(['websocket']).build(),
     );
 
     controller = StreamController<String>();
     socketIO.onConnect((data) {
       developer.log('onConnect $data');
-      socketIO.emit('message', 'gogogogo');
     });
     socketIO.onDisconnect((data) {
       developer.log('onDisconnect $data');
@@ -310,6 +287,7 @@ class SocketIOClientNotifier extends _$SocketIOClientNotifier {
       developer.log('message from server:$data');
       controller.add(data);
     });
+    return controller.stream;
   }
 
   void sendData(String data) {
@@ -318,33 +296,17 @@ class SocketIOClientNotifier extends _$SocketIOClientNotifier {
   }
 }
 
-// ** SocketIO Server Stream
+// ** SocketIO Server
 @riverpod
 class SocketIOServer extends _$SocketIOServer {
+  late StreamController<String> controller;
+  late socketIOServer.Server server;
+
   @override
   Stream<String> build() {
     developer.log('socketIOServerProvider build');
     ref.onDispose(() {
       developer.log('socketIOServerProvider dispose');
-      ref.invalidate(socketIOServerNotifierProvider);
-    });
-
-    final notifier = ref.watch(socketIOServerNotifierProvider.notifier);
-    return notifier.controller.stream;
-  }
-}
-
-// ** SocketIO Server Notifier
-@riverpod
-class SocketIOServerNotifier extends _$SocketIOServerNotifier {
-  late StreamController<String> controller;
-  late socketIOServer.Server server;
-
-  @override
-  FutureOr<void> build() async {
-    developer.log('socketIOServerNotifierProvider build');
-    ref.onDispose(() {
-      developer.log('socketIOServerNotifierProvider dispose');
 
       server.close();
 
@@ -366,6 +328,7 @@ class SocketIOServerNotifier extends _$SocketIOServerNotifier {
     });
     developer.log('socketIOServer open port:${Config.socketIOPort}');
     server.listen(Config.socketIOPort);
+    return controller.stream;
   }
 
   void sendData(String data) {

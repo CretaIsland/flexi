@@ -131,7 +131,7 @@ final networkNotifierProvider =
 );
 
 typedef _$NetworkNotifier = AutoDisposeNotifier<void>;
-String _$uDPMulticastHash() => r'1d46f2e185b329ea7fe1fe7e9b5d8cf416fac8d3';
+String _$uDPMulticastHash() => r'c7174cd25f5b9e8233d527e281f88c0433aba5d2';
 
 /// See also [UDPMulticast].
 @ProviderFor(UDPMulticast)
@@ -146,24 +146,7 @@ final uDPMulticastProvider =
 );
 
 typedef _$UDPMulticast = AutoDisposeStreamNotifier<String>;
-String _$uDPMulticastNotifierHash() =>
-    r'be2b9fa45db4d305b5b780ebdc868e81d823d09c';
-
-/// See also [UDPMulticastNotifier].
-@ProviderFor(UDPMulticastNotifier)
-final uDPMulticastNotifierProvider =
-    AutoDisposeAsyncNotifierProvider<UDPMulticastNotifier, void>.internal(
-  UDPMulticastNotifier.new,
-  name: r'uDPMulticastNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$uDPMulticastNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$UDPMulticastNotifier = AutoDisposeAsyncNotifier<void>;
-String _$socketIOClientHash() => r'b678e97f9f4296c78148573d025a0d34f3e7a140';
+String _$socketIOClientHash() => r'99df95dfbbcb1a000d4bf770f3d22e8650fc923d';
 
 /// See also [SocketIOClient].
 @ProviderFor(SocketIOClient)
@@ -179,24 +162,7 @@ final socketIOClientProvider =
 );
 
 typedef _$SocketIOClient = AutoDisposeStreamNotifier<String>;
-String _$socketIOClientNotifierHash() =>
-    r'faeffd7bd24bcd3bba46eaa6b6dcc43551127f53';
-
-/// See also [SocketIOClientNotifier].
-@ProviderFor(SocketIOClientNotifier)
-final socketIOClientNotifierProvider =
-    AutoDisposeAsyncNotifierProvider<SocketIOClientNotifier, void>.internal(
-  SocketIOClientNotifier.new,
-  name: r'socketIOClientNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$socketIOClientNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$SocketIOClientNotifier = AutoDisposeAsyncNotifier<void>;
-String _$socketIOServerHash() => r'1f76f2b121df20a386846416c3aa660d98bc156f';
+String _$socketIOServerHash() => r'daf84525964ef105f28b07410c527ca6e086f79e';
 
 /// See also [SocketIOServer].
 @ProviderFor(SocketIOServer)
@@ -212,22 +178,5 @@ final socketIOServerProvider =
 );
 
 typedef _$SocketIOServer = AutoDisposeStreamNotifier<String>;
-String _$socketIOServerNotifierHash() =>
-    r'f5e790a3bcf6d5a6ca464f1f2fb00e2481f378e4';
-
-/// See also [SocketIOServerNotifier].
-@ProviderFor(SocketIOServerNotifier)
-final socketIOServerNotifierProvider =
-    AutoDisposeAsyncNotifierProvider<SocketIOServerNotifier, void>.internal(
-  SocketIOServerNotifier.new,
-  name: r'socketIOServerNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$socketIOServerNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$SocketIOServerNotifier = AutoDisposeAsyncNotifier<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

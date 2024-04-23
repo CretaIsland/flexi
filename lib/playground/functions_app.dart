@@ -239,7 +239,7 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      ref.read(uDPMulticastNotifierProvider.notifier).sendData(
+                      ref.read(uDPMulticastProvider.notifier).sendData(
                           'message UDP Multicast B ${Random().nextInt(100)}');
                     },
                     child: const Text('send'))
@@ -271,10 +271,8 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      ref
-                          .read(socketIOServerNotifierProvider.notifier)
-                          .sendData(
-                              'message socketIO B ${Random().nextInt(100)}');
+                      ref.read(socketIOServerProvider.notifier).sendData(
+                          'message socketIO B ${Random().nextInt(100)}');
                     },
                     child: const Text('send'))
               ],
