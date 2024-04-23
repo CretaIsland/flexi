@@ -22,6 +22,7 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            //인터넷 연결 여부
             Column(
               children: [
                 const Text(
@@ -46,6 +47,7 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
             const SizedBox(
               height: 20,
             ),
+            //네트워크 변화 감지
             Column(
               children: [
                 const Text(
@@ -70,6 +72,7 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
             const SizedBox(
               height: 20,
             ),
+            //IP 정보
             Column(
               children: [
                 const Text(
@@ -93,6 +96,7 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
             const SizedBox(
               height: 20,
             ),
+            //네트워크 정보
             Column(
               children: [
                 Row(
@@ -125,6 +129,7 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
             const SizedBox(
               height: 20,
             ),
+            //와이파이 목록
             Column(
               children: [
                 const Text(
@@ -161,6 +166,7 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
             const SizedBox(
               height: 20,
             ),
+            //네트워크 변경
             Consumer(
               builder: (context, ref, child) {
                 final networkInfo = ref.watch(networkInfoProvider);
@@ -195,6 +201,8 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
                               }
                               //새로 고침
                               ref.invalidate(networkInfoProvider);
+                              ref.invalidate(ipProvider);
+                              ref.invalidate(wifisProvider);
                             },
                             child: const Text('change'))
                       ],
@@ -208,6 +216,7 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
             const SizedBox(
               height: 20,
             ),
+            //UDP 멀티캐스트
             Column(
               children: [
                 const Text(
@@ -230,9 +239,42 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
                 ),
                 ElevatedButton(
                     onPressed: () {
+                      ref.read(uDPMulticastNotifierProvider.notifier).sendData(
+                          'message UDP Multicast B ${Random().nextInt(100)}');
+                    },
+                    child: const Text('send'))
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            //SocketIO Server
+            Column(
+              children: [
+                const Text(
+                  'SOCKET IO SERVER',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final socketIOServer = ref.watch(socketIOServerProvider);
+                    return socketIOServer.when(
+                      skipLoadingOnRefresh: false,
+                      skipLoadingOnReload: false,
+                      data: (data) {
+                        return Text(data);
+                      },
+                      error: (error, stackTrace) => Text(error.toString()),
+                      loading: () => const SizedBox.shrink(),
+                    );
+                  },
+                ),
+                ElevatedButton(
+                    onPressed: () {
                       ref
-                          .read(uDPMulticastNotifierProvider.notifier)
-                          .sendData('message B ${Random().nextInt(100)}');
+                          .read(socketIOServerNotifierProvider.notifier)
+                          .sendData(
+                              'message socketIO B ${Random().nextInt(100)}');
                     },
                     child: const Text('send'))
               ],
