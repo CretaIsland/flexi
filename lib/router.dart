@@ -44,10 +44,6 @@ GoRouter router = GoRouter(
         ),
         // 콘텐츠 관련 화면
         GoRoute(
-          path: "/content/list",
-          pageBuilder: (context, state) => const NoTransitionPage(child: ContentListScreen()),
-        ),
-        GoRoute(
           path: "/content/info",
           pageBuilder: (context, state) => const NoTransitionPage(child: ContentInfoScreen()),
         ),
@@ -86,6 +82,10 @@ GoRouter router = GoRouter(
     GoRoute(
       path: "/qrcode/scan",
       pageBuilder: (context, state) => const NoTransitionPage(child: QrcodeScanScreen()),
+    ),
+    GoRoute(
+      path: "/content/list",
+      pageBuilder: (context, state) => const NoTransitionPage(child: ContentListScreen()),
     ),
     GoRoute(
       path: "/content/editText",
