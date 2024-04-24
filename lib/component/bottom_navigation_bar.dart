@@ -1,9 +1,11 @@
-import 'package:flexi/utils/colors.dart';
-import 'package:flexi/utils/fonts.dart';
-import 'package:flexi/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../utils/colors.dart';
+import '../utils/fonts.dart';
+import '../main.dart';
+
 
 
 // tab index provider
@@ -38,7 +40,7 @@ class _FlexiBottomNaviagtionBarState extends ConsumerState<FlexiBottomNaviagtion
   Widget tabItem(String itemLabel, IconData itemIcon, String routeName, int tabIndex) {
     return GestureDetector(
       onTap: () {
-        ref.read(tabIndexProvider.notifier).state = tabIndex;
+        ref.watch(tabIndexProvider.notifier).state = tabIndex;
         context.go(routeName);
       },
       child: SizedBox(

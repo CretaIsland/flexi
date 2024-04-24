@@ -43,7 +43,7 @@ class HotspotListModal extends ConsumerWidget {
             )
           ),
           SizedBox(height: screenHeight * .02),
-          FlexiSearchBar(hintText: "Search device", searchTextController: TextEditingController()),
+          FlexiSearchBar(hintText: "Search device", textEditingController: TextEditingController()),
           SizedBox(height: screenHeight * .03),
           Container(
             width: screenWidth * .89,

@@ -43,7 +43,7 @@ class _DeviceTimezoneSetScreenState extends ConsumerState<DeviceTimezoneSetScree
             ],
           ),
           SizedBox(height: screenHeight * .03),
-          FlexiSearchBar(hintText: "Search timezone", searchTextController: TextEditingController()),
+          FlexiSearchBar(hintText: "Search timezone", textEditingController: TextEditingController()),
           SizedBox(height: screenHeight * .02),
           Container(
             width: screenWidth * .89,

@@ -54,7 +54,7 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
                 ],
               ),
               SizedBox(height: screenHeight * .01625),
-              FlexiSearchBar(hintText: "Search your devices", searchTextController: TextEditingController()),
+              FlexiSearchBar(hintText: "Search your devices", textEditingController: TextEditingController()),
               SizedBox(height: screenHeight * .0275),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
