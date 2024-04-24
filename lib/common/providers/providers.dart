@@ -306,7 +306,10 @@ class SocketIOClient extends _$SocketIOClient {
   late IO.Socket socketIO;
 
   @override
-  Stream<String> build() {
+  Stream<String> build({
+    required String ip,
+    required int port,
+  }) {
     developer.log('socketIOClientProvider build');
     ref.onDispose(() {
       developer.log('socketIOClientProvider dispose');
@@ -319,7 +322,7 @@ class SocketIOClient extends _$SocketIOClient {
     });
 
     socketIO = IO.io(
-      'http://192.169.1.7:9999',
+      'http://$ip:$port',
       IO.OptionBuilder().setTransports(['websocket']).build(),
     );
 

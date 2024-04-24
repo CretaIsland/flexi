@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:developer' as developer;
+import '../common/constants/config.dart';
 import '../common/providers/providers.dart';
 
 class FunctionsApp extends ConsumerStatefulWidget {
@@ -13,6 +14,7 @@ class FunctionsApp extends ConsumerStatefulWidget {
 }
 
 class _FunctionsAppState extends ConsumerState<FunctionsApp> {
+  String socketServerIP = '192.169.1.11';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -217,7 +219,9 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
                               ref.invalidate(wifisProvider);
                               ref.invalidate(uDPMulticastProvider);
                               ref.invalidate(uDPBroadcastProvider);
-                              ref.invalidate(socketIOServerProvider);
+                              ref.invalidate(socketIOClientProvider(
+                                  ip: socketServerIP,
+                                  port: Config.socketIOPort));
                             },
                             child: const Text('change'))
                       ],
@@ -315,27 +319,29 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
             const SizedBox(
               height: 20,
             ),
-            //SocketIO Server
+            //SocketIO Client
             Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'SOCKET IO SERVER',
+                      'SOCKET IO CLIENT',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     ElevatedButton(
                         onPressed: () {
-                          ref.invalidate(socketIOServerProvider);
+                          ref.invalidate(socketIOClientProvider(
+                              ip: socketServerIP, port: Config.socketIOPort));
                         },
                         child: const Text('refresh'))
                   ],
                 ),
                 Consumer(
                   builder: (context, ref, child) {
-                    final socketIOServer = ref.watch(socketIOServerProvider);
-                    return socketIOServer.when(
+                    final socketIOClient = ref.watch(socketIOClientProvider(
+                        ip: socketServerIP, port: Config.socketIOPort));
+                    return socketIOClient.when(
                       skipLoadingOnRefresh: false,
                       skipLoadingOnReload: false,
                       data: (data) {
@@ -348,8 +354,12 @@ class _FunctionsAppState extends ConsumerState<FunctionsApp> {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      ref.read(socketIOServerProvider.notifier).sendData(
-                          'message socketIO B ${Random().nextInt(100)}');
+                      ref
+                          .read(socketIOClientProvider(
+                                  ip: socketServerIP, port: Config.socketIOPort)
+                              .notifier)
+                          .sendData(
+                              'message socketIO B ${Random().nextInt(100)}');
                     },
                     child: const Text('send'))
               ],
