@@ -9,6 +9,8 @@ import '../../utils/colors.dart';
 import '../../utils/fonts.dart';
 import 'modal/wifi_setup_modal.dart';
 
+
+
 class DeviceWifiSetScreen extends ConsumerStatefulWidget {
   const DeviceWifiSetScreen({super.key});
 

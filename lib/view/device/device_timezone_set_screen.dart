@@ -20,6 +20,7 @@ class _DeviceTimezoneSetScreenState extends ConsumerState<DeviceTimezoneSetScree
 
   final selectedIndexProvider = StateProvider<int>((ref) => -1);
 
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -55,7 +56,7 @@ class _DeviceTimezoneSetScreenState extends ConsumerState<DeviceTimezoneSetScree
             child: ListView.separated(
               padding: EdgeInsets.zero,
               itemCount: 30,
-              itemBuilder: (context, index) => GestureDetector(
+              itemBuilder: (context, index) => InkWell(
                 onTap: () => ref.watch(selectedIndexProvider.notifier).state = index,
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(screenWidth * .045, screenHeight * .02, screenWidth * .045, screenHeight * .02),

@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../component/bottom_navigation_bar.dart';
 import '../../component/circle_icon_button.dart';
@@ -25,64 +28,98 @@ class DeviceListScreen extends ConsumerStatefulWidget {
 }
 
 class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
-        onTap: () => ref.watch(selectModeProvider.notifier).state = false,
+        onTap: () {
+          if(ref.watch(selectModeProvider)) {
+            ref.watch(selectModeProvider.notifier).state = false;
+            ref.watch(isAllSelectProvider.notifier).state = false;
+          }
+        },
         child: Container(
           color: FlexiColor.screenColor,
-          padding: EdgeInsets.only(top: screenHeight * .065, left: screenWidth * .055, right: screenWidth * .055),
+          padding: EdgeInsets.only(left: screenWidth * .055, top: screenHeight * .065, right: screenWidth * .055,),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Devices', style: FlexiFont.semiBold30),
+                  Text("Devices", style: FlexiFont.semiBold30),
                   CircleIconButton(
-                    size: screenHeight * .04, 
-                    icon: Icon(ref.watch(selectModeProvider) ? Icons.link_off_rounded : Icons.add_rounded, color: Colors.white),
+                    onPressed: () async {
+                      if(ref.watch(selectModeProvider)) {
+                        showModalBottomSheet(
+                          context: context, 
+                          backgroundColor: Colors.transparent,
+                          builder:(context) => const DeviceResetModal()
+                        );
+                      } else {
+                        if(Platform.isIOS) {
+                          openAppSettings();
+                          // showModalBottomSheet(
+                          //   context: context, 
+                          //   isScrollControlled: true,
+                          //   backgroundColor: Colors.transparent,
+                          //   builder:(context) => HotspotListModal()
+                          // );
+                        } else {
+                          showModalBottomSheet(
+                            context: context, 
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder:(context) => HotspotListModal()
+                          );
+                        }
+                      }
+                    },
+                    icon: Icon(ref.watch(selectModeProvider) ? Icons.link_off_rounded : Icons.add_rounded, color: Colors.white, size: screenHeight * .025),
+                    size: screenHeight * .04,
                     fillColor: ref.watch(selectModeProvider) ? FlexiColor.secondary : FlexiColor.primary,
-                    onPressed: () => showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => ref.watch(selectModeProvider) ? const DeviceResetModal() : HotspotListModal(),
-                    ),
                   )
                 ],
               ),
-              SizedBox(height: screenHeight * .01625),
+              SizedBox(height: screenHeight * .015),
               FlexiSearchBar(hintText: "Search your devices", textEditingController: TextEditingController()),
-              SizedBox(height: screenHeight * .0275),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(" ${10} Devices", style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
-                  IconButton(
-                    onPressed: () {}, 
-                    icon: Icon(Icons.refresh_rounded, color: FlexiColor.grey[600], size: screenHeight * .02)
+                  Row(
+                    children: [
+                      Text('${15} Devices', style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
+                      SizedBox(width: screenWidth * .01),
+                      IconButton(
+                        onPressed: () {}, 
+                        icon: Icon(Icons.refresh_rounded, color: FlexiColor.grey[600], size: screenHeight * .02)
+                      )
+                    ],
                   ),
-                  SizedBox(width: screenWidth * .43),
-                  ref.watch(selectModeProvider) ? Text("Select all", style: FlexiFont.regular12) : const SizedBox.shrink(),
-                  ref.watch(selectModeProvider) ? SizedBox(width: screenWidth * .011) : const SizedBox.shrink(),
-                  ref.watch(selectModeProvider) ? CircleIconButton(
-                    size: screenHeight * .02, 
-                    icon: Icon(Icons.check, color: ref.watch(isAllSelectProvider) ? Colors.white : FlexiColor.grey[600], size: screenHeight * .015),
-                    border: ref.watch(isAllSelectProvider) ? null : Border.all(color: FlexiColor.grey[600]!),
-                    fillColor: ref.watch(isAllSelectProvider) ? FlexiColor.secondary : null,
-                    onPressed: () => ref.watch(isAllSelectProvider.notifier).state = !ref.watch(isAllSelectProvider.notifier).state,
-                  ) : const SizedBox.shrink(),
+                  Visibility(
+                    visible: ref.watch(selectModeProvider),
+                    child: Row(
+                      children: [
+                        Text('Select all', style: FlexiFont.regular12),
+                        SizedBox(width: screenWidth * .01),
+                        CircleIconButton(
+                          onPressed: () => ref.watch(isAllSelectProvider.notifier).state = !ref.watch(isAllSelectProvider), 
+                          icon: Icon(Icons.check_rounded, color: ref.watch(isAllSelectProvider) ? Colors.white : FlexiColor.grey[600], size: screenHeight * .015),
+                          fillColor: ref.watch(isAllSelectProvider) ? FlexiColor.secondary : null,
+                          border: ref.watch(isAllSelectProvider) ? null : Border.all(color: FlexiColor.grey[600]!),
+                          size: screenHeight * .02,
+                        )
+                      ],
+                    ),
+                  ),
                 ],
               ),
-              SizedBox(height: screenHeight * .0125),
               Expanded(
                 child: ListView.builder(
                   padding: EdgeInsets.zero,
                   itemCount: 10,
                   itemBuilder: (context, index) {
-                    return DeviceComponentWidget(index: index);
+                    return DeviceComponent(index: index);
                   },
                 ),
               )
@@ -93,57 +130,59 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
       bottomNavigationBar: const FlexiBottomNaviagtionBar(),
     );
   }
-
 }
 
-
-class DeviceComponentWidget extends ConsumerWidget {
-  const DeviceComponentWidget({super.key, required this.index});
+class DeviceComponent extends ConsumerWidget {
+  const DeviceComponent({super.key, required this.index});
   final int index;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return GestureDetector(
-      onTap: () => context.go("/device/info"),
-      onLongPress: () => ref.watch(selectModeProvider.notifier).state = true,
+    return InkWell(
+      onTap: () => ref.watch(selectModeProvider) ? null : context.go("/device/info"),
+      onLongPress: () => ref.watch(selectModeProvider) ? null : ref.watch(selectModeProvider.notifier).state = true,
       child: Container(
         width: screenWidth * .89,
         height: screenHeight * .1,
-        padding: EdgeInsets.only(top: screenHeight * .02, left: screenWidth * .045, right: screenWidth * .045),
+        padding: EdgeInsets.all(screenHeight * .02),
         margin: EdgeInsets.only(bottom: screenHeight * .02),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(screenHeight * .01)
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(Icons.link_rounded, color: FlexiColor.primary),
+                Icon(Icons.link_rounded, color: FlexiColor.primary, size: screenHeight * .02),
                 SizedBox(width: screenWidth * .033),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Device Name", style: FlexiFont.regular16),
-                    Text("Device ID", style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600]))
+                    Text("Device Name", style: FlexiFont.regular16,),
+                    SizedBox(height: screenHeight * .01),
+                    Text("Device Id", style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600]))
                   ],
-                ),
+                )
               ],
             ),
-            ref.watch(selectModeProvider) ? Padding(
-              padding: EdgeInsets.only(top: screenHeight * .0175),
-              child: CircleIconButton(
-                size: screenHeight * .02, 
-                icon: Icon(Icons.check, color: ref.watch(isAllSelectProvider) ? Colors.white : FlexiColor.grey[600], size: screenHeight * .015),
-                border: ref.watch(isAllSelectProvider) ? null : Border.all(color: FlexiColor.grey[600]!),
-                fillColor: ref.watch(isAllSelectProvider) ? FlexiColor.secondary : null,
-                onPressed: () {}
+            Visibility(
+              visible: ref.watch(selectModeProvider),
+              child: Container(
+                width: screenHeight * .02,
+                height: screenHeight * .02,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  border: Border.all(color: FlexiColor.grey[600]!),
+                  borderRadius: BorderRadius.circular(screenHeight * .01)
+                ),
+                child: Center(
+                  child: Icon(Icons.check_rounded, color: FlexiColor.grey[600], size: screenHeight * .015),
+                ),
               ),
-            ) : const SizedBox.shrink()
+            ),
           ],
         ),
       ),

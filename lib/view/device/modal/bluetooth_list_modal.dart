@@ -8,7 +8,6 @@ import '../../../utils/fonts.dart';
 
 
 
-
 class BluetoothListModal extends ConsumerWidget {
   const BluetoothListModal({super.key});
 
@@ -75,9 +74,12 @@ class BluetoothListModal extends ConsumerWidget {
             child: ListView.separated(
               itemCount: 5,
               itemBuilder:(context, index) {
-                return Padding(
-                  padding: EdgeInsets.only(top: screenHeight * .015, left: screenWidth * .045, bottom: screenHeight * .015),
-                  child: Text('Bluetooth Device Name', style: FlexiFont.regular16),
+                return InkWell(
+                  onTap: () {},
+                  child: Padding(
+                    padding: EdgeInsets.only(top: screenHeight * .015, left: screenWidth * .045, bottom: screenHeight * .015),
+                    child: Text('Bluetooth Device Name', style: FlexiFont.regular16),
+                  ),
                 );
               },
               separatorBuilder: (context, index) => Divider(color: FlexiColor.grey[400]), 
@@ -104,9 +106,12 @@ class BluetoothListModal extends ConsumerWidget {
             child: ListView.separated(
               itemCount: 5,
               itemBuilder:(context, index) {
-                return Padding(
-                  padding: EdgeInsets.only(top: screenHeight * .015, left: screenWidth * .045, bottom: screenHeight * .015),
-                  child: Text('Bluetooth Device Name', style: FlexiFont.regular16),
+                return InkWell(
+                  onTap: () {},
+                  child: Padding(
+                    padding: EdgeInsets.only(top: screenHeight * .015, left: screenWidth * .045, bottom: screenHeight * .015),
+                    child: Text('Bluetooth Device Name', style: FlexiFont.regular16),
+                  ),
                 );
               },
               separatorBuilder: (context, index) => Divider(color: FlexiColor.grey[400]), 

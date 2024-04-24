@@ -1,6 +1,8 @@
-
-import 'package:flexi/main.dart';
 import 'package:flutter/material.dart';
+
+
+import '../main.dart';
+
 
 
 class FlexiFont {

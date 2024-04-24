@@ -28,6 +28,7 @@ class FlexiSearchBar extends StatelessWidget {
       child: Row(
         children: [
           Icon(Icons.search_rounded, color: FlexiColor.grey[700], size: screenHeight * .025),
+          const SizedBox(width: 12),
           SizedBox(
             width: screenWidth * .7,
             child: TextField(

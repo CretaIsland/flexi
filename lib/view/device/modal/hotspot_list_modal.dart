@@ -11,8 +11,8 @@ import '../../../utils/fonts.dart';
 
 class HotspotListModal extends ConsumerWidget {
   HotspotListModal({super.key});
+  final selectedIndexprovider = StateProvider<int>((ref) => -1);
 
-  final selectedIndexProvider = StateProvider<int>((ref) => -1);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,24 +55,28 @@ class HotspotListModal extends ConsumerWidget {
             child: ListView.separated(
               padding: EdgeInsets.zero,
               itemCount: 10,
-              itemBuilder:(context, index) => GestureDetector(
-                onTap: () => ref.watch(selectedIndexProvider.notifier).state = index,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(screenWidth * .045, screenHeight * .02, screenWidth * .045, screenHeight * .02),
-                  child: Row(
-                    children: [
-                      ref.watch(selectedIndexProvider) == index ? 
-                        Icon(Icons.check_circle_rounded, color: FlexiColor.primary, size: screenHeight * .025) :
-                        Icon(Icons.check_circle_outline_rounded, color: FlexiColor.grey[600], size: screenHeight * .025),
-                      SizedBox(width: screenWidth * .038),
-                      Icon(Icons.wifi_rounded, color: Colors.black, size: screenHeight * .025),
-                      SizedBox(width: screenWidth * .022),
-                      Text("DBAP0001", style: FlexiFont.regular16),
-                    ],
+              itemBuilder:(context, index) {
+                return InkWell(
+                  onTap: () => ref.watch(selectedIndexprovider.notifier).state = index,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(screenWidth * .045, screenHeight * .02, screenWidth * .045, screenHeight * .02),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.check_circle_outline_rounded,
+                          color: ref.watch(selectedIndexprovider) == index ? FlexiColor.primary : FlexiColor.grey[600],
+                          size: screenHeight * .025,
+                        ),
+                        SizedBox(width: screenWidth * .04),
+                        Icon(Icons.wifi_rounded, color: Colors.black, size: screenHeight * .02), 
+                        SizedBox(width: screenWidth * .02),
+                        Text("DBAP0001", style: FlexiFont.regular16)
+                      ],
+                    ),
                   ),
-                ),
-              ), 
-              separatorBuilder: (context, index) => Divider(color: FlexiColor.grey[400]),
+                );
+              }, 
+              separatorBuilder: (context, index) => Divider(color: FlexiColor.grey[600])
             ),
           ),
           SizedBox(height: screenHeight * .02),
@@ -83,7 +87,7 @@ class HotspotListModal extends ConsumerWidget {
               onPressed: () {
                 context.pop();
                 context.go("/device/setTimezone");
-              }, 
+              },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(borderRadius: BorderRadius.circular(screenHeight * .01))
@@ -97,5 +101,5 @@ class HotspotListModal extends ConsumerWidget {
       ),
     );
   }
-
+  
 }
