@@ -15,8 +15,8 @@ import 'package:socket_io/socket_io.dart' as socketIOServer; //socket io server
 
 import '../constants/config.dart';
 
-part 'providers.freezed.dart';
-part 'providers.g.dart';
+part 'network_providers.freezed.dart';
+part 'network_providers.g.dart';
 
 // ** 인터넷 연결 상태 가져오기
 // 안드로이드 <uses-permission android:name="android.permission.INTERNET" />

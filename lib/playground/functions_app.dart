@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:developer' as developer;
 import '../common/constants/config.dart';
-import '../common/providers/providers.dart';
+import '../common/providers/network_providers.dart';
 
 class FunctionsApp extends ConsumerStatefulWidget {
   const FunctionsApp({super.key});
