@@ -26,6 +26,13 @@ class FlexiFont {
     color: Colors.black
   );
 
+  static TextStyle regular11 = TextStyle(
+    fontFamily: fontFamily,
+    fontWeight: regular,
+    fontSize: textScale.scale(11),
+    color: Colors.black
+  );
+
   static TextStyle regular12 = TextStyle(
     fontFamily: fontFamily,
     fontWeight: regular,
@@ -126,3 +133,4 @@ class FlexiFont {
 
 
 }
+
