@@ -53,11 +53,11 @@ GoRouter router = GoRouter(
           pageBuilder: (context, state) => const NoTransitionPage(child: SettingMenuScreen()),
         ),
         GoRoute(
-          path: "/setting/accountInfo",
+          path: "/setting/account",
           pageBuilder: (context, state) => const NoTransitionPage(child: AccountInfoScreen()),
         ),
         GoRoute(
-          path: "/setting/appInfo",
+          path: "/setting/app",
           pageBuilder: (context, state) => const NoTransitionPage(child: AppInfoScreen()),
         ),
         GoRoute(

@@ -6,12 +6,13 @@ import '../utils/ui/colors.dart';
 
 
 class FlexiTextField extends StatefulWidget {
-  const FlexiTextField({super.key, required this.width, required this.height, this.textEditingController, this.readOnly, this.textStyle, this.onChanged, this.onComplete});
+  const FlexiTextField({super.key, required this.width, required this.height, this.textEditingController, this.readOnly, this.textStyle, this.fillColor = Colors.white,  this.onChanged, this.onComplete});
   final double width;
   final double height;
   final TextEditingController? textEditingController;
   final bool? readOnly;
   final TextStyle? textStyle;
+  final Color? fillColor;
   final void Function(String)? onChanged;
   final void Function()? onComplete;
 
