@@ -6,7 +6,7 @@ import 'view/content/content_list_screen.dart';
 import 'view/content/edit_background_screen.dart';
 import 'view/content/edit_text_screen.dart';
 import 'view/content/send_content_screen.dart';
-import 'view/device/device_info_screen.dart';
+import 'view/device/device_detail_screen.dart';
 import 'view/device/device_list_screen.dart';
 import 'view/device/device_timezone_set_screen.dart';
 import 'view/device/device_wifi_set_screen.dart';
@@ -72,8 +72,8 @@ GoRouter router = GoRouter(
       pageBuilder: (context, state) => const NoTransitionPage(child: DeviceListScreen()),
     ),
     GoRoute(
-      path: "/device/info",
-      pageBuilder: (context, state) => const NoTransitionPage(child: DeviceInfoScreen()),
+      path: "/device/detail",
+      pageBuilder: (context, state) => const NoTransitionPage(child: DeviceDetailScreen()),
     ),
     GoRoute(
       path: "/device/setWifi",

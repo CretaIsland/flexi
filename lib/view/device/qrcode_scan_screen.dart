@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import '../../main.dart';
-import '../../utils/colors.dart';
+import '../../utils/ui/colors.dart';
+
+
 
 class QrcodeScanScreen extends StatefulWidget {
   const QrcodeScanScreen({super.key});
@@ -18,10 +20,8 @@ class _QrcodeScanScreenState extends State<QrcodeScanScreen> {
   QRViewController? controller;
 
 
-
   @override
   void dispose() {
-    print("qrcode dispose");
     super.dispose();
     controller?.dispose();
   }
@@ -54,20 +54,22 @@ class _QrcodeScanScreenState extends State<QrcodeScanScreen> {
     );
   }
 
-  Widget buildQrView(BuildContext context) => QRView(
-        key: GlobalKey(),
-        onQRViewCreated: onQRViewCreated,
-        overlay: QrScannerOverlayShape(
-            borderColor: FlexiColor.primary,
-            borderRadius: 10,
-            borderLength: 20,
-            borderWidth: 10,
-            cutOutSize: MediaQuery.of(context).size.width * 0.8),
-      );
+  Widget buildQrView(BuildContext context) {
+    return QRView(
+      key: GlobalKey(),
+      onQRViewCreated: onQRViewCreated,
+      overlay: QrScannerOverlayShape(
+        borderColor: FlexiColor.primary,
+        borderRadius: 10,
+        borderLength: 20,
+        borderWidth: 10,
+        cutOutSize: MediaQuery.of(context).size.width * 0.8
+      )
+    );
+  }
 
   void onQRViewCreated(QRViewController qrViewController) {
     controller = qrViewController;
-
     controller!.scannedDataStream.listen((scanData) async {
       setState(() {
         barcode = scanData;

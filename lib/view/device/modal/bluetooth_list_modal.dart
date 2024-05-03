@@ -3,8 +3,8 @@ import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../main.dart';
-import '../../../utils/colors.dart';
-import '../../../utils/fonts.dart';
+import '../../../utils/ui/colors.dart';
+import '../../../utils/ui/fonts.dart';
 
 
 
@@ -18,13 +18,13 @@ class BluetoothListModal extends ConsumerWidget {
       height: screenHeight * .9,
       padding: EdgeInsets.only(left: screenWidth * .055, right: screenWidth * .055),
       decoration: BoxDecoration(
-        color: FlexiColor.screenColor,
+        color: FlexiColor.backgroundColor,
         borderRadius: BorderRadius.only(topLeft: Radius.circular(screenHeight * .025), topRight:  Radius.circular(screenHeight * .025))
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: screenHeight * .07),
+          SizedBox(height: screenHeight * .04),
           Container(
             width: screenWidth * .89,
             height: screenHeight * .06,

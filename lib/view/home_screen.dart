@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../component/bottom_navigation_bar.dart';
+import '../components/bottom_navigation_bar.dart';
 
 
 

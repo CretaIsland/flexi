@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:timezone/data/latest.dart';
+import 'package:timezone/timezone.dart';
 
-import '../../component/search_bar.dart';
+import '../../components/search_bar.dart';
 import '../../main.dart';
-import '../../utils/colors.dart';
-import '../../utils/fonts.dart';
+import '../../utils/ui/colors.dart';
+import '../../utils/ui/fonts.dart';
 
 
 
@@ -18,61 +20,106 @@ class DeviceTimezoneSetScreen extends ConsumerStatefulWidget {
 
 class _DeviceTimezoneSetScreenState extends ConsumerState<DeviceTimezoneSetScreen> {
 
-  final selectedIndexProvider = StateProvider<int>((ref) => -1);
+  List<Map<String, Object>> timezoneList = [];
+  final searchText = StateProvider<String>((ref) => "");
+  final selectedIndex = StateProvider<int>((ref) => -1);
+
+  @override
+  void initState() {
+    super.initState();
+    getTimezoneList();
+  }
+
+  void getTimezoneList() {
+    initializeTimeZones();
+    RegExp alphabetsRegex = RegExp(r'[a-zA-Z]');
+    for(var item in timeZoneDatabase.locations.values.toList()) {
+      TimeZone itemTimezone = item.timeZone(DateTime.now().millisecondsSinceEpoch);
+      Duration duration = Duration(milliseconds: itemTimezone.offset);
+      String itemAbbreviation = alphabetsRegex.hasMatch(itemTimezone.abbreviation) ? itemTimezone.abbreviation : "UTC";
+      String timezone = "${duration.inHours >= 0 ? "+" : ""}${duration.inHours.toString().padLeft(2, "0")}:${(duration.inMinutes.remainder(60)).toString().padLeft(2, "0")}";
+
+      timezoneList.add({"label" : "${item.name}($itemAbbreviation $timezone)"});
+    }
+  }
 
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: FlexiColor.screenColor,
-      padding: EdgeInsets.only(top: screenHeight * .03, left: screenWidth * .055, right: screenWidth * .055),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                onPressed: () => context.go("/device/list"),
-                icon: Icon(Icons.arrow_back_ios_new_rounded, color: FlexiColor.primary),
-                iconSize: screenHeight * .015,
-              ),
-              Text("Set Device Timezone", style: FlexiFont.semiBold20,),
-              TextButton(
-                onPressed: () => context.go("/device/setWifi"), 
-                child: Text("OK", style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))
-              )
-            ],
-          ),
-          SizedBox(height: screenHeight * .03),
-          FlexiSearchBar(hintText: "Search timezone", textEditingController: TextEditingController()),
-          SizedBox(height: screenHeight * .02),
-          Container(
-            width: screenWidth * .89,
-            height: screenHeight * .72,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(screenHeight * .015)
-            ),
-            child: ListView.separated(
-              padding: EdgeInsets.zero,
-              itemCount: 30,
-              itemBuilder: (context, index) => InkWell(
-                onTap: () => ref.watch(selectedIndexProvider.notifier).state = index,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(screenWidth * .045, screenHeight * .02, screenWidth * .045, screenHeight * .02),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Africa / Abidjan (GMT +00:00)", style: ref.watch(selectedIndexProvider) == index ? FlexiFont.regular16.copyWith(color: FlexiColor.primary) : FlexiFont.regular16),
-                      ref.watch(selectedIndexProvider) == index ? Icon(Icons.check_rounded, color: FlexiColor.primary, size: screenHeight * .025) : const SizedBox.shrink()
-                    ],
-                  ),
+      color: FlexiColor.backgroundColor,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: screenHeight * .04),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () => context.go("/device/list"),
+                  icon: Icon(Icons.arrow_back_ios_new, color: FlexiColor.primary),
+                  iconSize: screenHeight * .025,
                 ),
-              ), 
-              separatorBuilder: (context, index) => Divider(color: FlexiColor.grey)
+                Text("Set Device Timezone", style: FlexiFont.semiBold20),
+                TextButton(
+                  onPressed: () => context.go("/device/setWifi"),
+                  child: Text("OK", style: FlexiFont.regular16.copyWith(color: FlexiColor.primary)),
+                )
+              ],
+            ),
+            SizedBox(height: screenHeight * .03),
+            FlexiSearchBar(
+              hintText: "Search timezone",
+              onChanged: (value) {
+                ref.watch(searchText.notifier).state = value;
+                print(ref.watch(searchText));
+              },
+            ),
+            SizedBox(height: screenHeight * .02),
+            Container(
+              width: screenWidth * .89,
+              height: screenHeight * .7,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8)
+              ),
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                itemCount: timezoneList.length,
+                itemBuilder:(context, index) {
+                  if(ref.watch(searchText).isEmpty || (ref.watch(searchText).isNotEmpty && timezoneList[index]["label"].toString().contains(ref.watch(searchText)))) {
+                    return InkWell(
+                      onTap: () => ref.watch(selectedIndex.notifier).state = index,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          border: Border(bottom: BorderSide(color: FlexiColor.grey[400]!))
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: screenWidth * .7,
+                              child: Text(
+                                timezoneList[index]["label"].toString(),
+                                style: ref.watch(selectedIndex) == index ? FlexiFont.regular16.copyWith(color: FlexiColor.primary) : FlexiFont.regular16, 
+                                maxLines: 2
+                              ),
+                            ),
+                            ref.watch(selectedIndex) == index ? Icon(Icons.check, color: FlexiColor.primary, size: screenHeight * .025) : const SizedBox.shrink(),
+                          ],
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                }
+              )
             )
-          )
-        ],
+          ],
+        ),
       ),
     );
   }

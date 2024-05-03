@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../main.dart';
-import '../utils/colors.dart';
-import '../utils/fonts.dart';
+import '../utils/ui/colors.dart';
+import '../utils/ui/fonts.dart';
+
+
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -68,9 +70,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     width: screenWidth * .82,
                     height: screenHeight * .06,
                     child: TextField(
-                      controller: null,
+                      controller: _emailController,
                       style: FlexiFont.regular16.copyWith(color: Colors.white),
                       decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.only(left: 12),
                         border: InputBorder.none,
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(screenHeight * .01),
@@ -86,35 +89,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                   SizedBox(height: screenHeight * .02),
-                  Container(
+                  SizedBox(
                     width: screenWidth * .82,
                     height: screenHeight * .06,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(screenHeight * .01)
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          width: screenWidth * .6,
-                          child: TextField(
-                            controller: null,
-                            style: FlexiFont.regular16.copyWith(color: Colors.white),
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.only(left: 12),
-                              border: InputBorder.none,
-                              hintText: "Password",
-                              hintStyle: FlexiFont.regular16.copyWith(color: Colors.white)
-                            ),
-                            obscureText: ref.watch(_hidePasswordProvider),
-                          ),
+                    child: TextField(
+                      controller: _passwordController,
+                      style: FlexiFont.regular16.copyWith(color: Colors.white),
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.only(left: 12),
+                        border: InputBorder.none,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(screenHeight * .01),
+                          borderSide: BorderSide(color: FlexiColor.grey[400]!)
                         ),
-                        IconButton(
-                          onPressed: () => ref.watch(_hidePasswordProvider.notifier).state = !ref.watch(_hidePasswordProvider),
-                          icon: Icon(ref.watch(_hidePasswordProvider) ? Icons.visibility_off_outlined : Icons.visibility_outlined, color: Colors.white, size: screenHeight * .025)
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(screenHeight * .01),
+                          borderSide: BorderSide(color: FlexiColor.grey[400]!)
+                        ),
+                        hintText: "Password",
+                        hintStyle: FlexiFont.regular16.copyWith(color: Colors.white),
+                        suffixIcon: InkWell(
+                          onTap: () => ref.watch(_hidePasswordProvider.notifier).state = !ref.watch(_hidePasswordProvider),
+                          child: Icon(ref.watch(_hidePasswordProvider) ? Icons.visibility_off_outlined : Icons.visibility_outlined, color: Colors.white, size: screenHeight * .025)
                         )
-                      ],
+                      ),
                     ),
                   ),
                   SizedBox(height: screenHeight * .045),
