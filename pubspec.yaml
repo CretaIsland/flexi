@@ -35,6 +35,7 @@ dependencies:
   url_launcher: ^6.2.6
   photo_manager: ^3.0.0
   speech_to_text: ^6.6.0
+  timezone: ^0.9.3
   
 
 dev_dependencies:
@@ -58,6 +59,7 @@ flutter:
     - assets/image/login_illustration.png
     - assets/image/speak.png
     - assets/image/speaking.gif
+    - assets/image/wifi_loading.gif
 
   fonts:
     - family: Roboto

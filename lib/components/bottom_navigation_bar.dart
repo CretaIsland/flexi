@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../utils/colors.dart';
-import '../utils/fonts.dart';
+import '../utils/ui/colors.dart';
+import '../utils/ui/fonts.dart';
 import '../main.dart';
-
 
 
 // tab index provider
@@ -20,6 +19,7 @@ class FlexiBottomNaviagtionBar extends ConsumerStatefulWidget {
 }
 
 class _FlexiBottomNaviagtionBarState extends ConsumerState<FlexiBottomNaviagtionBar> {
+
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -19,9 +19,8 @@ class FlexiColor {
   );
 
 
-
-  static Color screenColor = const Color(0xffF2F2F6);
-
+  static Color backgroundColor = const Color(0xffF2F2F6);
+  
 
 }
 
