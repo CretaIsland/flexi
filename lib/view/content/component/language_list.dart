@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../main.dart';
-import '../../../utils/colors.dart';
-import '../../../utils/fonts.dart';
+import '../../../utils/ui/colors.dart';
+import '../../../utils/ui/fonts.dart';
 
 class LanguageList extends ConsumerWidget {
   LanguageList({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'view/content/content_info_screen.dart';
+import 'view/content/content_detail_screen.dart';
 import 'view/content/content_list_screen.dart';
 import 'view/content/edit_background_screen.dart';
 import 'view/content/edit_text_screen.dart';
@@ -44,8 +44,8 @@ GoRouter router = GoRouter(
         ),
         // 콘텐츠 관련 화면
         GoRoute(
-          path: "/content/info",
-          pageBuilder: (context, state) => const NoTransitionPage(child: ContentInfoScreen()),
+          path: "/content/detail",
+          pageBuilder: (context, state) => const NoTransitionPage(child: ContentDetailScreen()),
         ),
         // 설정 관련 화면
         GoRoute(

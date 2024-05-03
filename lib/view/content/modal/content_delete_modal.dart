@@ -1,38 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../main.dart';
-import '../../../utils/colors.dart';
-import '../../../utils/fonts.dart';
+import '../../../utils/ui/colors.dart';
+import '../../../utils/ui/fonts.dart';
 
-class ContentDeleteModal extends StatelessWidget {
+
+
+class ContentDeleteModal extends ConsumerWidget {
   const ContentDeleteModal({super.key});
 
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       width: screenWidth * .93,
-      height: screenHeight * .33,
+      height: screenHeight * .35,
       margin: const EdgeInsets.only(bottom: 16),
-      padding: EdgeInsets.only(top: screenHeight * .05, left: screenWidth * .06),
+      padding: EdgeInsets.only(left: screenWidth * .055, top: screenHeight * .05, right: screenWidth * .055),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(screenHeight * .025),
         color: Colors.white,
+        borderRadius: BorderRadius.circular(screenHeight * .025)
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("Are you sure?", style: FlexiFont.semiBold24),
-          SizedBox(height: screenHeight * .025),
-          Text("This will delete the content stored \non your device.", style: FlexiFont.regular16,),
-          SizedBox(height: screenHeight * .035),
+          const SizedBox(height: 14),
+          Text("This will delete the content stored \non your device.", style: FlexiFont.regular16),
+          SizedBox(height: screenHeight * .02),
           SizedBox(
             width: screenWidth * .82,
             height: screenHeight * .06,
             child: TextButton(
               onPressed: () {
                 context.pop();
-              }, 
+              },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(borderRadius: BorderRadius.circular(screenHeight * .01))
@@ -42,12 +46,13 @@ class ContentDeleteModal extends StatelessWidget {
               child: Text("Delete", style: FlexiFont.semiBold16.copyWith(color: Colors.white))
             ),
           ),
-          SizedBox(
-            width: screenWidth * .82,
-            height: screenHeight * .06,
+          SizedBox(height: screenHeight * .01),
+          Center(
             child: TextButton(
-              onPressed: () => context.pop(), 
-              child: Text("Cancel", style: FlexiFont.regular16)
+              onPressed: () {
+                context.pop();
+              },
+              child: Text("Cancel", style: FlexiFont.regular16),
             ),
           )
         ],

@@ -83,7 +83,7 @@ class _DeviceDetailScreenState extends ConsumerState<DeviceDetailScreen> {
                         borderRadius: BorderRadius.circular(screenHeight * .01)
                       ),
                       child: Center(
-                        child: ContentPreview(width: screenWidth * .82),
+                        child: ContentPreview(width: screenWidth * .82, height: screenHeight * .0375),
                       ),
                     ),
                     const SizedBox(height: 12),

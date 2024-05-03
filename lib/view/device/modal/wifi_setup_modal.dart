@@ -16,7 +16,7 @@ class WifiSetupModal extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       width: screenWidth * .93,
-      height: screenHeight * .4,
+      height: screenHeight * .35,
       margin: const EdgeInsets.only(bottom: 16),
       padding: EdgeInsets.only(left: screenWidth * .055, top: screenHeight * .05, right: screenWidth * .055),
       decoration: BoxDecoration(
@@ -29,7 +29,7 @@ class WifiSetupModal extends ConsumerWidget {
           Text("Wifi Setup", style: FlexiFont.semiBold24),
           const SizedBox(height: 14),
           Text("Press Connect once \nthe device has rebooted.", style: FlexiFont.regular16),
-          SizedBox(height: screenHeight * .04),
+          SizedBox(height: screenHeight * .02),
           SizedBox(
             width: screenWidth * .82,
             height: screenHeight * .06,

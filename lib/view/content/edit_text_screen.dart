@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../component/circle_icon_button.dart';
+import '../../components/circle_icon_button.dart';
 import '../../main.dart';
-import '../../utils/colors.dart';
-import '../../utils/fonts.dart';
+import '../../utils/ui/colors.dart';
+import '../../utils/ui/fonts.dart';
 import 'component/edit_content_preview.dart';
 import 'component/language_list.dart';
 import 'edit_background_screen.dart';
@@ -47,64 +47,71 @@ class _EditTextScreenState extends ConsumerState<EditTextScreen> {
             Container(
               height: screenHeight * .275,
               color: Colors.black.withOpacity(.6),
-              padding: EdgeInsets.only(left: screenWidth * .055, top: screenHeight * .04, right: screenWidth * .055),
               child: Column(
                 children: [
+                  SizedBox(height: screenHeight * .04),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        onPressed: () => context.go("/content/info"), 
+                        onPressed: () => context.go("/content/detail"), 
                         icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: screenHeight * .025)
                       ),
                       TextButton(
                         onPressed: () {
-                          context.go("/content/info");
+                          context.go("/content/detail");
                         }, 
                         child: Text("Apply", style: FlexiFont.regular16.copyWith(color: Colors.white))
                       )
                     ],
                   ),
                   SizedBox(height: screenHeight * .045),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      for(int i = 0; i < fontColors.length; i++)
-                        InkWell(
-                          child: Container(
-                            width: screenHeight * .03,
-                            height: screenHeight * .03,
-                            decoration: BoxDecoration(
-                              color: fontColors[i],
-                              border: Border.all(color: Colors.white),
-                              borderRadius: BorderRadius.circular(screenHeight * .015)
+                  Padding(
+                    padding: EdgeInsets.only(left: screenWidth * .055, right: screenWidth * .055),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            for(int i = 0; i < fontColors.length; i++)
+                              InkWell(
+                                child: Container(
+                                  width: screenHeight * .03,
+                                  height: screenHeight * .03,
+                                  decoration: BoxDecoration(
+                                    color: fontColors[i],
+                                    border: Border.all(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(screenHeight * .015)
+                                  ),
+                                ),
+                              )
+                          ],
+                        ),
+                        SizedBox(height: screenHeight * .025),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                fontSizeButton("Small", FlexiFont.regular9),
+                                fontSizeButton("Medium", FlexiFont.regular11),
+                                fontSizeButton("Large", FlexiFont.regular13)
+                              ],
                             ),
-                          ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                fontStyleButton(Icons.format_bold_rounded),
+                                fontStyleButton(Icons.format_italic_rounded)
+                              ],
+                            )
+                          ],
                         )
-                    ],
+                      ],
+                    ),
                   ),
-                  SizedBox(height: screenHeight * .025),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          fontSizeButton("Small", FlexiFont.regular9),
-                          fontSizeButton("Medium", FlexiFont.regular11),
-                          fontSizeButton("Large", FlexiFont.regular13)
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          fontStyleButton(Icons.format_bold_rounded),
-                          fontStyleButton(Icons.format_italic_rounded)
-                        ],
-                      )
-                    ],
-                  )
                 ],
               ),
             ),
@@ -167,7 +174,7 @@ class _EditTextScreenState extends ConsumerState<EditTextScreen> {
               width: screenWidth,
               height: screenHeight * .42,
               padding: EdgeInsets.only(left: screenWidth * .055, top: screenHeight * .04, right: screenWidth * .055),
-              color: FlexiColor.screenColor,
+              color: FlexiColor.backgroundColor,
               child: Stack(
                 children: [
                   Column(

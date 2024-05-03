@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../main.dart';
-import '../../../utils/colors.dart';
-import '../../../utils/fonts.dart';
+import '../../../utils/ui/colors.dart';
+import '../../../utils/ui/fonts.dart';
 import '../component/language_list.dart';
 
 
@@ -19,7 +19,7 @@ class TranslateTextModal extends ConsumerWidget {
       height: screenHeight * .9,
       padding: EdgeInsets.only(left: screenWidth * .055, top: 8, right: screenWidth * .055),
       decoration: BoxDecoration(
-        color: FlexiColor.screenColor,
+        color: FlexiColor.backgroundColor,
         borderRadius: BorderRadius.only(topLeft: Radius.circular(screenHeight * .025), topRight: Radius.circular(screenHeight * .025))
       ),
       child: Column(

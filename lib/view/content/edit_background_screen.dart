@@ -7,8 +7,8 @@ import 'package:go_router/go_router.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../../main.dart';
-import '../../utils/colors.dart';
-import '../../utils/fonts.dart';
+import '../../utils/ui/colors.dart';
+import '../../utils/ui/fonts.dart';
 import 'component/edit_content_preview.dart';
 
 
@@ -39,18 +39,18 @@ class _EditBackgroundScreenState extends ConsumerState<EditBackgroundScreen> {
             Container(
               height: screenHeight * .275,
               color: Colors.black.withOpacity(.6),
-              padding: EdgeInsets.only(left: screenWidth * .055, top: screenHeight * .04, right: screenWidth * .055),
+              padding: EdgeInsets.only(top: screenHeight * .04),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    onPressed: () => context.go("/content/info"), 
+                    onPressed: () => context.go("/content/detail"), 
                     icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: screenHeight * .03)
                   ),
                   TextButton(
                     onPressed: () {
-                      context.go("/content/info");
+                      context.go("/content/detail");
                     }, 
                     child: Text("Apply", style: FlexiFont.regular16.copyWith(color: Colors.white))
                   )
@@ -83,7 +83,7 @@ class _EditBackgroundScreenState extends ConsumerState<EditBackgroundScreen> {
             Container(
               width: screenWidth,
               height: screenHeight * .42,
-              color: FlexiColor.screenColor,
+              color: FlexiColor.backgroundColor,
               child: ref.watch(tabIndex) == 0 ? const AssetContent() : ref.watch(tabIndex) == 1 ? const ColorPalette() : const GalleryContent(),
             )
           ],
@@ -191,13 +191,14 @@ class _GalleryContentState extends ConsumerState<GalleryContent> {
   }
 
   Future<void> initLoad() async {
+    final _ps = await PhotoManager.requestPermissionExtend();
     ref.watch(loadStateProvider.notifier).state = true;
-    ref.watch(galleryContents.notifier).state = await PhotoManager.getAssetListPaged(
-      page: galleryPageIndex,
-      pageCount: 20
-    );
-    galleryPageIndex = 1;
-    ref.watch(loadStateProvider.notifier).state = false;
+      ref.watch(galleryContents.notifier).state = await PhotoManager.getAssetListPaged(
+        page: galleryPageIndex,
+        pageCount: 20
+      );
+      galleryPageIndex = 1;
+      ref.watch(loadStateProvider.notifier).state = false;
   }
 
   Future<void> nextLoad() async {

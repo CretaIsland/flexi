@@ -7,8 +7,9 @@ import '../../../utils/ui/fonts.dart';
 
 
 class ContentPreview extends ConsumerWidget {
-  const ContentPreview({super.key, required this.width});
+  const ContentPreview({super.key, required this.width, required this.height});
   final double width;
+  final double height;
 
   
   @override
@@ -19,8 +20,8 @@ class ContentPreview extends ConsumerWidget {
     double contentHeight = 28;
     
     double aspectRatio =  contentWidth / contentHeight;
-    double responsiveWidth = contentWidth <= 360 ? width : (width / 360) * contentWidth;
-    double responsiveHeight = responsiveWidth / aspectRatio;
+    double responsiveHeight = height;
+    double responsiveWidth = responsiveHeight * aspectRatio;
 
     return SizedBox(
       width: width,
