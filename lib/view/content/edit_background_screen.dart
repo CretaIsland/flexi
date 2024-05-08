@@ -191,14 +191,16 @@ class _GalleryContentState extends ConsumerState<GalleryContent> {
   }
 
   Future<void> initLoad() async {
-    final _ps = await PhotoManager.requestPermissionExtend();
-    ref.watch(loadStateProvider.notifier).state = true;
+    final PermissionState ps = await PhotoManager.requestPermissionExtend();
+    if(ps.isAuth) {
+      ref.watch(loadStateProvider.notifier).state = true;
       ref.watch(galleryContents.notifier).state = await PhotoManager.getAssetListPaged(
         page: galleryPageIndex,
         pageCount: 20
       );
       galleryPageIndex = 1;
       ref.watch(loadStateProvider.notifier).state = false;
+    }
   }
 
   Future<void> nextLoad() async {
