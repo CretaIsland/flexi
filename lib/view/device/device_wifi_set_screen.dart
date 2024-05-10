@@ -67,7 +67,7 @@ class _DeviceWifiSetScreenState extends ConsumerState<DeviceWifiSetScreen> {
                       showModalBottomSheet(
                         context: context, 
                         backgroundColor: Colors.transparent,
-                        builder: (context) => const WifiSetupModal(),
+                        builder: (context) => WifiSetupModal(ssid: _ssidController.text, type: _typeController.text, password: _passwordController.text),
                       )
                     },
                     child: Text("OK", style: FlexiFont.regular16.copyWith(color: FlexiColor.primary)),
@@ -89,15 +89,15 @@ class _DeviceWifiSetScreenState extends ConsumerState<DeviceWifiSetScreen> {
                     const SizedBox(height: 24),
                     Text("SSID", style: FlexiFont.regular16),
                     const SizedBox(height: 8),
-                    FlexiTextField(width: screenWidth * .89, height: screenHeight * .06),
+                    FlexiTextField(width: screenWidth * .89, height: screenHeight * .06, textEditingController: _ssidController),
                     const SizedBox(height: 20),
                     Text("Type", style: FlexiFont.regular16),
                     const SizedBox(height: 8),
-                    FlexiTextField(width: screenWidth * .89, height: screenHeight * .06),
+                    FlexiTextField(width: screenWidth * .89, height: screenHeight * .06, textEditingController: _typeController),
                     const SizedBox(height: 20),
                     Text("Passphrase", style: FlexiFont.regular16),
                     const SizedBox(height: 8),
-                    FlexiTextField(width: screenWidth * .89, height: screenHeight * .06)
+                    FlexiTextField(width: screenWidth * .89, height: screenHeight * .06, textEditingController: _passwordController)
                   ],
                 ),
               ),

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../common/providers/network_providers.dart';
 import '../../../components/loading_overlay.dart';
 import '../../../components/search_bar.dart';
+import '../../../feature/device/controller/network_controller.dart';
+import '../../../feature/device/model/network_info.dart';
 import '../../../main.dart';
 import '../../../utils/ui/colors.dart';
 import '../../../utils/ui/fonts.dart';
@@ -13,13 +14,10 @@ import '../../../utils/ui/fonts.dart';
 
 class HotspotListModal extends ConsumerWidget {
   HotspotListModal({super.key});
-  final selectedIndex = StateProvider<int>((ref) => -1);
+  final selectedNetwork = StateProvider<NetworkInfo?>((ref) => null);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-    List<WifiNetworkInfo> accessWifiList = [];
-
     return Container(
       width: screenWidth,
       height: screenHeight * .9,
@@ -43,44 +41,7 @@ class HotspotListModal extends ConsumerWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(screenHeight * .01)
               ),
-              child: ref.watch(wifisProvider).when(
-                data: (data) {
-                  accessWifiList = data;
-                  return ListView.builder(
-                    itemCount: data.length,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () => ref.watch(selectedIndex.notifier).state = index,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              Icon(
-                                ref.watch(selectedIndex) == index ? Icons.check_circle : Icons.check_circle_outline, 
-                                color: ref.watch(selectedIndex) == index ? FlexiColor.primary : FlexiColor.grey[600], 
-                                size: 16
-                              ),
-                              const SizedBox(width: 16),
-                              const Icon(Icons.wifi, color: Colors.black, size: 16),
-                              const SizedBox(width: 10),
-                              SizedBox(
-                                width: screenWidth * .6,
-                                child: Text(accessWifiList[index].ssid ?? "", 
-                                  style: FlexiFont.regular16, 
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                )
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                }, 
-                error: (error, stackTrace) => const Center(child: Text("error during search wifi")), 
-                loading: () => Center(child: CircularProgressIndicator(color: FlexiColor.primary))
-              )
+              child: networkListView()
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -88,13 +49,20 @@ class HotspotListModal extends ConsumerWidget {
               height: screenHeight * .06,
               child: TextButton(
                 onPressed: () async {
-                  OverlayEntry loadingOverlay = OverlayEntry(builder: (_) => const LoadingOverlay());
-                  Navigator.of(context).overlay!.insert(loadingOverlay);
-                  // connect wifi
-                  await ref.watch(networkNotifierProvider.notifier).change(ssid: accessWifiList[ref.watch(selectedIndex)].ssid!, password: "sqisoft74307");
-                  loadingOverlay.remove();
-                  context.pop();
-                  context.go("/device/setTimezone");
+                  if(ref.watch(selectedNetwork) != null) {
+                    OverlayEntry loadingOverlay = OverlayEntry(builder: (_) => const LoadingOverlay());
+                    Navigator.of(context).overlay!.insert(loadingOverlay);
+                    // connect network
+                    final value = await ref.read(networkControllerProvider.notifier).connectNetwork(
+                      ssid: ref.watch(selectedNetwork)!.ssid!, 
+                      password: "sqisoft74307"
+                    );
+                    if(value) {
+                      context.pop();
+                      context.go("/device/setTimezone");
+                    }
+                    loadingOverlay.remove();
+                  }
                 },
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -108,6 +76,65 @@ class HotspotListModal extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Consumer networkListView() {
+    return Consumer(
+      builder: (context, ref, child) {
+        return ref.watch(networkStreamProvider).when(
+          data: (data) {
+            return StreamBuilder(
+              stream: data, 
+              builder: (context, snapshot) {
+                if(snapshot.hasData) {
+                  if(snapshot.data != null) {
+                    final networks = snapshot.data!;
+                    return ListView.builder(
+                      itemCount: networks.length,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () => ref.watch(selectedNetwork.notifier).state = networks[index],
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  ref.watch(selectedNetwork) == networks[index] ? Icons.check_circle : Icons.check_circle_outline, 
+                                  color: ref.watch(selectedNetwork) == networks[index] ? FlexiColor.primary : FlexiColor.grey[600], 
+                                  size: 16
+                                ),
+                                const SizedBox(width: 16),
+                                const Icon(Icons.wifi, color: Colors.black, size: 16),
+                                const SizedBox(width: 10),
+                                SizedBox(
+                                  width: screenWidth * .6,
+                                  child: Text(networks[index].ssid ?? "", 
+                                    style: FlexiFont.regular16, 
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                  )
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                  return const SizedBox.shrink();
+                } else if(snapshot.hasError) {
+                  return const Center(child: Text("error during search wifi"));
+                } else {  
+                  return Center(child: CircularProgressIndicator(color: FlexiColor.primary));
+                }
+              },
+            );
+          }, 
+          error: (error, stackTrace) => const Center(child: Text("error during search wifi")), 
+          loading: () => Center(child: CircularProgressIndicator(color: FlexiColor.primary))
+        );
+      },
     );
   }
 

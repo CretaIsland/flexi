@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../components/bottom_navigation_bar.dart';
 import '../../components/circle_icon_button.dart';
 import '../../components/search_bar.dart';
+import '../../feature/device/controller/udp_multicast_controller.dart';
 import '../../main.dart';
 import '../../utils/ui/colors.dart';
 import '../../utils/ui/fonts.dart';
@@ -66,10 +67,13 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
                 children: [
                   Row(
                     children: [
-                      Text("${15} Devices", style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
+                      Text("${ref.watch(uDPMulticastDatasProvider).length} Devices", style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
                       const SizedBox(width: 4),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          print("click refresh");
+                          ref.invalidate(uDPMulticastControllerProvider);
+                        },
                         child: Icon(Icons.refresh, color: FlexiColor.grey[500], size: screenHeight * .02)
                       )
                     ],
@@ -99,7 +103,7 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
               Expanded(
                 child: ListView.builder(
                   padding: EdgeInsets.zero,
-                  itemCount: 10,
+                  itemCount: ref.watch(uDPMulticastDatasProvider).length,
                   itemBuilder:(context, index) {
                     return DeviceComponent(index: index);
                   },
@@ -152,7 +156,7 @@ class DeviceComponent extends ConsumerWidget {
                   children: [
                     Icon(Icons.link_rounded, color: FlexiColor.primary, size: 16),
                     const SizedBox(width: 12),
-                    Text("Device name", style: FlexiFont.regular16,)
+                    Text(ref.watch(uDPMulticastDatasProvider)[index], style: FlexiFont.regular16,)
                   ],
                 ),
                 Padding(

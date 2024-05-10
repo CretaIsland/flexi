@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wifi_iot/wifi_iot.dart';
 
+import '../../../components/loading_overlay.dart';
+import '../../../feature/device/controller/network_controller.dart';
 import '../../../main.dart';
 import '../../../utils/ui/colors.dart';
 import '../../../utils/ui/fonts.dart';
@@ -9,8 +12,10 @@ import '../../../utils/ui/fonts.dart';
 
 
 class WifiSetupModal extends ConsumerWidget {
-  const WifiSetupModal({super.key});
-
+  const WifiSetupModal({super.key, required this.ssid, required this.type, required this.password});
+  final String ssid;
+  final String type;
+  final String password;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,9 +39,23 @@ class WifiSetupModal extends ConsumerWidget {
             width: screenWidth * .82,
             height: screenHeight * .06,
             child: TextButton(
-              onPressed: () {
-                context.pop();
-                context.go("/device/list");
+              onPressed: () async {
+                OverlayEntry loadingOverlay = OverlayEntry(builder: (_) => const LoadingOverlay());
+                Navigator.of(context).overlay!.insert(loadingOverlay);
+                // connect network
+                final value = await ref.read(networkControllerProvider.notifier).connectNetwork(
+                  ssid: ssid, 
+                  password: password,
+                  security: type.contains("WEP") ? NetworkSecurity.WEP : NetworkSecurity.WPA
+                );
+                if(value) {
+                  context.pop();
+                  context.go("/device/list");
+                  loadingOverlay.remove();
+                } else {
+                  context.pop();
+                  loadingOverlay.remove();
+                }
               },
               style: ButtonStyle(
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
