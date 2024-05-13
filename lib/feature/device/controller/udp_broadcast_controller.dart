@@ -12,7 +12,6 @@ class UDPBroadcastController extends _$UDPBroadcastController {
 
   late RawDatagramSocket _socket;
   late StreamController<String> _streamController;
-  late List<String> _dataList;
 
 
   @override
@@ -20,13 +19,11 @@ class UDPBroadcastController extends _$UDPBroadcastController {
     ref.onDispose(() {
       print(">>>>> uDPBroadcastController dispose >>>>>");
       _streamController.close();
-      _dataList.clear();
     });
-    print("<<<<< uDPBroadcastController init <<<<<");
+    print("<<<<< uDPBroadcastController build <<<<<");
     _streamController = StreamController<String>();
-    _dataList = [];
     _initialize();
-    return _dataList;
+    return List.empty();
   }
 
   Future<void> _initialize() async {
@@ -36,7 +33,7 @@ class UDPBroadcastController extends _$UDPBroadcastController {
       Datagram? d = _socket.receive();
       if(d == null) return;
       String message = String.fromCharCodes(d.data).trim();
-      _dataList.add(message);
+      state = [...state, message];
       _streamController.add(message);
     });
   }

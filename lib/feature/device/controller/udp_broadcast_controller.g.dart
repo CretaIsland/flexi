@@ -7,7 +7,7 @@ part of 'udp_broadcast_controller.dart';
 // **************************************************************************
 
 String _$uDPBroadcastControllerHash() =>
-    r'f4fd4f9491586e0e35dba100538278bd799c9c5d';
+    r'f1fcae09ec57025589cc72f4919555ebfc0caa67';
 
 /// See also [UDPBroadcastController].
 @ProviderFor(UDPBroadcastController)
