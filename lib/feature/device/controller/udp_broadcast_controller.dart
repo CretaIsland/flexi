@@ -18,6 +18,7 @@ class UDPBroadcastController extends _$UDPBroadcastController {
   List<String> build() {
     ref.onDispose(() {
       print(">>>>> uDPBroadcastController dispose >>>>>");
+      _socket.close();
       _streamController.close();
     });
     print("<<<<< uDPBroadcastController build <<<<<");

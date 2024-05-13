@@ -40,65 +40,60 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
         },
         child: Container(
           color: FlexiColor.backgroundColor,
+          padding: EdgeInsets.only(left: screenWidth * .055, right: screenWidth * .055),
           child: Column(
             children: [
               SizedBox(height: screenHeight * .05),
-              Padding(
-                padding: EdgeInsets.only(left: screenWidth * .055, right: screenWidth * .055),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Devices", style: FlexiFont.semiBold30),
-                    CircleIconButton(
-                      size: screenHeight * .04, 
-                      icon: Icon(Icons.add, color: Colors.white, size: screenHeight * .03),
-                      fillColor: FlexiColor.primary,
-                      onPressed: () {
-                
-                      },
-                    )
-                  ],
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Devices", style: FlexiFont.semiBold30),
+                  CircleIconButton(
+                    size: screenHeight * .04, 
+                    icon: Icon(Icons.add, color: Colors.white, size: screenHeight * .03),
+                    fillColor: FlexiColor.primary,
+                    onPressed: () {
+              
+                    },
+                  )
+                ],
               ),
               const SizedBox(height: 12),
               const FlexiSearchBar(hintText: "Search your device"),
               const SizedBox(height: 20),
-              Padding(
-                padding: EdgeInsets.only(left: screenWidth * .055, right: screenWidth * .055),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Text("${_uDPBroadcastController.length} Devices", style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
-                        const SizedBox(width: 4),
-                        InkWell(
-                          onTap: () => ref.invalidate(uDPBroadcastControllerProvider),
-                          child: Icon(Icons.refresh, color: FlexiColor.grey[500], size: screenHeight * .02)
-                        )
-                      ],
-                    ),
-                    ref.watch(_selectMode) ? Row(
-                      children: [
-                        Text("Select all", style: FlexiFont.regular12),
-                        const SizedBox(width: 4),
-                        CircleIconButton(
-                          size: screenHeight * .025, 
-                          icon: Icon(
-                            Icons.check, 
-                            color: ref.watch(_isAllSelected) ? Colors.white : FlexiColor.grey[600], 
-                            size: screenHeight * .02
-                          ),
-                          fillColor: ref.watch(_isAllSelected) ? FlexiColor.secondary : null,
-                          border: ref.watch(_isAllSelected) ? null : Border.all(color: FlexiColor.grey[600]!),
-                          onPressed: () {
-                            ref.watch(_isAllSelected.notifier).state = !ref.watch(_isAllSelected);
-                          },
-                        )
-                      ],
-                    ) : const SizedBox.shrink()
-                  ],
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Text("${_uDPBroadcastController.length} Devices", style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
+                      const SizedBox(width: 4),
+                      InkWell(
+                        onTap: () => ref.invalidate(uDPBroadcastControllerProvider),
+                        child: Icon(Icons.refresh, color: FlexiColor.grey[500], size: screenHeight * .02)
+                      )
+                    ],
+                  ),
+                  ref.watch(_selectMode) ? Row(
+                    children: [
+                      Text("Select all", style: FlexiFont.regular12),
+                      const SizedBox(width: 4),
+                      CircleIconButton(
+                        size: screenHeight * .025, 
+                        icon: Icon(
+                          Icons.check, 
+                          color: ref.watch(_isAllSelected) ? Colors.white : FlexiColor.grey[600], 
+                          size: screenHeight * .02
+                        ),
+                        fillColor: ref.watch(_isAllSelected) ? FlexiColor.secondary : null,
+                        border: ref.watch(_isAllSelected) ? null : Border.all(color: FlexiColor.grey[600]!),
+                        onPressed: () {
+                          ref.watch(_isAllSelected.notifier).state = !ref.watch(_isAllSelected);
+                        },
+                      )
+                    ],
+                  ) : const SizedBox.shrink()
+                ],
               ),
               const SizedBox(height: 10),
               Expanded(
