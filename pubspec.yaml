@@ -33,6 +33,7 @@ dependencies:
   photo_manager: ^3.0.0
   speech_to_text: ^6.6.0
   timezone: ^0.9.3
+  flutter_blue_plus: ^1.32.6
   
 
 dev_dependencies:
