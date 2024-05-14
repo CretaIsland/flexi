@@ -6,6 +6,7 @@ import '../../../components/loading_overlay.dart';
 import '../../../components/search_bar.dart';
 import '../../../feature/device/controller/network_controller.dart';
 import '../../../feature/device/model/network_info.dart';
+import '../../../feature/device/provider/network_provider.dart';
 import '../../../main.dart';
 import '../../../utils/ui/colors.dart';
 import '../../../utils/ui/fonts.dart';

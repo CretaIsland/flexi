@@ -17,14 +17,13 @@ class UDPBroadcastController extends _$UDPBroadcastController {
   @override
   List<String> build() {
     ref.onDispose(() {
-      print(">>>>> uDPBroadcastController dispose >>>>>");
-      _socket.close();
+      print("<<<<<<< UDPBroadcastController dispose <<<<<<<");
       _streamController.close();
     });
-    print("<<<<< uDPBroadcastController build <<<<<");
+    print(">>>>>>> UDPBroadcastController build >>>>>>");
     _streamController = StreamController<String>();
     _initialize();
-    return List.empty();
+    return ["test 01"];
   }
 
   Future<void> _initialize() async {

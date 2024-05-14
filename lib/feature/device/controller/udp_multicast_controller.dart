@@ -13,34 +13,32 @@ part 'udp_multicast_controller.g.dart';
 class UDPMulticastController extends _$UDPMulticastController {
 
   late RawDatagramSocket _socket;
-  late StreamController<List<String>> _controller;
+  late StreamController<String> _streamController;
 
   @override
-  Stream<List<String>> build() {
+  List<String> build() {
     ref.onDispose(() {
+      print("<<<<<<< UDPMulticastController dispose <<<<<<<");
       _socket.leaveMulticast(Config.udpMulticastAddress);
       _socket.close();
-
-      _controller.close();
+      _streamController.close();
     });
-    _controller = StreamController<List<String>>();
-
-    _init();
-
-    return _controller.stream;
+    print(">>>>>>> UDPMulticastController build >>>>>>");
+    _streamController = StreamController<String>();
+    _initialize();
+    return List.empty();
   }
 
-  Future<void> _init() async {
-    _socket = await RawDatagramSocket.bind(
-        InternetAddress.anyIPv4, Config.udpMulticastPort);
-
+  Future<void> _initialize() async {
+    _socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, Config.udpMulticastPort);
     _socket.joinMulticast(Config.udpMulticastAddress);
 
     _socket.listen((event) {
       Datagram? d = _socket.receive();
-      if (d == null) return;
+      if(d == null) return;
       String message = String.fromCharCodes(d.data).trim();
-      _controller.add([message]);
+      state = [...state, message];
+      _streamController.add(message);
     });
   }
 
