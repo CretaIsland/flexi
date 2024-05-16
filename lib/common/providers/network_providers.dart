@@ -323,9 +323,12 @@ class SocketIOClient extends _$SocketIOClient {
 
     socketIO = IO.io(
       'http://$ip:$port',
-      IO.OptionBuilder().setTransports(['websocket']).build(),
+      IO.OptionBuilder()
+          .setTransports(['websocket'])
+          .disableAutoConnect()
+          .build(),
     );
-
+    socketIO.connect();
     controller = StreamController<String>();
     socketIO.onConnect((data) {
       developer.log('onConnect $data');

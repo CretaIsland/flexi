@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:socket_io/socket_io.dart' as socketIOServer;
 
+import '../../../common/constants/config.dart';
+
 part 'socket_controller.g.dart';
 
 
@@ -37,6 +39,7 @@ class SocketIOServerController extends _$SocketIOServerController {
         print("client disconnect");
       });
     });
+    _server.listen(Config.socketIOPort);
   }
 
   void sendData(String type, String data) {
