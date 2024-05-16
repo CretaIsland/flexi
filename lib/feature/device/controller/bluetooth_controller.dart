@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -21,15 +22,25 @@ class BluetoothController extends _$BluetoothController {
     });
     print(">>>>>>> BluetoothController build >>>>>>");
     _streamController = StreamController();
-    FlutterBluePlus.adapterState.first.then((value) {
-      if(value == BluetoothAdapterState.on) state = true;
-    });
+    if(Platform.isIOS) {
+      FlutterBluePlus.adapterState.listen((event) {
+        if(event == BluetoothAdapterState.on) {
+          state = true;
+        } else {
+          state = false;
+        }
+      });
+    } else {
+       FlutterBluePlus.adapterState.first.then((value) {
+        if(value == BluetoothAdapterState.on) state = true;
+      });
+    }
     return false;
   }
   
   Future<void> turnOn() async {
     if(!state) {
-      await FlutterBluePlus.turnOn();
+      if(Platform.isAndroid) await FlutterBluePlus.turnOn();
       state = true;
     }
   }

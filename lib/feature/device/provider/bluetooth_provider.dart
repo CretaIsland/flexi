@@ -20,9 +20,9 @@ Future<Stream<List<BluetoothInfo>>> bluetoothStream(BluetoothStreamRef ref) asyn
   try {
     await FlutterBluePlus.startScan();
     return FlutterBluePlus.onScanResults.map((event) {
-      return event.where((element) => element.device.advName.isNotEmpty).map((e) {
+      return event.where((element) => element.device.platformName.isNotEmpty).map((e) {
         return BluetoothInfo(
-          name: e.device.advName,
+          name: e.device.platformName,
           remoteId: e.device.remoteId.str
         );
       }).toList();

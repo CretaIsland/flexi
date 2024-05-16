@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,6 +48,7 @@ class BluetoothListModal extends ConsumerWidget {
                 AdvancedSwitch(
                   width: screenWidth * .11,
                   height: screenHeight * .025,
+                  enabled: Platform.isAndroid,
                   activeColor: FlexiColor.primary,
                   initialValue: bluetoothState,
                   onChanged: (value) {
@@ -75,81 +78,148 @@ class BluetoothListModal extends ConsumerWidget {
               child: Text("Device name", style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))),
           ),
           SizedBox(height: screenHeight * .025),
-          Text("Saved Devices", style: FlexiFont.regular14),
-          SizedBox(height: screenHeight * .01),
-          Container(
-            width: screenWidth * .89,
-            height: screenHeight * .25,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(screenHeight * .01)
-            ),
-            child: bluetoothState ? ref.watch(bondedBluetoothsProvider).when(
-              data: (data) {
-                print(data);
-                return ListView.separated(
-                  itemCount: data.length,
-                  itemBuilder:(context, index) {
-                    return InkWell(
-                      onTap: () {},
-                      child: Padding(
-                        padding: EdgeInsets.only(top: screenHeight * .015, left: screenWidth * .045, bottom: screenHeight * .015),
-                        child: Text(data[index].name ?? "", style: FlexiFont.regular16),
-                      ),
-                    );
-                  },
-                  separatorBuilder: (context, index) => Divider(color: FlexiColor.grey[400]), 
-                );
-              }, 
-              error: (error, stackTrace) => Center(child: Text("error during get stored device(s).", style: FlexiFont.regular14)), 
-              loading: () => Center(child: CircularProgressIndicator(color: FlexiColor.primary))
-            ) : const SizedBox.shrink()
-          ),
-          SizedBox(height: screenHeight * .02),
-          Text("Available Devices", style: FlexiFont.regular14),
-          SizedBox(height: screenHeight * .01),
-          Container(
-            width: screenWidth * .89,
-            height: screenHeight * .25,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(screenHeight * .01)
-            ),
-            child: bluetoothState ? ref.watch(bluetoothStreamProvider).when(
-              data: (stream) {
-                return StreamBuilder(
-                  stream: stream, 
-                  builder: (context, snapshot) {
-                    if(snapshot.hasData) {  
-                      final data = snapshot.data ?? [];
-                      return ListView.separated(
-                        itemCount: data.length,
-                        itemBuilder:(context, index) {
-                          return InkWell(
-                            onTap: () {},
-                            child: Padding(
-                              padding: EdgeInsets.only(top: screenHeight * .015, left: screenWidth * .045, bottom: screenHeight * .015),
-                              child: Text(data[index].name ?? "", style: FlexiFont.regular16),
-                            ),
-                          );
-                        },
-                        separatorBuilder: (context, index) => Divider(color: FlexiColor.grey[400])
-                      );
-                    } else if(snapshot.hasError) {
-                      return Center(child: Text("error during get bluetooth device(s).", style: FlexiFont.regular14));
-                    } else {
-                      return Center(child: CircularProgressIndicator(color: FlexiColor.primary));
-                    }
-                  },
-                );
-              }, 
-              error: (error, stackTrace) => Center(child: Text("error during get bluetooth device(s).", style: FlexiFont.regular14)), 
-              loading: () => Center(child: CircularProgressIndicator(color: FlexiColor.primary))
-            ) : const SizedBox.shrink()
-          )
+          deviceListView(bluetoothState)
         ],
       ),
     );
+  }
+
+  Widget deviceListView(bool bluetoothState) {
+    if(Platform.isAndroid) {
+      return Consumer(
+        builder: (context, ref, child) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Saved Devices", style: FlexiFont.regular14),
+              SizedBox(height: screenHeight * .01),
+              Container(
+                width: screenWidth * .89,
+                height: screenHeight * .25,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(screenHeight * .01)
+                ),
+                child: bluetoothState ? ref.watch(bondedBluetoothsProvider).when(
+                  data: (data) {
+                    print(data);
+                    return ListView.separated(
+                      itemCount: data.length,
+                      itemBuilder:(context, index) {
+                        return InkWell(
+                          onTap: () {},
+                          child: Padding(
+                            padding: EdgeInsets.only(top: screenHeight * .015, left: screenWidth * .045, bottom: screenHeight * .015),
+                            child: Text(data[index].name ?? "", style: FlexiFont.regular16),
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) => Divider(color: FlexiColor.grey[400]), 
+                    );
+                  }, 
+                  error: (error, stackTrace) => Center(child: Text("error during get stored device(s).", style: FlexiFont.regular14)), 
+                  loading: () => Center(child: CircularProgressIndicator(color: FlexiColor.primary))
+                ) : const SizedBox.shrink()
+              ),
+              SizedBox(height: screenHeight * .02),
+              Text("Available Devices", style: FlexiFont.regular14),
+              SizedBox(height: screenHeight * .01),
+              Container(
+                width: screenWidth * .89,
+                height: screenHeight * .25,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(screenHeight * .01)
+                ),
+                child: bluetoothState ? ref.watch(bluetoothStreamProvider).when(
+                  data: (stream) {
+                    return StreamBuilder(
+                      stream: stream, 
+                      builder: (context, snapshot) {
+                        if(snapshot.hasData) {  
+                          final data = snapshot.data ?? [];
+                          return ListView.separated(
+                            itemCount: data.length,
+                            itemBuilder:(context, index) {
+                              return InkWell(
+                                onTap: () {},
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: screenHeight * .015, left: screenWidth * .045, bottom: screenHeight * .015),
+                                  child: Text(data[index].name ?? "", style: FlexiFont.regular16),
+                                ),
+                              );
+                            },
+                            separatorBuilder: (context, index) => Divider(color: FlexiColor.grey[400])
+                          );
+                        } else if(snapshot.hasError) {
+                          return Center(child: Text("error during get bluetooth device(s).", style: FlexiFont.regular14));
+                        } else {
+                          return Center(child: CircularProgressIndicator(color: FlexiColor.primary));
+                        }
+                      },
+                    );
+                  }, 
+                  error: (error, stackTrace) => Center(child: Text("error during get bluetooth device(s).", style: FlexiFont.regular14)), 
+                  loading: () => Center(child: CircularProgressIndicator(color: FlexiColor.primary))
+                ) : const SizedBox.shrink()
+              )
+            ],
+          );
+        },
+      );
+    } else {
+      return Consumer(
+        builder:(context, ref, child) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Available Devices", style: FlexiFont.regular14),
+              SizedBox(height: screenHeight * .01),
+              Container(
+                width: screenWidth * .89,
+                height: screenHeight * .55,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(screenHeight * .01)
+                ),
+                child: bluetoothState ? ref.watch(bluetoothStreamProvider).when(
+                  data: (stream) {
+                    return StreamBuilder(
+                      stream: stream, 
+                      builder: (context, snapshot) {
+                        if(snapshot.hasData) {  
+                          final data = snapshot.data ?? [];
+                          return ListView.separated(
+                            itemCount: data.length,
+                            itemBuilder:(context, index) {
+                              return InkWell(
+                                onTap: () {},
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: screenHeight * .015, left: screenWidth * .045, bottom: screenHeight * .015),
+                                  child: Text(data[index].name ?? "", style: FlexiFont.regular16),
+                                ),
+                              );
+                            },
+                            separatorBuilder: (context, index) => Divider(color: FlexiColor.grey[400])
+                          );
+                        } else if(snapshot.hasError) {
+                          return Center(child: Text("error during get bluetooth device(s).", style: FlexiFont.regular14));
+                        } else {
+                          return Center(child: CircularProgressIndicator(color: FlexiColor.primary));
+                        }
+                      },
+                    );
+                  }, 
+                  error: (error, stackTrace) => Center(child: Text("error during get bluetooth device(s).", style: FlexiFont.regular14)), 
+                  loading: () => Center(child: CircularProgressIndicator(color: FlexiColor.primary))
+                ) : const SizedBox.shrink()
+              )
+            ],
+          );
+        },
+      );
+    }
+   
   }
 
 }
