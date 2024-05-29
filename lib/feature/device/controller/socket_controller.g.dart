@@ -7,7 +7,7 @@ part of 'socket_controller.dart';
 // **************************************************************************
 
 String _$socketIOServerControllerHash() =>
-    r'7fc0d06e32c2a935e2c87cb16c0470727c729f53';
+    r'63162166c34d288f5ea6d88439e53091912f7e67';
 
 /// See also [SocketIOServerController].
 @ProviderFor(SocketIOServerController)

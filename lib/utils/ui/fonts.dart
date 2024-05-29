@@ -1,136 +1,76 @@
 import 'package:flutter/material.dart';
 
-
 import '../../main.dart';
 
 
 
 class FlexiFont {
 
-  static const fontFamily = 'Roboto';
+  static const String fontFamily = 'Roboto';
 
-  static const FontWeight thin = FontWeight.w100;
-  static const FontWeight light = FontWeight.w300;
-  static const FontWeight regular = FontWeight.w400;
-  static const FontWeight medium = FontWeight.w500;
-  static const FontWeight semiBold = FontWeight.w600;
-  static const FontWeight bold = FontWeight.w700;
-  static const FontWeight black = FontWeight.w900;
 
+  // thin
+  static TextStyle thin = const TextStyle(
+    fontFamily: fontFamily,
+    fontWeight: FontWeight.w100,
+    color: Colors.black
+  );
+
+  // light
+  static TextStyle light = const TextStyle(
+    fontFamily: fontFamily,
+    fontWeight: FontWeight.w300,
+    color: Colors.black
+  );
 
   // regular
-  static TextStyle regular9 = TextStyle(
+  static TextStyle regular = const TextStyle(
     fontFamily: fontFamily,
-    fontWeight: regular,
-    fontSize: textScale.scale(9),
+    fontWeight: FontWeight.w400,
     color: Colors.black
   );
-
-  static TextStyle regular11 = TextStyle(
-    fontFamily: fontFamily,
-    fontWeight: regular,
-    fontSize: textScale.scale(11),
-    color: Colors.black
-  );
-
-  static TextStyle regular12 = TextStyle(
-    fontFamily: fontFamily,
-    fontWeight: regular,
-    fontSize: textScale.scale(12),
-    color: Colors.black
-  );
-  
-  static TextStyle regular13 = TextStyle(
-    fontFamily: fontFamily,
-    fontWeight: regular,
-    fontSize: textScale.scale(13),
-    color: Colors.black
-  );
-
-  static TextStyle regular14 = TextStyle(
-    fontFamily: fontFamily,
-    fontWeight: regular,
-    fontSize: textScale.scale(14),
-    color: Colors.black
-  );
-  
-  static TextStyle regular16 = TextStyle(
-    fontFamily: fontFamily,
-    fontWeight: regular,
-    fontSize: textScale.scale(16),
-    color: Colors.black
-  );
-
-  static TextStyle regular20 = TextStyle(
-    fontFamily: fontFamily,
-    fontWeight: regular,
-    fontSize: textScale.scale(20),
-    color: Colors.black
-  );
-
-  static TextStyle regular24 = TextStyle(
-    fontFamily: fontFamily,
-    fontWeight: regular,
-    fontSize: textScale.scale(24),
-    color: Colors.black
-  );
-
+  static TextStyle regular9 = regular.copyWith(fontSize: textScaler.scale(9));
+  static TextStyle regular11 = regular.copyWith(fontSize: textScaler.scale(11));
+  static TextStyle regular12 = regular.copyWith(fontSize: textScaler.scale(12));
+  static TextStyle regular13 = regular.copyWith(fontSize: textScaler.scale(13));
+  static TextStyle regular14= regular.copyWith(fontSize: textScaler.scale(14));
+  static TextStyle regular16 = regular.copyWith(fontSize: textScaler.scale(16));
+  static TextStyle regular20= regular.copyWith(fontSize: textScaler.scale(20));
+  static TextStyle regular24 = regular.copyWith(fontSize: textScaler.scale(24));
 
   // medium
-  static TextStyle medium12 = TextStyle(
+  static TextStyle medium = const TextStyle(
     fontFamily: fontFamily,
-    fontWeight: medium,
-    fontSize: textScale.scale(12),
+    fontWeight: FontWeight.w500,
     color: Colors.black
   );
-
+  static TextStyle medium12 = medium.copyWith(fontSize: textScaler.scale(12));
 
   // semiBold
-  static TextStyle semiBold11 = TextStyle(
+  static TextStyle semiBold = const TextStyle(
     fontFamily: fontFamily,
-    fontWeight: semiBold,
-    fontSize: textScale.scale(11),
+    fontWeight: FontWeight.w600,
+    color: Colors.black
+  );
+  static TextStyle semiBold11 = semiBold.copyWith(fontSize: textScaler.scale(11));
+  static TextStyle semiBold14 = semiBold.copyWith(fontSize: textScaler.scale(14));
+  static TextStyle semiBold16 = semiBold.copyWith(fontSize: textScaler.scale(16));
+  static TextStyle semiBold20 = semiBold.copyWith(fontSize: textScaler.scale(20));
+  static TextStyle semiBold24 = semiBold.copyWith(fontSize: textScaler.scale(24));
+  static TextStyle semiBold30 = semiBold.copyWith(fontSize: textScaler.scale(30));
+
+  // bold
+  static TextStyle bold = const TextStyle(
+    fontFamily: fontFamily,
+    fontWeight: FontWeight.w700,
     color: Colors.black
   );
 
-  static TextStyle semiBold14 = TextStyle(
+  // black
+  static TextStyle black = const TextStyle(
     fontFamily: fontFamily,
-    fontWeight: semiBold,
-    fontSize: textScale.scale(14),
+    fontWeight: FontWeight.w900,
     color: Colors.black
   );
-
-  static TextStyle semiBold16 = TextStyle(
-    fontFamily: fontFamily,
-    fontWeight: semiBold,
-    fontSize: textScale.scale(16),
-    color: Colors.black
-  );
-
-  static TextStyle semiBold20 = TextStyle(
-    fontFamily: fontFamily,
-    fontWeight: semiBold,
-    fontSize: textScale.scale(20),
-    color: Colors.black
-  );
-
-  static TextStyle semiBold24 = TextStyle(
-    fontFamily: fontFamily,
-    fontWeight: semiBold,
-    fontSize: textScale.scale(24),
-    color: Colors.black
-  );
-
-  static TextStyle semiBold30 = TextStyle(
-    fontFamily: fontFamily,
-    fontWeight: semiBold,
-    fontSize: textScale.scale(30),
-    color: Colors.black
-  );
-
-
-
-
 
 }
-

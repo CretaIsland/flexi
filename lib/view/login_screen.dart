@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../main.dart';
+import '../components/text_button.dart';
 import '../utils/ui/colors.dart';
 import '../utils/ui/fonts.dart';
 
@@ -12,15 +13,15 @@ class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
 
 
-  // text edit controller
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
+
   final _hidePasswordProvider = StateProvider<bool>((ref) => true);
 
 
@@ -38,105 +39,107 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     _passwordController.dispose();
   }
 
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: screenWidth,
-        height: screenHeight,
-        padding: EdgeInsets.only(top: screenHeight * .05125),
-        color: FlexiColor.primary,
+      backgroundColor: FlexiColor.primary,
+      body: SizedBox(
+        width: 1.sw,
+        height: 1.sh,
         child: SingleChildScrollView(
           child: Column(
             children: [
+              SizedBox(height: .05.sh),
               SizedBox(
-                height: screenHeight * .5,
+                width: 1.sw,
+                height: .5.sh,
                 child: const Image(
-                  image: AssetImage("assets/image/login_illustration.png"),
-                  fit: BoxFit.fitHeight,
+                  image: AssetImage('assets/image/login_illustration.png'),
+                  fit: BoxFit.contain,
                   alignment: Alignment.bottomCenter,
                 ),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: screenHeight * .03),
-                  Text("Sign in", style: FlexiFont.semiBold24.copyWith(color: Colors.white)),
-                  SizedBox(height: screenHeight * .005,),
-                  Text("Hi there! Nice to see you.", style: FlexiFont.regular12.copyWith(color: Colors.white)),
-                  SizedBox(height: screenHeight * .025),
+                  SizedBox(height: .03.sh),
+                  Text('Sign in', style: FlexiFont.semiBold24.copyWith(color: Colors.white)),
+                  SizedBox(height: .005.sh),
+                  Text('Hi there! Nice to see you.', style: FlexiFont.regular12.copyWith(color: Colors.white)),
+                  SizedBox(height: .025.sh),
                   SizedBox(
-                    width: screenWidth * .82,
-                    height: screenHeight * .06,
+                    width: .82.sw,
+                    height: .06.sh,
                     child: TextField(
                       controller: _emailController,
                       style: FlexiFont.regular16.copyWith(color: Colors.white),
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.only(left: 12),
+                        hintText: 'Email',
+                        hintStyle: FlexiFont.regular16.copyWith(color: Colors.white),
                         border: InputBorder.none,
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(screenHeight * .01),
-                          borderSide: BorderSide(color: FlexiColor.grey[400]!)
+                          borderRadius: BorderRadius.circular(.01.sh),
+                          borderSide: const BorderSide(color: Colors.white)
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(screenHeight * .01),
-                          borderSide: BorderSide(color: FlexiColor.grey[400]!)
-                        ),
-                        hintText: "Email",
-                        hintStyle: FlexiFont.regular16.copyWith(color: Colors.white)
+                          borderRadius: BorderRadius.circular(.01.sh),
+                          borderSide: const BorderSide(color: Colors.white)
+                        )
                       ),
                     ),
                   ),
-                  SizedBox(height: screenHeight * .02),
+                  SizedBox(height: .02.sh),
                   SizedBox(
-                    width: screenWidth * .82,
-                    height: screenHeight * .06,
+                    width: .82.sw,
+                    height: .06.sh,
                     child: TextField(
                       controller: _passwordController,
                       style: FlexiFont.regular16.copyWith(color: Colors.white),
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.only(left: 12),
+                        hintText: 'Password',
+                        hintStyle: FlexiFont.regular16.copyWith(color: Colors.white),
                         border: InputBorder.none,
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(screenHeight * .01),
-                          borderSide: BorderSide(color: FlexiColor.grey[400]!)
+                          borderRadius: BorderRadius.circular(.01.sh),
+                          borderSide: const BorderSide(color: Colors.white)
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(screenHeight * .01),
-                          borderSide: BorderSide(color: FlexiColor.grey[400]!)
+                          borderRadius: BorderRadius.circular(.01.sh),
+                          borderSide: const BorderSide(color: Colors.white)
                         ),
-                        hintText: "Password",
-                        hintStyle: FlexiFont.regular16.copyWith(color: Colors.white),
                         suffixIcon: InkWell(
-                          onTap: () => ref.watch(_hidePasswordProvider.notifier).state = !ref.watch(_hidePasswordProvider),
-                          child: Icon(ref.watch(_hidePasswordProvider) ? Icons.visibility_off_outlined : Icons.visibility_outlined, color: Colors.white, size: screenHeight * .025)
+                          onTap: () {},
+                          child: Icon(
+                            ref.watch(_hidePasswordProvider) ? Icons.visibility_off_outlined : Icons.visibility_outlined, 
+                            color: Colors.white, 
+                            size: .025.sh
+                          ),
                         )
                       ),
                     ),
                   ),
-                  SizedBox(height: screenHeight * .045),
-                  SizedBox(
-                    width: screenWidth * .82,
-                    height: screenHeight * .06,
-                    child: TextButton(
-                      onPressed: () => context.go("/device/list"),
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(borderRadius: BorderRadius.circular(screenHeight * .01))
-                        ),
-                        backgroundColor: MaterialStateProperty.all(FlexiColor.secondary),
-                      ), 
-                      child: Text("Sign in", style: FlexiFont.semiBold16.copyWith(color: Colors.white))
-                    ),
+                  SizedBox(height: .045.sh),
+                  FlexiTextButton(
+                    width: .82.sw, 
+                    height: .06.sh, 
+                    text: 'Login',
+                    fillColor: FlexiColor.secondary,
+                    onPressed: () {
+                      // 로그인 확인
+                      // 맞으면 계정 정보 저장
+                      context.go('/device/list');
+                    },
                   )
                 ],
-              ),
+              )
             ],
           ),
         ),
       ),
     );
   }
-
+  
 }

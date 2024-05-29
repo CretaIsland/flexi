@@ -161,7 +161,7 @@ final uDPBroadcastProvider =
 );
 
 typedef _$UDPBroadcast = AutoDisposeStreamNotifier<String>;
-String _$socketIOClientHash() => r'c40652c11d5dd4e7638ed0a9acef6872f0133337';
+String _$socketIOClientHash() => r'432c5c9c02649899ba1fc7274677c91c0a600af6';
 
 /// Copied from Dart SDK
 class _SystemHash {

@@ -1,59 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../utils/ui/colors.dart';
 import '../utils/ui/fonts.dart';
-import '../main.dart';
 
 
-// tab index provider
-final tabIndexProvider = StateProvider<int>((ref) => 0);
 
 
-class FlexiBottomNaviagtionBar extends ConsumerStatefulWidget {
-  const FlexiBottomNaviagtionBar({super.key});
 
-  @override
-  ConsumerState<FlexiBottomNaviagtionBar> createState() => _FlexiBottomNaviagtionBarState();
-}
+final currentTabIndex = StateProvider<int>((ref) => 0);
 
-class _FlexiBottomNaviagtionBarState extends ConsumerState<FlexiBottomNaviagtionBar> {
+class FlexiBottomNavigationBar extends ConsumerWidget {
+  const FlexiBottomNavigationBar({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      height: screenHeight * .08,
+      height: .08.sh,
       color: FlexiColor.grey[300],
-      padding: EdgeInsets.only(left: screenWidth * .1, right: screenWidth * .1),
+      padding: EdgeInsets.only(left: .1.sw, right: .1.sw),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          tabItem("Devices", Icons.connected_tv_outlined, "/device/list", 0),
-          tabItem("Contents", Icons.interests, "/content/list", 1),
-          tabItem("Setting", Icons.settings, "/setting/menu", 2)
+          tabButton('Devices', Icons.connected_tv_outlined, '/device/list', 0),
+          tabButton('Contents', Icons.interests, '/content/list', 1),
+          tabButton('Setting', Icons.settings, '/settings', 2)
         ],
       ),
     );
   }
 
-  Widget tabItem(String itemLabel, IconData itemIcon, String routeName, int tabIndex) {
-    return GestureDetector(
-      onTap: () {
-        ref.watch(tabIndexProvider.notifier).state = tabIndex;
-        context.go(routeName);
+  Widget tabButton(String text, IconData icon, String routePath, int tabIndex) {
+    return Consumer(
+      builder: (context, ref, child) {
+        return InkWell(
+          onTap: () {
+            ref.watch(currentTabIndex.notifier).state = tabIndex;
+            context.go(routePath);
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: ref.watch(currentTabIndex) == tabIndex ? FlexiColor.primary : FlexiColor.grey[600], size: .035.sh),
+              Text(text, style: FlexiFont.medium12.copyWith(color: ref.watch(currentTabIndex) == tabIndex ? FlexiColor.primary : FlexiColor.grey[600]))
+            ],
+          ),
+        );
       },
-      child: SizedBox(
-        width: screenWidth * .15,
-        height: screenHeight * .06,
-        child: Column(
-          children: [
-            Icon(itemIcon, color: ref.watch(tabIndexProvider) == tabIndex? FlexiColor.primary : FlexiColor.grey[600], size: screenHeight * .035),
-            Text(itemLabel, style: FlexiFont.medium12.copyWith(color: ref.watch(tabIndexProvider) == tabIndex ? FlexiColor.primary : FlexiColor.grey[600]))
-          ],
-        ),
-      ),
     );
   }
-
 }

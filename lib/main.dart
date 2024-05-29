@@ -1,45 +1,44 @@
-import 'playground/functions_app.dart';
-import 'playground/simulation_app.dart';
-import 'router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-late double screenWidth;
-late double screenHeight;
-late TextScaler textScale;
+import 'router.dart';
+
+
+
+late TextScaler textScaler;
+
 
 void main() {
-  runApp(const ProviderScope(child: MyApp()));
+  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  // await initialize();
+  runApp(const ProviderScope(child: FlexiApp()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SimulationApp(),
-    );
-  }
+Future<void> initialize() async {
+  // auto login
+  // await Future.delayed(const Duration(seconds: 3));
+  // FlutterNativeSplash.remove();
 }
 
-class FlexiApp extends ConsumerStatefulWidget {
+
+class FlexiApp extends StatelessWidget {
   const FlexiApp({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _FlexiAppState();
-}
-
-class _FlexiAppState extends ConsumerState<FlexiApp> {
-  @override
   Widget build(BuildContext context) {
-    screenWidth = MediaQuery.sizeOf(context).width;
-    screenHeight = MediaQuery.sizeOf(context).height;
-    textScale = MediaQuery.of(context).textScaler;
+    textScaler = MediaQuery.of(context).textScaler;
 
-    return MaterialApp.router(
-      routerConfig: router,
+    return ScreenUtilInit(
+      designSize: const Size(360, 800),
+      builder: (context, child) {
+        return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          routerConfig: router,
+        );
+      },
     );
   }
+
 }

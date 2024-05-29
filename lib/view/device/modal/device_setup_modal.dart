@@ -9,8 +9,8 @@ import '../../../utils/ui/fonts.dart';
 
 
 
-class DeviceResetModal extends ConsumerWidget {
-  const DeviceResetModal({super.key});
+class DeviceSetupModal extends ConsumerWidget {
+  const DeviceSetupModal({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,17 +26,18 @@ class DeviceResetModal extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Are you sure?', style: FlexiFont.semiBold24),
+          Text('Wifi Setup', style: FlexiFont.semiBold24),
           SizedBox(height: .02.sh),
-          Text('This will reset the wifi credentials \nof the device(s)', style: FlexiFont.regular16,),
+          Text('Press Connect once \nthe device has rebooted.', style: FlexiFont.regular16,),
           SizedBox(height: .03.sh),
           FlexiTextButton(
             width: .82.sw, 
             height: .06.sh, 
-            text: 'Reset',
-            fillColor: FlexiColor.secondary,
+            text: 'Connect',
+            fillColor: FlexiColor.primary,
             onPressed: () {
               context.pop();
+              context.go('/device/list');
             },
           ),
           SizedBox(

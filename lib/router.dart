@@ -1,103 +1,110 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
-import 'view/content/content_detail_screen.dart';
-import 'view/content/content_list_screen.dart';
-import 'view/content/edit_background_screen.dart';
-import 'view/content/edit_text_screen.dart';
-import 'view/content/send_content_screen.dart';
-import 'view/device/device_detail_screen.dart';
-import 'view/device/device_list_screen.dart';
-import 'view/device/device_timezone_set_screen.dart';
-import 'view/device/device_wifi_set_screen.dart';
-import 'view/device/qrcode_scan_screen.dart';
+import 'view/content/screen/background_edit_screen.dart';
+import 'view/content/screen/content_info_screen.dart';
+import 'view/content/screen/content_list_screen.dart';
+import 'view/content/screen/content_send_screen.dart';
+import 'view/content/screen/text_edit_screen.dart';
+import 'view/device/screen/device_info_screen.dart';
+import 'view/device/screen/device_list_screen.dart';
+import 'view/device/screen/qrcode_load_screen.dart';
+import 'view/device/screen/qrcode_scan_screen.dart';
+import 'view/device/screen/timezone_set_screen.dart';
+import 'view/device/screen/wifi_set_screen.dart';
 import 'view/home_screen.dart';
 import 'view/login_screen.dart';
-import 'view/setting/account_info_screen.dart';
-import 'view/setting/app_info_screen.dart';
-import 'view/setting/device_recovery_screen.dart';
-import 'view/setting/setting_menu_screen.dart';
+import 'view/setting/screen/account_info_screen.dart';
+import 'view/setting/screen/app_info_screen.dart';
+import 'view/setting/screen/device_recovery_screen.dart';
+import 'view/setting/screen/settings_screen.dart';
 
 
 
 final GlobalKey<NavigatorState> rootNavKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> shellNavKey = GlobalKey<NavigatorState>();
 
-
 GoRouter router = GoRouter(
   navigatorKey: rootNavKey,
-  initialLocation: "/",
+  initialLocation: '/',
   routes: [
     GoRoute(
-      path: "/",
+      path: '/',
       pageBuilder: (context, state) => const NoTransitionPage(child: LoginScreen()),
     ),
-    // bottomNavigationBar가 있는 화면
     ShellRoute(
       navigatorKey: shellNavKey,
       pageBuilder: (context, state, child) => NoTransitionPage(child: HomeScreen(state: state, child: child)),
       routes: [
-        // 디바이스 관련 화면
+        // ********** Device **********
         GoRoute(
-          path: "/device/setTimezone",
-          pageBuilder: (context, state) => const NoTransitionPage(child: DeviceTimezoneSetScreen()),
-        ),
-        // 콘텐츠 관련 화면
-        GoRoute(
-          path: "/content/detail",
-          pageBuilder: (context, state) => const NoTransitionPage(child: ContentDetailScreen()),
-        ),
-        // 설정 관련 화면
-        GoRoute(
-          path: "/setting/menu",
-          pageBuilder: (context, state) => const NoTransitionPage(child: SettingMenuScreen()),
+          path: '/device/list',
+          pageBuilder: (context, state) => NoTransitionPage(child: DeviceListScreen(rootContext: context)),
         ),
         GoRoute(
-          path: "/setting/account",
+          path: '/device/info',
+          pageBuilder: (context, state) => NoTransitionPage(child: DeviceInfoScreen(rootContext: context)),
+        ),
+        GoRoute(
+          path: '/device/setTimezone',
+          pageBuilder: (context, state) => NoTransitionPage(child: TimezoneSetScreen()),
+        ),
+        GoRoute(
+          path: '/device/setWifi',
+          pageBuilder: (context, state) => NoTransitionPage(child: WifiSetScreen(rootContext: context)),
+        ),
+        // ********** Content **********
+        GoRoute(
+          path: '/content/list',
+          pageBuilder: (context, state) => NoTransitionPage(child: ContentListScreen(rootContext: context)),
+        ),
+        GoRoute(
+          path: '/content/info',
+          pageBuilder: (context, state) => const NoTransitionPage(child: ContentInfoScreen()),
+        ),
+        // ********** Settings **********
+        GoRoute(
+          path: '/settings',
+          pageBuilder: (context, state) => const NoTransitionPage(child: SettingsScreen()),
+        ),
+        GoRoute(
+          path: '/settings/account',
           pageBuilder: (context, state) => const NoTransitionPage(child: AccountInfoScreen()),
         ),
         GoRoute(
-          path: "/setting/app",
+          path: '/settings/app',
           pageBuilder: (context, state) => const NoTransitionPage(child: AppInfoScreen()),
         ),
         GoRoute(
-          path: "/setting/deviceRecovery",
+          path: '/settings/deviceRecovery',
           pageBuilder: (context, state) => const NoTransitionPage(child: DeviceRecoveryScreen()),
         ),
+        
       ]
     ),
-    // bottomNavigationBar가 없는 화면
+    // ********** QR Code **********
     GoRoute(
-      path: "/device/list",
-      pageBuilder: (context, state) => const NoTransitionPage(child: DeviceListScreen()),
-    ),
-    GoRoute(
-      path: "/device/detail",
-      pageBuilder: (context, state) => const NoTransitionPage(child: DeviceDetailScreen()),
-    ),
-    GoRoute(
-      path: "/device/setWifi",
-      pageBuilder: (context, state) => const NoTransitionPage(child: DeviceWifiSetScreen()),
-    ),
-    GoRoute(
-      path: "/qrcode/scan",
+      path: '/qrcode/scan',
       pageBuilder: (context, state) => const NoTransitionPage(child: QrcodeScanScreen()),
     ),
     GoRoute(
-      path: "/content/list",
-      pageBuilder: (context, state) => const NoTransitionPage(child: ContentListScreen()),
+      path: '/qrcode/load',
+      pageBuilder: (context, state) => const NoTransitionPage(child: QrcodeLoadScreen()),
+    ),
+    // ********** Edit Content **********
+    GoRoute(
+      path: '/content/editText',
+      pageBuilder: (context, state) => NoTransitionPage(child: TextEditScreen(rootContext: context)),
     ),
     GoRoute(
-      path: "/content/editText",
-      pageBuilder: (context, state) => const NoTransitionPage(child: EditTextScreen()),
+      path: '/content/editBackground',
+      pageBuilder: (context, state) => NoTransitionPage(child: BackgroundEditScreen()),
     ),
+    // ********** Send Content **********
     GoRoute(
-      path: "/content/editBackground",
-      pageBuilder: (context, state) => const NoTransitionPage(child: EditBackgroundScreen()),
+      path: '/content/send',
+      pageBuilder: (context, state) => NoTransitionPage(child: ContentSendScreen()),
     ),
-    GoRoute(
-      path: "/content/sendDevice",
-      pageBuilder: (context, state) => const NoTransitionPage(child: SendContentScreen()),
-    ) 
   ]
 );
