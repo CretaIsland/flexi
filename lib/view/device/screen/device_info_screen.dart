@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../components/text_field.dart';
 import '../../../utils/ui/colors.dart';
 import '../../../utils/ui/fonts.dart';
+import '../modal/bluetooth_modal.dart';
 
 
 
@@ -97,7 +98,12 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                     Text('Bluetooth', style: FlexiFont.regular14),
                     SizedBox(height: .01.sh),
                     InkWell(
-                      onTap: () {},
+                      onTap: () => showModalBottomSheet(
+                        context: widget.rootContext,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => BluetoothListModal(),
+                      ),
                       child: Container(
                         width: .43.sw,
                         height: .125.sh,

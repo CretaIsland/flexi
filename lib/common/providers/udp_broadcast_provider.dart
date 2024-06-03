@@ -2,13 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'udp_broadcast_controller.g.dart';
+part 'udp_broadcast_provider.g.dart';
 
 
 
 @riverpod
-class UDPBroadcastController extends _$UDPBroadcastController {
+class UDPBroadcast extends _$UDPBroadcast {
 
   late RawDatagramSocket _socket;
   late StreamController<String> _streamController;
@@ -17,10 +16,10 @@ class UDPBroadcastController extends _$UDPBroadcastController {
   @override
   List<String> build() {
     ref.onDispose(() {
-      print("<<<<<<< UDPBroadcastController dispose <<<<<<<");
+      print("<<<<<<< UDPBroadcastProvider dispose <<<<<<<");
       _streamController.close();
     });
-    print(">>>>>>> UDPBroadcastController build >>>>>>");
+    print(">>>>>>> UDPBroadcastProvider build >>>>>>");
     _streamController = StreamController<String>();
     _initialize();
     return ["test 01"];

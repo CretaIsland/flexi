@@ -10,6 +10,7 @@ class NetworkInfo with _$NetworkInfo {
     String? ssid,
     String? bssid,
     String? ip,
-    String? ipv6
+    String? ipv6,
+    String? broadcast,
   }) = _NetworkInfo;
 }

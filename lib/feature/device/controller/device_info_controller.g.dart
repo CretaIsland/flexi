@@ -1,27 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'udp_broadcast_controller.dart';
+part of 'device_info_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$uDPBroadcastControllerHash() =>
-    r'96c1a40de76e9abd2619337225edfded4b2ee503';
+String _$deviceInfoControllerHash() =>
+    r'27bee6ed8a302d0a797f03f5400dadb4d4aa1e24';
 
-/// See also [UDPBroadcastController].
-@ProviderFor(UDPBroadcastController)
-final uDPBroadcastControllerProvider =
-    AutoDisposeNotifierProvider<UDPBroadcastController, List<String>>.internal(
-  UDPBroadcastController.new,
-  name: r'uDPBroadcastControllerProvider',
+/// See also [DeviceInfoController].
+@ProviderFor(DeviceInfoController)
+final deviceInfoControllerProvider =
+    AutoDisposeNotifierProvider<DeviceInfoController, DeviceInfo?>.internal(
+  DeviceInfoController.new,
+  name: r'deviceInfoControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$uDPBroadcastControllerHash,
+      : _$deviceInfoControllerHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$UDPBroadcastController = AutoDisposeNotifier<List<String>>;
+typedef _$DeviceInfoController = AutoDisposeNotifier<DeviceInfo?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

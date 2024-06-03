@@ -20,6 +20,7 @@ mixin _$NetworkInfo {
   String? get bssid => throw _privateConstructorUsedError;
   String? get ip => throw _privateConstructorUsedError;
   String? get ipv6 => throw _privateConstructorUsedError;
+  String? get broadcast => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $NetworkInfoCopyWith<NetworkInfo> get copyWith =>
@@ -32,7 +33,12 @@ abstract class $NetworkInfoCopyWith<$Res> {
           NetworkInfo value, $Res Function(NetworkInfo) then) =
       _$NetworkInfoCopyWithImpl<$Res, NetworkInfo>;
   @useResult
-  $Res call({String? ssid, String? bssid, String? ip, String? ipv6});
+  $Res call(
+      {String? ssid,
+      String? bssid,
+      String? ip,
+      String? ipv6,
+      String? broadcast});
 }
 
 /// @nodoc
@@ -52,6 +58,7 @@ class _$NetworkInfoCopyWithImpl<$Res, $Val extends NetworkInfo>
     Object? bssid = freezed,
     Object? ip = freezed,
     Object? ipv6 = freezed,
+    Object? broadcast = freezed,
   }) {
     return _then(_value.copyWith(
       ssid: freezed == ssid
@@ -70,6 +77,10 @@ class _$NetworkInfoCopyWithImpl<$Res, $Val extends NetworkInfo>
           ? _value.ipv6
           : ipv6 // ignore: cast_nullable_to_non_nullable
               as String?,
+      broadcast: freezed == broadcast
+          ? _value.broadcast
+          : broadcast // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -82,7 +93,12 @@ abstract class _$$NetworkInfoImplCopyWith<$Res>
       __$$NetworkInfoImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? ssid, String? bssid, String? ip, String? ipv6});
+  $Res call(
+      {String? ssid,
+      String? bssid,
+      String? ip,
+      String? ipv6,
+      String? broadcast});
 }
 
 /// @nodoc
@@ -100,6 +116,7 @@ class __$$NetworkInfoImplCopyWithImpl<$Res>
     Object? bssid = freezed,
     Object? ip = freezed,
     Object? ipv6 = freezed,
+    Object? broadcast = freezed,
   }) {
     return _then(_$NetworkInfoImpl(
       ssid: freezed == ssid
@@ -118,6 +135,10 @@ class __$$NetworkInfoImplCopyWithImpl<$Res>
           ? _value.ipv6
           : ipv6 // ignore: cast_nullable_to_non_nullable
               as String?,
+      broadcast: freezed == broadcast
+          ? _value.broadcast
+          : broadcast // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -125,7 +146,8 @@ class __$$NetworkInfoImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$NetworkInfoImpl implements _NetworkInfo {
-  const _$NetworkInfoImpl({this.ssid, this.bssid, this.ip, this.ipv6});
+  const _$NetworkInfoImpl(
+      {this.ssid, this.bssid, this.ip, this.ipv6, this.broadcast});
 
   @override
   final String? ssid;
@@ -135,10 +157,12 @@ class _$NetworkInfoImpl implements _NetworkInfo {
   final String? ip;
   @override
   final String? ipv6;
+  @override
+  final String? broadcast;
 
   @override
   String toString() {
-    return 'NetworkInfo(ssid: $ssid, bssid: $bssid, ip: $ip, ipv6: $ipv6)';
+    return 'NetworkInfo(ssid: $ssid, bssid: $bssid, ip: $ip, ipv6: $ipv6, broadcast: $broadcast)';
   }
 
   @override
@@ -149,11 +173,14 @@ class _$NetworkInfoImpl implements _NetworkInfo {
             (identical(other.ssid, ssid) || other.ssid == ssid) &&
             (identical(other.bssid, bssid) || other.bssid == bssid) &&
             (identical(other.ip, ip) || other.ip == ip) &&
-            (identical(other.ipv6, ipv6) || other.ipv6 == ipv6));
+            (identical(other.ipv6, ipv6) || other.ipv6 == ipv6) &&
+            (identical(other.broadcast, broadcast) ||
+                other.broadcast == broadcast));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, ssid, bssid, ip, ipv6);
+  int get hashCode =>
+      Object.hash(runtimeType, ssid, bssid, ip, ipv6, broadcast);
 
   @JsonKey(ignore: true)
   @override
@@ -167,7 +194,8 @@ abstract class _NetworkInfo implements NetworkInfo {
       {final String? ssid,
       final String? bssid,
       final String? ip,
-      final String? ipv6}) = _$NetworkInfoImpl;
+      final String? ipv6,
+      final String? broadcast}) = _$NetworkInfoImpl;
 
   @override
   String? get ssid;
@@ -177,6 +205,8 @@ abstract class _NetworkInfo implements NetworkInfo {
   String? get ip;
   @override
   String? get ipv6;
+  @override
+  String? get broadcast;
   @override
   @JsonKey(ignore: true)
   _$$NetworkInfoImplCopyWith<_$NetworkInfoImpl> get copyWith =>
