@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:translator/translator.dart';
 
-import '../../../components/text_button.dart';
+import '../../../feature/content/controller/content_info_controller.dart';
+import '../../../feature/content/controller/current_language_controller.dart';
+import '../../../feature/content/controller/text_edit_controller.dart';
 import '../../../utils/ui/colors.dart';
 import '../../../utils/ui/fonts.dart';
-import '../component/language_list_bar.dart';
+import '../component/languages_bar.dart';
+import '../component/text_edit_preview.dart';
+import '../modal/text_translate_modal.dart';
 
 
 
@@ -27,19 +30,21 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
     Color(0xffFFB74D), Color(0xffFFEE58), Color(0xff388E5A), 
     Color(0xff42A5F5), Color(0xff8756D5), Color(0xffEA9BD7)
   ];
-  FocusNode focusNode = FocusNode();
-
-  final sttModeProvider = StateProvider<bool>((ref) => true);
-  final isSpeakingProvider = StateProvider<bool>((ref) => false);
 
 
   @override
   Widget build(BuildContext context) {
+
+    final contentInfoController = ref.watch(contentInfoControllerProvider.notifier);
+    final contentInfo = ref.watch(textEditControllerProvider);
+    final textEditController = ref.watch(textEditControllerProvider.notifier);
+
+
     return Scaffold(
       body: Container(
         width: 1.sw,
         height: 1.sh,
-        color: Colors.grey, // 콘텐츠 배경 색,
+        color: FlexiColor.stringToColor(contentInfo!.backgroundColor), // 콘텐츠 배경 색,
         child: Column(
           children: [
             Container(
@@ -53,12 +58,20 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        onPressed: () => context.go('/content/info'),
+                        onPressed: () {
+                          ref.watch(inputLanguagesControllerProvider.notifier).saveChange();
+                          ref.watch(outputLanguagesControllerProvider.notifier).saveChange();
+                          context.go('/content/info');
+                        },
                         icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: .03.sh),
                       ),
                       TextButton(
                         onPressed: () {
                           // 변경된 값 저장
+                          ref.watch(inputLanguagesControllerProvider.notifier).saveChange();
+                          ref.watch(outputLanguagesControllerProvider.notifier).saveChange();
+                          contentInfoController.change(contentInfo);
+                          print(contentInfo.text);
                           context.go('/content/info');
                         }, 
                         child: Text('Apply', style: FlexiFont.regular16.copyWith(color: Colors.white))
@@ -71,7 +84,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                     children: [
                       for(var color in fontColors)
                         InkWell(
-                          onTap: () {},
+                          onTap: () => textEditController.setTextColor(color),
                           child: Container(
                             width: .035.sh,
                             height: .035.sh,
@@ -90,18 +103,18 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                     children: [
                       Row(
                         children: [
-                          fontSizeButton('Small', FlexiFont.regular9, () {}),
+                          fontSizeButton('Small', FlexiFont.regular9, () => textEditController.setTextSize('s')),
                           SizedBox(width: .02.sw),
-                          fontSizeButton('Medium', FlexiFont.regular11, () {}),
+                          fontSizeButton('Medium', FlexiFont.regular11, () => textEditController.setTextSize('m')),
                           SizedBox(width: .02.sw),
-                          fontSizeButton('Large', FlexiFont.regular13, () {}),
+                          fontSizeButton('Large', FlexiFont.regular13, () => textEditController.setTextSize('l')),
                         ],
                       ),
                       Row(
                         children: [
-                          fontEffectButton(Icons.format_bold, () {}),
+                          fontEffectButton(Icons.format_bold, () => textEditController.setTextWeight(!contentInfo.isBold)),
                           SizedBox(width: .02.sw),
-                          fontEffectButton(Icons.format_italic, () {}),
+                          fontEffectButton(Icons.format_italic, () => textEditController.setTextItalic(!contentInfo.isItalic)),
                         ],
                       )
                     ],
@@ -110,9 +123,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
               ),
             ),
             // preview
-            Stack(
-
-            ),
+            TextEditPreview(contentInfo: contentInfo),
             Expanded(
               child: Container(
                 color: Colors.black.withOpacity(.6),
@@ -123,7 +134,12 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                   children: [
                     InkWell(
                       onTap: () {
-
+                        showModalBottomSheet(
+                          context: context, 
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) => const TextTranslateModal(),
+                        );
                       },
                       child: Container(
                         width: .05.sh,
@@ -141,10 +157,12 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                       onTap: () {
                         if(ref.watch(sttModeProvider)) {
                           ref.watch(sttModeProvider.notifier).state = false;
-                          focusNode.requestFocus();
+                          ref.watch(keyboardEventProvider).requestFocus();
                         } else {
-                          focusNode.unfocus();
-                          ref.watch(sttModeProvider.notifier).state = true;
+                          ref.watch(keyboardEventProvider).unfocus();
+                          Future.delayed(const Duration(milliseconds: 500), () {
+                            ref.watch(sttModeProvider.notifier).state = true;
+                          });
                         }
                       },
                       child: Container(
@@ -177,7 +195,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      LanguageListBar(),
+                      LanguagesBar(type: 'input'),
                       SizedBox(height: .04.sh),
                       SizedBox(
                         width: 1.sw,
@@ -192,9 +210,11 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                     onLongPressStart: (details) {
                       print("click start");
                       ref.watch(isSpeakingProvider.notifier).state = true;
+                      textEditController.startRecord(ref.watch(selectInputLanguageProvider)['localeId'] ?? 'en_US');
                     },
                     onLongPressEnd: (details) {
                       print("click end");
+                      textEditController.stopRecord();
                       ref.watch(isSpeakingProvider.notifier).state = false;
                     },
                     child: Container(

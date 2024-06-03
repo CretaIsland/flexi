@@ -2,24 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:photo_manager/photo_manager.dart';
 
+import '../../../common/providers/local_storage_provider.dart';
+import '../../../feature/content/controller/background_edit_controller.dart';
+import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../utils/ui/colors.dart';
 import '../../../utils/ui/fonts.dart';
+import '../component/background_edit_preview.dart';
 
 
 
 class BackgroundEditScreen extends ConsumerWidget {
   BackgroundEditScreen({super.key});
-  final tabIndexProvider = StateProvider<int>((ref) => 0);
-
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+    final contentInfoController = ref.watch(contentInfoControllerProvider.notifier);
+    final contentInfo = ref.watch(backgroundEditControllerProvider);
+
     return Scaffold(
       body: Container(
         width: 1.sw,
         height: 1.sh,
-        color: Colors.grey, // 콘텐츠 배경 색,
+        color: FlexiColor.stringToColor(contentInfo!.backgroundColor),
         child: Column(
           children: [
             Container(
@@ -33,14 +40,17 @@ class BackgroundEditScreen extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        onPressed: () => context.go('/content/info'),
+                        onPressed: () {
+                          contentInfoController.undo();
+                          context.go('/content/info');
+                        },
                         icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: .03.sh),
                       ),
                       TextButton(
                         onPressed: () {
-                          // 변경된 값 저장
+                          contentInfoController.change(contentInfo);
                           context.go('/content/info');
-                        }, 
+                        },
                         child: Text('Apply', style: FlexiFont.regular16.copyWith(color: Colors.white))
                       )
                     ],
@@ -50,10 +60,7 @@ class BackgroundEditScreen extends ConsumerWidget {
               ),
             ),
             // preview
-            SizedBox(
-              width: 1.sw,
-              height: .15.sh
-            ),
+            BackgroundEditPreview(contentInfo: contentInfo),
             Expanded(
               child: Container(
                 color: Colors.black.withOpacity(.6),
@@ -81,7 +88,7 @@ class BackgroundEditScreen extends ConsumerWidget {
               width: 1.sw,
               height: .42.sh,
               color: FlexiColor.backgroundColor,
-              child: ref.watch(tabIndexProvider) == 0 ? assetContent() : ref.watch(tabIndexProvider) == 1 ? colorPalette() : galleryContent(),
+              child: ref.watch(tabIndexProvider) == 0 ? assetContent() : ref.watch(tabIndexProvider) == 1 ? colorPalette() : galleryContent(ref),
             )
           ],
         ),
@@ -140,7 +147,7 @@ class BackgroundEditScreen extends ConsumerWidget {
           itemCount: colors.length,
           itemBuilder: (context, index) {
             return InkWell(
-              onTap: () { },
+              onTap: () => ref.watch(backgroundEditControllerProvider.notifier).setBackgroundColor(colors[index]),
               child: Container(
                 decoration: BoxDecoration(
                   color: colors[index],
@@ -156,23 +163,66 @@ class BackgroundEditScreen extends ConsumerWidget {
 
   }
 
-  Consumer galleryContent() {
+  Consumer galleryContent(WidgetRef ref) {
     return Consumer(
       builder: (context, ref, child) {
-        return ListView.builder(
-          padding: EdgeInsets.zero,
-          itemCount: 20,
-          itemBuilder: (context, index) {
-            Container(
-              width: 1.sw,
-              height: .06.sh,
-              color: Colors.green.shade100,
-              margin: const EdgeInsets.only(bottom: 2),
-            );
+        
+        final localStorageController = ref.watch(localStorageProvider.notifier);
+        final localStorageFiles = ref.watch(localStorageProvider);        
+
+        return NotificationListener<ScrollNotification>(
+          onNotification: (notification) {
+            if(notification is ScrollEndNotification && notification.metrics.pixels == notification.metrics.maxScrollExtent) localStorageController.nextLoad();
+            return true;
           },
+          child: ListView.builder(
+            padding: EdgeInsets.zero,
+            itemCount: localStorageFiles.length,
+            itemBuilder: (context, index) {
+              return Container(
+                width: 1.sw,
+                height: .06.sh,
+                margin: const EdgeInsets.only(bottom: 2),
+                child: FutureBuilder(
+                  future: localStorageFiles[index].thumbnailData, 
+                  builder: (context, snapshot) {
+                    if(snapshot.hasData && snapshot.data != null) {
+                      return InkWell(
+                        onTap: () async {
+                          var fileBytes = await localStorageFiles[index].originBytes;
+                          if(fileBytes != null) {
+                            ref.watch(backgroundEditControllerProvider.notifier).setBackgroundContent(
+                              localStorageFiles[index].type.name,
+                              fileBytes,
+                              localStorageFiles[index].title ?? '',
+                              snapshot.data!
+                            );
+                          } else {
+                            // toast 메세지
+                          }
+                        },
+                        child: Stack(
+                          children: [
+                            Positioned.fill(child: Image.memory(snapshot.data!, fit: BoxFit.cover)),
+                            localStorageFiles[index].type == AssetType.video ? Center(child: Icon(Icons.play_arrow_rounded, color: Colors.white, size: .03.sh)) : const SizedBox.shrink()
+                          ],
+                        ),
+                      );
+                    } else {
+                      return Center(
+                        child: SizedBox(
+                          width: .03.sh,
+                          child: CircularProgressIndicator(color: FlexiColor.primary),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              );
+            },
+          ),
         );
       },
     );
   }
-
 }

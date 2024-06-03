@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../components/text_button.dart';
+import '../../../feature/content/controller/content_list_controller.dart';
 import '../../../utils/ui/colors.dart';
 import '../../../utils/ui/fonts.dart';
 
@@ -14,6 +15,9 @@ class ContentDeleteModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+    final contentListController = ref.watch(contentListControllerProvider.notifier);
+    
     return Container(
       width: .93.sw,
       height: .35.sh,
@@ -36,6 +40,14 @@ class ContentDeleteModal extends ConsumerWidget {
             text: 'Delete',
             fillColor: FlexiColor.secondary,
             onPressed: () {
+              if(ref.watch(selectAllProvider)) {
+                contentListController.deleteAllContents();
+              } else {
+                contentListController.deleteContents(ref.watch(selectContentsProvider));
+              }
+              ref.watch(selectModeProvider.notifier).state = false;
+              ref.watch(selectAllProvider.notifier).state = false;
+              ref.invalidate(selectContentsProvider);
               context.pop();
             },
           ),

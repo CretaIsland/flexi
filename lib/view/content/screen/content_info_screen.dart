@@ -6,8 +6,10 @@ import 'package:go_router/go_router.dart';
 
 import '../../../components/text_button.dart';
 import '../../../components/text_field.dart';
+import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../utils/ui/colors.dart';
 import '../../../utils/ui/fonts.dart';
+import '../component/content_preview.dart';
 
 
 
@@ -53,6 +55,17 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final contentInfo = ref.watch(contentInfoControllerProvider);
+    final contentInfoController = ref.watch(contentInfoControllerProvider.notifier);
+
+    _nameController.text = contentInfo!.name;
+    _widthController.text = contentInfo.width.toString();
+    _heightController.text = contentInfo.height.toString();
+    _xController.text = contentInfo.x.toString();
+    _yController.text = contentInfo.y.toString();
+
+
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -64,7 +77,8 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        await contentInfoController.saveChange();
                         context.go('/content/list');
                       }, 
                       icon: Icon(Icons.arrow_back_ios, color: FlexiColor.primary, size: .03.sh)
@@ -74,10 +88,10 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
                   ],
                 ),
                 SizedBox(height: .03.sh),
-                Container(
-                  width: .89.sw,
-                  height: .0375.sh,
-                  color: Colors.yellow.shade100,
+                ContentPreview(
+                  previewWidth: .89.sw,
+                  previewHeight: .05.sh,
+                  contentInfo: contentInfo
                 ),
                 SizedBox(height: .02.sh),
                 Row(
@@ -102,6 +116,9 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
                   width: .89.sw, 
                   height: .06.sh,
                   controller: _nameController,
+                  onChanged: (value) {
+                    contentInfoController.setName(value);
+                  },
                 ),
                 SizedBox(height: .03.sh),
                 Text('Resolution', style: FlexiFont.regular14),
@@ -114,13 +131,19 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
                     FlexiTextField(
                       width: .25.sw, 
                       height: .045.sh,
-                      controller: _widthController
+                      controller: _widthController,
+                      onChanged: (value) {
+                        contentInfoController.setWidth(int.parse(value));
+                      },
                     ),
                     Text('height', style: FlexiFont.regular14),
                     FlexiTextField(
                       width: .25.sw, 
                       height: .045.sh,
-                      controller: _heightController
+                      controller: _heightController,
+                      onChanged: (value) {
+                        contentInfoController.setHeight(int.parse(value));
+                      },
                     )
                   ],
                 ),
@@ -135,13 +158,19 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
                     FlexiTextField(
                       width: .25.sw, 
                       height: .045.sh,
-                      controller: _xController
+                      controller: _xController,
+                      onChanged: (value) {
+                        contentInfoController.setX(int.parse(value));
+                      },
                     ),
                     Text('Y', style: FlexiFont.regular14),
                     FlexiTextField(
                       width: .25.sw, 
                       height: .045.sh,
-                      controller: _yController
+                      controller: _yController,
+                      onChanged: (value) {
+                        contentInfoController.setY(int.parse(value));
+                      },
                     )
                   ],
                 )
@@ -160,9 +189,9 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
                     AdvancedSwitch(
                       width: .1.sw,
                       height: .025.sh,
-                      initialValue: true,
+                      initialValue: contentInfo.isReverse,
                       activeColor: FlexiColor.primary,
-                      onChanged: (value) {},
+                      onChanged: (value) => contentInfoController.setReverse(value)
                     )
                   ],
                 ),
@@ -186,7 +215,10 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
                   height: .06.sh, 
                   text: 'Send',
                   fillColor: FlexiColor.primary,
-                  onPressed: () => context.go('/content/send'),
+                  onPressed: () async {
+                    await contentInfoController.saveChange();
+                    context.go('/content/send');
+                  }
                 ),
               ],
             ),
@@ -198,7 +230,10 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
 
   Widget editButton(String label, IconData icon, String routePath) {
     return InkWell(
-      onTap: () => context.go(routePath),
+      onTap: () async {
+        ref.watch(contentInfoControllerProvider.notifier).change(ref.watch(contentInfoControllerProvider)!);
+        context.go(routePath);
+      },
       child: Container(
         width: .43.sw,
         height: .2.sh,

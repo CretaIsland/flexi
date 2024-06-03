@@ -20,22 +20,25 @@ ContentInfo _$ContentInfoFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ContentInfo {
-  String get contentId => throw _privateConstructorUsedError;
-  String get contentName => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
   int get width => throw _privateConstructorUsedError;
   int get height => throw _privateConstructorUsedError;
   int get x => throw _privateConstructorUsedError;
   int get y => throw _privateConstructorUsedError;
   bool get isReverse => throw _privateConstructorUsedError;
   String get text => throw _privateConstructorUsedError;
-  String get textSize => throw _privateConstructorUsedError;
+  String get textSizeType => throw _privateConstructorUsedError;
+  double get textSize => throw _privateConstructorUsedError;
   String get textColor => throw _privateConstructorUsedError;
   bool get isBold => throw _privateConstructorUsedError;
   bool get isItalic => throw _privateConstructorUsedError;
-  String? get language => throw _privateConstructorUsedError;
+  String get languageType => throw _privateConstructorUsedError;
   String get backgroundType => throw _privateConstructorUsedError;
   String get backgroundColor => throw _privateConstructorUsedError;
-  String? get backgroundContent => throw _privateConstructorUsedError;
+  String get contentBytes => throw _privateConstructorUsedError;
+  String get contentFileName => throw _privateConstructorUsedError;
+  String get contentThumbnail => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -50,22 +53,25 @@ abstract class $ContentInfoCopyWith<$Res> {
       _$ContentInfoCopyWithImpl<$Res, ContentInfo>;
   @useResult
   $Res call(
-      {String contentId,
-      String contentName,
+      {String id,
+      String name,
       int width,
       int height,
       int x,
       int y,
       bool isReverse,
       String text,
-      String textSize,
+      String textSizeType,
+      double textSize,
       String textColor,
       bool isBold,
       bool isItalic,
-      String? language,
+      String languageType,
       String backgroundType,
       String backgroundColor,
-      String? backgroundContent});
+      String contentBytes,
+      String contentFileName,
+      String contentThumbnail});
 }
 
 /// @nodoc
@@ -81,31 +87,34 @@ class _$ContentInfoCopyWithImpl<$Res, $Val extends ContentInfo>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? contentId = null,
-    Object? contentName = null,
+    Object? id = null,
+    Object? name = null,
     Object? width = null,
     Object? height = null,
     Object? x = null,
     Object? y = null,
     Object? isReverse = null,
     Object? text = null,
+    Object? textSizeType = null,
     Object? textSize = null,
     Object? textColor = null,
     Object? isBold = null,
     Object? isItalic = null,
-    Object? language = freezed,
+    Object? languageType = null,
     Object? backgroundType = null,
     Object? backgroundColor = null,
-    Object? backgroundContent = freezed,
+    Object? contentBytes = null,
+    Object? contentFileName = null,
+    Object? contentThumbnail = null,
   }) {
     return _then(_value.copyWith(
-      contentId: null == contentId
-          ? _value.contentId
-          : contentId // ignore: cast_nullable_to_non_nullable
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
               as String,
-      contentName: null == contentName
-          ? _value.contentName
-          : contentName // ignore: cast_nullable_to_non_nullable
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
       width: null == width
           ? _value.width
@@ -131,10 +140,14 @@ class _$ContentInfoCopyWithImpl<$Res, $Val extends ContentInfo>
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
               as String,
+      textSizeType: null == textSizeType
+          ? _value.textSizeType
+          : textSizeType // ignore: cast_nullable_to_non_nullable
+              as String,
       textSize: null == textSize
           ? _value.textSize
           : textSize // ignore: cast_nullable_to_non_nullable
-              as String,
+              as double,
       textColor: null == textColor
           ? _value.textColor
           : textColor // ignore: cast_nullable_to_non_nullable
@@ -147,10 +160,10 @@ class _$ContentInfoCopyWithImpl<$Res, $Val extends ContentInfo>
           ? _value.isItalic
           : isItalic // ignore: cast_nullable_to_non_nullable
               as bool,
-      language: freezed == language
-          ? _value.language
-          : language // ignore: cast_nullable_to_non_nullable
-              as String?,
+      languageType: null == languageType
+          ? _value.languageType
+          : languageType // ignore: cast_nullable_to_non_nullable
+              as String,
       backgroundType: null == backgroundType
           ? _value.backgroundType
           : backgroundType // ignore: cast_nullable_to_non_nullable
@@ -159,10 +172,18 @@ class _$ContentInfoCopyWithImpl<$Res, $Val extends ContentInfo>
           ? _value.backgroundColor
           : backgroundColor // ignore: cast_nullable_to_non_nullable
               as String,
-      backgroundContent: freezed == backgroundContent
-          ? _value.backgroundContent
-          : backgroundContent // ignore: cast_nullable_to_non_nullable
-              as String?,
+      contentBytes: null == contentBytes
+          ? _value.contentBytes
+          : contentBytes // ignore: cast_nullable_to_non_nullable
+              as String,
+      contentFileName: null == contentFileName
+          ? _value.contentFileName
+          : contentFileName // ignore: cast_nullable_to_non_nullable
+              as String,
+      contentThumbnail: null == contentThumbnail
+          ? _value.contentThumbnail
+          : contentThumbnail // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -176,22 +197,25 @@ abstract class _$$ContentInfoImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String contentId,
-      String contentName,
+      {String id,
+      String name,
       int width,
       int height,
       int x,
       int y,
       bool isReverse,
       String text,
-      String textSize,
+      String textSizeType,
+      double textSize,
       String textColor,
       bool isBold,
       bool isItalic,
-      String? language,
+      String languageType,
       String backgroundType,
       String backgroundColor,
-      String? backgroundContent});
+      String contentBytes,
+      String contentFileName,
+      String contentThumbnail});
 }
 
 /// @nodoc
@@ -205,31 +229,34 @@ class __$$ContentInfoImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? contentId = null,
-    Object? contentName = null,
+    Object? id = null,
+    Object? name = null,
     Object? width = null,
     Object? height = null,
     Object? x = null,
     Object? y = null,
     Object? isReverse = null,
     Object? text = null,
+    Object? textSizeType = null,
     Object? textSize = null,
     Object? textColor = null,
     Object? isBold = null,
     Object? isItalic = null,
-    Object? language = freezed,
+    Object? languageType = null,
     Object? backgroundType = null,
     Object? backgroundColor = null,
-    Object? backgroundContent = freezed,
+    Object? contentBytes = null,
+    Object? contentFileName = null,
+    Object? contentThumbnail = null,
   }) {
     return _then(_$ContentInfoImpl(
-      contentId: null == contentId
-          ? _value.contentId
-          : contentId // ignore: cast_nullable_to_non_nullable
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
               as String,
-      contentName: null == contentName
-          ? _value.contentName
-          : contentName // ignore: cast_nullable_to_non_nullable
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
       width: null == width
           ? _value.width
@@ -255,10 +282,14 @@ class __$$ContentInfoImplCopyWithImpl<$Res>
           ? _value.text
           : text // ignore: cast_nullable_to_non_nullable
               as String,
+      textSizeType: null == textSizeType
+          ? _value.textSizeType
+          : textSizeType // ignore: cast_nullable_to_non_nullable
+              as String,
       textSize: null == textSize
           ? _value.textSize
           : textSize // ignore: cast_nullable_to_non_nullable
-              as String,
+              as double,
       textColor: null == textColor
           ? _value.textColor
           : textColor // ignore: cast_nullable_to_non_nullable
@@ -271,10 +302,10 @@ class __$$ContentInfoImplCopyWithImpl<$Res>
           ? _value.isItalic
           : isItalic // ignore: cast_nullable_to_non_nullable
               as bool,
-      language: freezed == language
-          ? _value.language
-          : language // ignore: cast_nullable_to_non_nullable
-              as String?,
+      languageType: null == languageType
+          ? _value.languageType
+          : languageType // ignore: cast_nullable_to_non_nullable
+              as String,
       backgroundType: null == backgroundType
           ? _value.backgroundType
           : backgroundType // ignore: cast_nullable_to_non_nullable
@@ -283,42 +314,55 @@ class __$$ContentInfoImplCopyWithImpl<$Res>
           ? _value.backgroundColor
           : backgroundColor // ignore: cast_nullable_to_non_nullable
               as String,
-      backgroundContent: freezed == backgroundContent
-          ? _value.backgroundContent
-          : backgroundContent // ignore: cast_nullable_to_non_nullable
-              as String?,
+      contentBytes: null == contentBytes
+          ? _value.contentBytes
+          : contentBytes // ignore: cast_nullable_to_non_nullable
+              as String,
+      contentFileName: null == contentFileName
+          ? _value.contentFileName
+          : contentFileName // ignore: cast_nullable_to_non_nullable
+              as String,
+      contentThumbnail: null == contentThumbnail
+          ? _value.contentThumbnail
+          : contentThumbnail // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$ContentInfoImpl implements _ContentInfo {
-  const _$ContentInfoImpl(
-      {required this.contentId,
-      required this.contentName,
+class _$ContentInfoImpl extends _ContentInfo {
+  _$ContentInfoImpl(
+      {required this.id,
+      this.name = 'New Content',
       this.width = 360,
       this.height = 28,
       this.x = 0,
       this.y = 0,
       this.isReverse = false,
-      this.text = '',
-      this.textSize = 'small',
-      this.textColor = '#000000',
+      this.text = 'Example',
+      this.textSizeType = 's',
+      this.textSize = 11.2,
+      this.textColor = 'Color(0xffFFFFFF)',
       this.isBold = false,
       this.isItalic = false,
-      this.language,
+      this.languageType = '',
       this.backgroundType = 'color',
-      this.backgroundColor = '#FFFFFF',
-      this.backgroundContent});
+      this.backgroundColor = 'Color(0xff000000)',
+      this.contentBytes = '',
+      this.contentFileName = '',
+      this.contentThumbnail = ''})
+      : super._();
 
   factory _$ContentInfoImpl.fromJson(Map<String, dynamic> json) =>
       _$$ContentInfoImplFromJson(json);
 
   @override
-  final String contentId;
+  final String id;
   @override
-  final String contentName;
+  @JsonKey()
+  final String name;
   @override
   @JsonKey()
   final int width;
@@ -339,7 +383,10 @@ class _$ContentInfoImpl implements _ContentInfo {
   final String text;
   @override
   @JsonKey()
-  final String textSize;
+  final String textSizeType;
+  @override
+  @JsonKey()
+  final double textSize;
   @override
   @JsonKey()
   final String textColor;
@@ -350,7 +397,8 @@ class _$ContentInfoImpl implements _ContentInfo {
   @JsonKey()
   final bool isItalic;
   @override
-  final String? language;
+  @JsonKey()
+  final String languageType;
   @override
   @JsonKey()
   final String backgroundType;
@@ -358,11 +406,18 @@ class _$ContentInfoImpl implements _ContentInfo {
   @JsonKey()
   final String backgroundColor;
   @override
-  final String? backgroundContent;
+  @JsonKey()
+  final String contentBytes;
+  @override
+  @JsonKey()
+  final String contentFileName;
+  @override
+  @JsonKey()
+  final String contentThumbnail;
 
   @override
   String toString() {
-    return 'ContentInfo(contentId: $contentId, contentName: $contentName, width: $width, height: $height, x: $x, y: $y, isReverse: $isReverse, text: $text, textSize: $textSize, textColor: $textColor, isBold: $isBold, isItalic: $isItalic, language: $language, backgroundType: $backgroundType, backgroundColor: $backgroundColor, backgroundContent: $backgroundContent)';
+    return 'ContentInfo(id: $id, name: $name, width: $width, height: $height, x: $x, y: $y, isReverse: $isReverse, text: $text, textSizeType: $textSizeType, textSize: $textSize, textColor: $textColor, isBold: $isBold, isItalic: $isItalic, languageType: $languageType, backgroundType: $backgroundType, backgroundColor: $backgroundColor, contentBytes: $contentBytes, contentFileName: $contentFileName, contentThumbnail: $contentThumbnail)';
   }
 
   @override
@@ -370,10 +425,8 @@ class _$ContentInfoImpl implements _ContentInfo {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ContentInfoImpl &&
-            (identical(other.contentId, contentId) ||
-                other.contentId == contentId) &&
-            (identical(other.contentName, contentName) ||
-                other.contentName == contentName) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.width, width) || other.width == width) &&
             (identical(other.height, height) || other.height == height) &&
             (identical(other.x, x) || other.x == x) &&
@@ -381,6 +434,8 @@ class _$ContentInfoImpl implements _ContentInfo {
             (identical(other.isReverse, isReverse) ||
                 other.isReverse == isReverse) &&
             (identical(other.text, text) || other.text == text) &&
+            (identical(other.textSizeType, textSizeType) ||
+                other.textSizeType == textSizeType) &&
             (identical(other.textSize, textSize) ||
                 other.textSize == textSize) &&
             (identical(other.textColor, textColor) ||
@@ -388,36 +443,44 @@ class _$ContentInfoImpl implements _ContentInfo {
             (identical(other.isBold, isBold) || other.isBold == isBold) &&
             (identical(other.isItalic, isItalic) ||
                 other.isItalic == isItalic) &&
-            (identical(other.language, language) ||
-                other.language == language) &&
+            (identical(other.languageType, languageType) ||
+                other.languageType == languageType) &&
             (identical(other.backgroundType, backgroundType) ||
                 other.backgroundType == backgroundType) &&
             (identical(other.backgroundColor, backgroundColor) ||
                 other.backgroundColor == backgroundColor) &&
-            (identical(other.backgroundContent, backgroundContent) ||
-                other.backgroundContent == backgroundContent));
+            (identical(other.contentBytes, contentBytes) ||
+                other.contentBytes == contentBytes) &&
+            (identical(other.contentFileName, contentFileName) ||
+                other.contentFileName == contentFileName) &&
+            (identical(other.contentThumbnail, contentThumbnail) ||
+                other.contentThumbnail == contentThumbnail));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      contentId,
-      contentName,
-      width,
-      height,
-      x,
-      y,
-      isReverse,
-      text,
-      textSize,
-      textColor,
-      isBold,
-      isItalic,
-      language,
-      backgroundType,
-      backgroundColor,
-      backgroundContent);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        name,
+        width,
+        height,
+        x,
+        y,
+        isReverse,
+        text,
+        textSizeType,
+        textSize,
+        textColor,
+        isBold,
+        isItalic,
+        languageType,
+        backgroundType,
+        backgroundColor,
+        contentBytes,
+        contentFileName,
+        contentThumbnail
+      ]);
 
   @JsonKey(ignore: true)
   @override
@@ -433,32 +496,36 @@ class _$ContentInfoImpl implements _ContentInfo {
   }
 }
 
-abstract class _ContentInfo implements ContentInfo {
-  const factory _ContentInfo(
-      {required final String contentId,
-      required final String contentName,
+abstract class _ContentInfo extends ContentInfo {
+  factory _ContentInfo(
+      {required final String id,
+      final String name,
       final int width,
       final int height,
       final int x,
       final int y,
       final bool isReverse,
       final String text,
-      final String textSize,
+      final String textSizeType,
+      final double textSize,
       final String textColor,
       final bool isBold,
       final bool isItalic,
-      final String? language,
+      final String languageType,
       final String backgroundType,
       final String backgroundColor,
-      final String? backgroundContent}) = _$ContentInfoImpl;
+      final String contentBytes,
+      final String contentFileName,
+      final String contentThumbnail}) = _$ContentInfoImpl;
+  _ContentInfo._() : super._();
 
   factory _ContentInfo.fromJson(Map<String, dynamic> json) =
       _$ContentInfoImpl.fromJson;
 
   @override
-  String get contentId;
+  String get id;
   @override
-  String get contentName;
+  String get name;
   @override
   int get width;
   @override
@@ -472,7 +539,9 @@ abstract class _ContentInfo implements ContentInfo {
   @override
   String get text;
   @override
-  String get textSize;
+  String get textSizeType;
+  @override
+  double get textSize;
   @override
   String get textColor;
   @override
@@ -480,13 +549,17 @@ abstract class _ContentInfo implements ContentInfo {
   @override
   bool get isItalic;
   @override
-  String? get language;
+  String get languageType;
   @override
   String get backgroundType;
   @override
   String get backgroundColor;
   @override
-  String? get backgroundContent;
+  String get contentBytes;
+  @override
+  String get contentFileName;
+  @override
+  String get contentThumbnail;
   @override
   @JsonKey(ignore: true)
   _$$ContentInfoImplCopyWith<_$ContentInfoImpl> get copyWith =>

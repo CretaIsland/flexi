@@ -4,15 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../components/search_bar.dart';
+import '../../../feature/content/controller/content_info_controller.dart';
+import '../../../feature/content/controller/content_list_controller.dart';
 import '../../../utils/ui/colors.dart';
 import '../../../utils/ui/fonts.dart';
+import '../component/content_preview.dart';
 import '../modal/content_delete_modal.dart';
 
-
-
-final selectModeProvider = StateProvider<bool>((ref) => false);
-final selectAllProvider = StateProvider<bool>((ref) => false);
-final selectContentsProvider = StateProvider<List<int>>((ref) => List.empty());
 
 
 class ContentListScreen extends ConsumerWidget {
@@ -22,6 +20,14 @@ class ContentListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+    final selectMode = ref.watch(selectModeProvider);
+    final selectAll = ref.watch(selectAllProvider);
+    final selectContents = ref.watch(selectContentsProvider);
+    final contentListController = ref.watch(contentListControllerProvider.notifier);
+    final contentInfoController = ref.watch(contentInfoControllerProvider.notifier);
+
+
     return GestureDetector(
       onTap: () {
         ref.watch(selectModeProvider.notifier).state = false;
@@ -38,28 +44,31 @@ class ContentListScreen extends ConsumerWidget {
               children: [
                 Text('Contents', style: FlexiFont.semiBold30),
                 InkWell(
-                  onTap: () {
-                    if(ref.watch(selectModeProvider)) {
+                  onTap: () async {
+                    if(selectMode) {
                       showModalBottomSheet(
                         context: rootContext,
                         backgroundColor: Colors.transparent, 
                         builder: (context) => const ContentDeleteModal()
                       );
                     } else {
-                      // 새로 생성하고
-                      context.go('/content/info');
+                      var newContent = await contentListController.createContent();
+                      if(newContent != null) {
+                        contentInfoController.setContent(newContent!);
+                        context.go('/content/info');
+                      }
                     }
                   },
                   child: Container(
                     width: .04.sh,
                     height: .04.sh,
                     decoration: BoxDecoration(
-                      color: ref.watch(selectModeProvider) ? FlexiColor.secondary : FlexiColor.primary,
+                      color: selectMode ? FlexiColor.secondary : FlexiColor.primary,
                       borderRadius: BorderRadius.circular(.02.sh)
                     ),
                     child: Center(
                       child: Icon(
-                        ref.watch(selectModeProvider) ? Icons.delete_outline : Icons.add,
+                        selectMode ? Icons.delete_outline : Icons.add,
                         color: Colors.white, 
                         size: .03.sh
                       ),
@@ -75,7 +84,7 @@ class ContentListScreen extends ConsumerWidget {
             ),
             SizedBox(height: .025.sh),
             Visibility(
-              visible: ref.watch(selectModeProvider),
+              visible: selectMode,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -83,9 +92,9 @@ class ContentListScreen extends ConsumerWidget {
                   const SizedBox(width: 4),
                   InkWell(
                     onTap: () {
-                      ref.watch(selectAllProvider.notifier).state = !ref.watch(selectAllProvider);
+                      ref.watch(selectAllProvider.notifier).state = !selectAll;
                     },
-                    child: ref.watch(selectAllProvider) ? 
+                    child: selectAll ? 
                       Icon(Icons.check_circle, color: FlexiColor.secondary, size: .025.sh) :
                       Icon(Icons.check_circle_outline, color: FlexiColor.grey[600], size: .025.sh)
                   )
@@ -94,69 +103,79 @@ class ContentListScreen extends ConsumerWidget {
             ),
             SizedBox(height: .015.sh),
             Expanded(
-              child: contentListView(),
+              child: Consumer(
+                builder: (context, ref, child) {
+                  return ref.watch(contentListControllerProvider).when(
+                    data: (data) {
+                      if(data.isEmpty) {
+                        return Center(
+                          child: Text('no contents!', style: FlexiFont.regular14)
+                        );
+                      }
+                      return ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: data.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onLongPress: () => ref.watch(selectModeProvider.notifier).state = true,
+                            onTap: () {
+                              if(selectMode) {
+                                if(selectContents.contains(data[index].id)) {
+                                  selectContents.removeWhere((element) => element == data[index].id);
+                                  ref.watch(selectContentsProvider.notifier).state = [...selectContents];
+                                } else {
+                                  ref.watch(selectContentsProvider.notifier).state = [...selectContents, data[index].id];
+                                }
+                              } else {
+                                contentInfoController.setContent(data[index]);
+                                context.go('/content/info');
+                              }
+                            },
+                            child: Container(
+                              width: .38.sw,
+                              height: .13.sh,
+                              padding: EdgeInsets.all(.015.sh),
+                              margin: EdgeInsets.only(bottom: .02.sh),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(.01.sh)
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(data[index].name, style: FlexiFont.regular14),
+                                      Visibility(
+                                        visible: selectMode,
+                                        child: selectContents.contains(data[index].id) || selectAll ?
+                                          Icon(Icons.check_circle, color: FlexiColor.secondary, size: .025.sh) :
+                                          Icon(Icons.check_circle_outline, color: FlexiColor.grey[600], size: .025.sh)
+                                      )
+                                    ]
+                                  ),
+                                  ContentPreview(
+                                    previewWidth: .82.sw,
+                                    previewHeight: .07.sh,
+                                    contentInfo: data[index],
+                                  )
+                                ],
+                              ),
+                            )
+                          );
+                        },
+                      );
+                    }, 
+                    error: (error, stackTrace) => Center(child: Text('error during get contents', style: FlexiFont.regular14)), 
+                    loading: () => Center(child: CircularProgressIndicator(color: FlexiColor.primary))
+                  );
+                },
+              ),
             )
           ],
         ),
       ),
-    );
-  }
-
-  Consumer contentListView() {
-    return Consumer(
-      builder: (context, ref, child) {
-        return ListView.builder(
-          padding: EdgeInsets.zero,
-          itemCount: 10,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onLongPress: () => ref.watch(selectModeProvider.notifier).state = true,
-              onTap: () {
-                if(ref.watch(selectModeProvider)) {
-
-                } else {
-                  context.go('/content/info');
-                }
-              },
-              child: Container(
-                width: .38.sw,
-                height: .13.sh,
-                padding: EdgeInsets.all(.015.sh),
-                margin: EdgeInsets.only(bottom: .02.sh),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(.01.sh)
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Content name', style: FlexiFont.regular14),
-                        Visibility(
-                          visible: ref.watch(selectModeProvider),
-                          child: ref.watch(selectContentsProvider).contains(index) ?
-                            Icon(Icons.check_circle, color: FlexiColor.secondary, size: .025.sh) :
-                            Icon(Icons.check_circle_outline, color: FlexiColor.grey[600], size: .025.sh)
-                        )
-                      ]
-                    ),
-                    Container(
-                      width: .82.sw,
-                      height: .07.sh,
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.circular(.01.sh)
-                      ),
-                    )
-                  ],
-                ),
-              )
-            );
-          },
-        );
-      },
     );
   }
 
