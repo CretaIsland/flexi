@@ -1,32 +1,32 @@
+import 'package:flexi/feature/content/model/content_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-import '../../../common/providers/local_storage_provider.dart';
 import '../../../feature/content/controller/background_edit_controller.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
-import '../../../utils/ui/colors.dart';
-import '../../../utils/ui/fonts.dart';
+import '../../../utils/ui/color.dart';
+import '../../../utils/ui/font.dart';
 import '../component/background_edit_preview.dart';
 
 
 
 class BackgroundEditScreen extends ConsumerWidget {
-  BackgroundEditScreen({super.key});
+  const BackgroundEditScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final contentInfoController = ref.watch(contentInfoControllerProvider.notifier);
     final contentInfo = ref.watch(backgroundEditControllerProvider);
+    final contentInfoController = ref.watch(contentInfoControllerProvider.notifier);
 
     return Scaffold(
       body: Container(
         width: 1.sw,
         height: 1.sh,
-        color: FlexiColor.stringToColor(contentInfo!.backgroundColor),
+        color: FlexiColor.stringToColor(contentInfo.backgroundColor),
         child: Column(
           children: [
             Container(
@@ -41,7 +41,6 @@ class BackgroundEditScreen extends ConsumerWidget {
                     children: [
                       IconButton(
                         onPressed: () {
-                          contentInfoController.undo();
                           context.go('/content/info');
                         },
                         icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: .03.sh),
@@ -165,10 +164,10 @@ class BackgroundEditScreen extends ConsumerWidget {
 
   Consumer galleryContent(WidgetRef ref) {
     return Consumer(
-      builder: (context, ref, child) {
-        
-        final localStorageController = ref.watch(localStorageProvider.notifier);
-        final localStorageFiles = ref.watch(localStorageProvider);        
+      builder: (context, ref, child) {  
+
+        final localStorageController = ref.watch(localStorageControllerProvider.notifier);
+        final localStorageFiles = ref.watch(localStorageControllerProvider);     
 
         return NotificationListener<ScrollNotification>(
           onNotification: (notification) {
@@ -189,11 +188,11 @@ class BackgroundEditScreen extends ConsumerWidget {
                     if(snapshot.hasData && snapshot.data != null) {
                       return InkWell(
                         onTap: () async {
-                          var fileBytes = await localStorageFiles[index].originBytes;
-                          if(fileBytes != null) {
+                          var filePath = await localStorageController.getFilePath(localStorageFiles[index]);
+                          if(filePath.isNotEmpty) {
                             ref.watch(backgroundEditControllerProvider.notifier).setBackgroundContent(
                               localStorageFiles[index].type.name,
-                              fileBytes,
+                              filePath,
                               localStorageFiles[index].title ?? '',
                               snapshot.data!
                             );

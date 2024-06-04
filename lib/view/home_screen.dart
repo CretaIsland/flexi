@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../components/bottom_navigation_bar.dart';
-import '../utils/ui/colors.dart';
+import '../component/bottom_navigation_bar.dart';
+import '../utils/ui/color.dart';
 
 
 

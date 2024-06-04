@@ -24,7 +24,7 @@ class ContentInfo with _$ContentInfo {
     @Default('')String languageType,
     @Default('color') String backgroundType,
     @Default('Color(0xff000000)') String backgroundColor,
-    @Default('')String contentBytes,
+    @Default('')String contentPath,
     @Default('')String contentFileName,
     @Default('')String contentThumbnail
   }) = _ContentInfo;

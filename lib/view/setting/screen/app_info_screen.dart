@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../components/text_button.dart';
-import '../../../components/text_field.dart';
-import '../../../utils/ui/colors.dart';
-import '../../../utils/ui/fonts.dart';
+import '../../../component/text_button.dart';
+import '../../../component/text_field.dart';
+import '../../../utils/ui/color.dart';
+import '../../../utils/ui/font.dart';
 
 
 
@@ -17,7 +17,6 @@ class AppInfoScreen extends StatefulWidget {
 }
 
 class _AppInfoScreenState extends State<AppInfoScreen> {
-
 
   late TextEditingController _versionController;
 

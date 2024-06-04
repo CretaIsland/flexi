@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../components/text_button.dart';
-import '../utils/ui/colors.dart';
-import '../utils/ui/fonts.dart';
+import '../component/text_button.dart';
+import '../utils/ui/color.dart';
+import '../utils/ui/font.dart';
 
 
 
@@ -17,7 +17,6 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-
 
   late TextEditingController _emailController;
   late TextEditingController _passwordController;

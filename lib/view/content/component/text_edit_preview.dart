@@ -1,10 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../feature/content/controller/text_edit_controller.dart';
 import '../../../feature/content/model/content_info.dart';
-import '../../../utils/ui/colors.dart';
+import '../../../utils/ui/color.dart';
+import 'content_clipper.dart';
 
 
 
@@ -18,34 +21,42 @@ class TextEditPreview extends ConsumerStatefulWidget {
 
 class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
 
-  late TextEditingController? _textController;
+  late ContentInfo contentInfo;
+  late TextEditingController textEditingController;
   late double aspectRatio;
-  late double responsiveHeight;
   late double responsiveWidth;
+  late double responsiveHeight;
   late double textScaler;
 
 
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController(text: widget.contentInfo.text);
-    aspectRatio = widget.contentInfo.width / widget.contentInfo.height;
-    responsiveWidth = widget.contentInfo.width <= 360 ? 1.sw : (1.sw / 360) * widget.contentInfo.width;
+    contentInfo = widget.contentInfo;
+
+    textEditingController = TextEditingController(text: contentInfo.text);
+    aspectRatio = contentInfo.width / contentInfo.height;
+    responsiveWidth = contentInfo.width <= 360 ? 1.sw : (1.sw / 360) * contentInfo.width;
     responsiveHeight = responsiveWidth / aspectRatio;
-    if(responsiveHeight > widget.contentInfo.height) {
-      textScaler = responsiveHeight / widget.contentInfo.height;
+    textScaler = 0.0;
+    if(responsiveHeight > contentInfo.height) {
+      textScaler = responsiveHeight / contentInfo.height;
     } else {
-      textScaler = widget.contentInfo.height / responsiveHeight;
-    } 
+      textScaler = contentInfo.height / responsiveHeight;
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    textEditingController.dispose();
   }
 
 
   @override
   Widget build(BuildContext context) {
-    
     print('content rebuild');
-    print(widget.contentInfo.isBold);
-
+    contentInfo = widget.contentInfo;
     return Container(
       width: 1.sw,
       height: .15.sh,
@@ -54,24 +65,31 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
         child: Stack(
           children: [
             SizedBox(
-              width: 1.sw, 
-              height: .15.sh
+              width: 1.sw,
+              height: .15.sh,
             ),
             ...chunkContent(
               Container(
                 width: responsiveWidth,
                 height: responsiveHeight,
-                color: FlexiColor.stringToColor(widget.contentInfo.backgroundColor)
-              )
+                decoration: BoxDecoration(
+                  color: FlexiColor.stringToColor(contentInfo.backgroundColor),
+                  image: contentInfo.backgroundType != 'color' && contentInfo.contentThumbnail.isNotEmpty ?
+                    DecorationImage(
+                      image: Image.memory(base64Decode(contentInfo.contentThumbnail)).image,
+                      fit: BoxFit.cover
+                    ) : null
+                ),
+              ),
             ),
-            Container(
-              color: Colors.pink.withOpacity(.2),
+            SizedBox(
               width: 1.sw, 
               height: .15.sh,
               child: TextField(
-                controller: _textController,
-                maxLines: 10,
+                controller: textEditingController,
+                maxLines: null,
                 readOnly: ref.watch(sttModeProvider),
+                focusNode: ref.watch(keyboardEventProvider),
                 decoration: const InputDecoration(
                   contentPadding: EdgeInsets.zero,
                   border: InputBorder.none,
@@ -79,20 +97,17 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
                   focusedBorder: InputBorder.none
                 ),
                 style: TextStyle(
-                  fontSize: textScaler * widget.contentInfo.textSize,
-                  fontWeight: widget.contentInfo.isBold ? FontWeight.bold : FontWeight.normal,
-                  fontStyle: widget.contentInfo.isItalic ? FontStyle.italic : FontStyle.normal,
-                  color: FlexiColor.stringToColor(widget.contentInfo.textColor),
-                  height: widget.contentInfo.textSizeType == 's' ? 1.6 : widget.contentInfo.textSizeType == 'm' ? 1.4 : 1.2
+                  fontSize: textScaler * contentInfo.textSize,
+                  fontWeight: contentInfo.isBold ? FontWeight.bold : FontWeight.normal,
+                  fontStyle: contentInfo.isItalic ? FontStyle.italic : FontStyle.normal,
+                  color: FlexiColor.stringToColor(contentInfo.textColor),
+                  height: contentInfo.textSizeType == 's' ? 1.6 : contentInfo.textSizeType == 'm' ? 1.4 : 1.2
                 ),
-                onChanged: (value) {
-                  ref.watch(textEditControllerProvider.notifier).setText(value);
-                  print(ref.watch(textEditControllerProvider)!.text);
-                },
+                onChanged: (value) => ref.watch(textEditControllerProvider.notifier).setText(value)
               ),
-            ),
+            )
           ],
-        )
+        ),
       ),
     );
   }
@@ -100,11 +115,11 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
   List<Widget> chunkContent(Widget content) {
     List<Widget> chunks = [];
 
-    if(widget.contentInfo.width <= 360) {
+    if(contentInfo.width <= 360) {
       return [content];
     }
 
-    for(int i = 0; i < widget.contentInfo.width ~/ 360; i++) {
+    for(int i = 0; i < contentInfo.width ~/ 360; i++) {
       chunks.add(
         Positioned(
           left: i * -1.sw,
@@ -117,7 +132,7 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
       );
     }
 
-    if(widget.contentInfo.width % 360 != 0.0) {
+    if(contentInfo.width % 360 != 0.0) {
       chunks.add(
         Positioned(
           left: chunks.length * -1.sw,
@@ -129,29 +144,8 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
         )
       );
     }
+
     return chunks;
   }
 
 }
-
-
-// clipper
-class ContentClipper extends CustomClipper<Rect> {
-  ContentClipper({required this.dx, required this.width, required this.height});
-
-  final double dx;
-  final double width;
-  final double height;
-
-  @override
-  Rect getClip(Size size) {
-    return Rect.fromLTWH(dx, 0.0, width, height);
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) {
-    return false;
-  }
-
-}
-

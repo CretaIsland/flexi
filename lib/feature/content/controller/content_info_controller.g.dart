@@ -7,7 +7,7 @@ part of 'content_info_controller.dart';
 // **************************************************************************
 
 String _$contentInfoControllerHash() =>
-    r'0af5653fc0373b9833f879353c0d0c724010423c';
+    r'17d20bab18dddf31e39336d231698674d181fe6f';
 
 /// See also [ContentInfoController].
 @ProviderFor(ContentInfoController)

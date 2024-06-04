@@ -3,10 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../components/text_field.dart';
-import '../../../utils/ui/colors.dart';
-import '../../../utils/ui/fonts.dart';
-import '../modal/bluetooth_modal.dart';
+import '../../../component/text_field.dart';
+import '../../../utils/ui/color.dart';
+import '../../../utils/ui/font.dart';
 
 
 
@@ -20,11 +19,9 @@ class DeviceInfoScreen extends ConsumerStatefulWidget {
 
 class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
 
-
   late TextEditingController _deviceNameController;
   late TextEditingController _deviceTimezoneController;
   late TextEditingController _connectedNetworkController;
-
 
 
   @override
@@ -98,12 +95,7 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                     Text('Bluetooth', style: FlexiFont.regular14),
                     SizedBox(height: .01.sh),
                     InkWell(
-                      onTap: () => showModalBottomSheet(
-                        context: widget.rootContext,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) => BluetoothListModal(),
-                      ),
+                      onTap: () {},
                       child: Container(
                         width: .43.sw,
                         height: .125.sh,
@@ -159,7 +151,7 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                       activeColor: FlexiColor.primary,
                       thumbColor: Colors.white,
                       onChanged: (value) {
-                        
+
                       }
                     ),
                   ),
@@ -186,7 +178,6 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
               height: .06.sh,
               controller: _connectedNetworkController,
             )
-        
           ],
         ),
       ),

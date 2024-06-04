@@ -1,54 +1,49 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../model/content_info.dart';
-import '../repository/content_repository.dart';
+import '../repository/content_respository.dart';
 
 part 'content_info_controller.g.dart';
+
 
 
 @riverpod
 class ContentInfoController extends _$ContentInfoController {
 
-  late ContentRepository _contentRepository;
-  ContentInfo? _originalContent; 
+  late ContentRespository _contentRespository;
+  ContentInfo? _originalContent;
 
 
   @override
   ContentInfo? build() {
-    ref.onDispose(() {
-      print("<<<<<<< ContentEditController dispose <<<<<<<");
-    });
-    print("<<<<<<< ContentEditController build <<<<<<<");
-    _contentRepository = ContentRepository();
+    _contentRespository = ContentRespository();
     return null;
   }
 
-  // 현재 편집중인 콘텐츠의 모델을 상태 값으로 가지고 있어야함.
-  void setContent(ContentInfo selectContent) {
-    state = selectContent;
-    _originalContent = selectContent;
+
+  void setContent(ContentInfo targetContent) {
+    state = targetContent;
+    _originalContent = targetContent;
   }
 
-  // 수정사항 저장
-  Future<void> saveChange() async {
-    state = await _contentRepository.update(state!.id, state!);
-    _originalContent = state;
-  }
-
-  // 수정사항 삭제
   void undo() {
     state = _originalContent;
   }
 
-  // 수정사항 적용
-  void change(ContentInfo editContent) {
-    state = editContent;
+  void change(ContentInfo updateContent) {
+    state = updateContent;
+    _originalContent = updateContent;
+  }
+
+  Future<void> saveChange() async {
+    state = await _contentRespository.update(state!.id, state!);
     _originalContent = state;
   }
 
-  // =================== 콘텐츠 메타데이터 수정 ===================
-
-  // 콘텐츠 리버스여부 변경
+  
+  // =================== 콘텐츠 메타데이터 수정 =================== 
+  // 콘텐츠 이름 변경
   void setName(String name) {
     state = state!.copyWith(name: name);
   }
@@ -77,5 +72,5 @@ class ContentInfoController extends _$ContentInfoController {
   void setReverse(bool isReverse) {
     state = state!.copyWith(isReverse: isReverse);
   }
-
+  
 }

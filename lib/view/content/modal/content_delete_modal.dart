@@ -3,21 +3,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../components/text_button.dart';
+import '../../../component/text_button.dart';
 import '../../../feature/content/controller/content_list_controller.dart';
-import '../../../utils/ui/colors.dart';
-import '../../../utils/ui/fonts.dart';
+import '../../../utils/ui/color.dart';
+import '../../../utils/ui/font.dart';
 
 
 
 class ContentDeleteModal extends ConsumerWidget {
   const ContentDeleteModal({super.key});
 
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
     final contentListController = ref.watch(contentListControllerProvider.notifier);
-    
+
     return Container(
       width: .93.sw,
       height: .35.sh,
@@ -39,11 +40,11 @@ class ContentDeleteModal extends ConsumerWidget {
             height: .06.sh, 
             text: 'Delete',
             fillColor: FlexiColor.secondary,
-            onPressed: () {
+            onPressed: () async {
               if(ref.watch(selectAllProvider)) {
-                contentListController.deleteAllContents();
+                await contentListController.deleteAll();
               } else {
-                contentListController.deleteContents(ref.watch(selectContentsProvider));
+                await contentListController.deleteContents(ref.watch(selectContentsProvider));
               }
               ref.watch(selectModeProvider.notifier).state = false;
               ref.watch(selectAllProvider.notifier).state = false;
@@ -59,8 +60,8 @@ class ContentDeleteModal extends ConsumerWidget {
               child: Text('Cancel', style: FlexiFont.regular16),
             ),
           )
-        ],
-      ),
+        ]
+      )
     );
   }
 

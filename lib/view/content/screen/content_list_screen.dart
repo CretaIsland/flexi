@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../components/search_bar.dart';
+import '../../../component/search_bar.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../feature/content/controller/content_list_controller.dart';
-import '../../../utils/ui/colors.dart';
-import '../../../utils/ui/fonts.dart';
+import '../../../utils/ui/color.dart';
+import '../../../utils/ui/font.dart';
 import '../component/content_preview.dart';
 import '../modal/content_delete_modal.dart';
 
@@ -54,7 +54,7 @@ class ContentListScreen extends ConsumerWidget {
                     } else {
                       var newContent = await contentListController.createContent();
                       if(newContent != null) {
-                        contentInfoController.setContent(newContent!);
+                        contentInfoController.setContent(newContent);
                         context.go('/content/info');
                       }
                     }
@@ -109,7 +109,7 @@ class ContentListScreen extends ConsumerWidget {
                     data: (data) {
                       if(data.isEmpty) {
                         return Center(
-                          child: Text('no contents!', style: FlexiFont.regular14)
+                          child: Text('no contents!', style: FlexiFont.regular14),
                         );
                       }
                       return ListView.builder(
@@ -121,7 +121,7 @@ class ContentListScreen extends ConsumerWidget {
                             onTap: () {
                               if(selectMode) {
                                 if(selectContents.contains(data[index].id)) {
-                                  selectContents.removeWhere((element) => element == data[index].id);
+                                  selectContents.removeAt(index);
                                   ref.watch(selectContentsProvider.notifier).state = [...selectContents];
                                 } else {
                                   ref.watch(selectContentsProvider.notifier).state = [...selectContents, data[index].id];
@@ -156,9 +156,9 @@ class ContentListScreen extends ConsumerWidget {
                                     ]
                                   ),
                                   ContentPreview(
-                                    previewWidth: .82.sw,
-                                    previewHeight: .07.sh,
-                                    contentInfo: data[index],
+                                    previewWidth: .82.sw, 
+                                    previewHeight: .07.sh, 
+                                    contentInfo: data[index]
                                   )
                                 ],
                               ),

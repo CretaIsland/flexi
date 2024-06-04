@@ -25,7 +25,7 @@ _$ContentInfoImpl _$$ContentInfoImplFromJson(Map<String, dynamic> json) =>
       backgroundType: json['backgroundType'] as String? ?? 'color',
       backgroundColor:
           json['backgroundColor'] as String? ?? 'Color(0xff000000)',
-      contentBytes: json['contentBytes'] as String? ?? '',
+      contentPath: json['contentPath'] as String? ?? '',
       contentFileName: json['contentFileName'] as String? ?? '',
       contentThumbnail: json['contentThumbnail'] as String? ?? '',
     );
@@ -48,7 +48,7 @@ Map<String, dynamic> _$$ContentInfoImplToJson(_$ContentInfoImpl instance) =>
       'languageType': instance.languageType,
       'backgroundType': instance.backgroundType,
       'backgroundColor': instance.backgroundColor,
-      'contentBytes': instance.contentBytes,
+      'contentPath': instance.contentPath,
       'contentFileName': instance.contentFileName,
       'contentThumbnail': instance.contentThumbnail,
     };

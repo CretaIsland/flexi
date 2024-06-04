@@ -1,20 +1,16 @@
-
-
-
 import 'package:sembast/sembast.dart';
 
 import '../../database/app_database.dart';
 import '../model/content_info.dart';
 
-class ContentRepository {
 
-  static const String storeName = 'contents';
-  final _contentStore = stringMapStoreFactory.store(storeName);
 
+class ContentRespository {
+
+  final _contentStore = stringMapStoreFactory.store('content');
   Future<Database> get _dbClient async => await AppDatabase.instance.database;
 
 
-  // 콘텐츠 생성
   Future<ContentInfo?> create() async {
     try {
       String contentId = DateTime.now().toString();
@@ -27,32 +23,29 @@ class ContentRepository {
     return null;
   }
 
-  // 특정 콘텐츠 조회
   Future<ContentInfo?> get(String contentId) async {
     try {
       var result = await _contentStore.record(contentId).get(await _dbClient);
-    return ContentInfo.fromJson(result!);
+      return ContentInfo.fromJson(result!);
     } catch (error) {
       print('error at ContentRepository.get >>> $error');
     }
     return null;
   }
 
-  // 모든 콘텐츠 조회
-  Future<List<ContentInfo>> getAllDatas() async {
+  Future<List<ContentInfo>> getAll() async {
     try {
       var results = await _contentStore.find(await _dbClient);
-      return results.map((data) => ContentInfo.fromJson(data.value)).toList();
+      return results.map((result) => ContentInfo.fromJson(result.value)).toList();
     } catch (error) {
-      print('error at ContentRepository.getAllDatas >>> $error');
+      print('error at ContentRepository.getAll >>> $error');
     }
     return List.empty();
   }
-  
-  // 콘텐츠 데이터 수정
-  Future<ContentInfo?> update(String contentId, ContentInfo editContent) async {
+
+  Future<ContentInfo?> update(String contentId, ContentInfo updateContent) async {
     try {
-      var result = await _contentStore.record(contentId).update(await _dbClient, editContent.toJson());
+      var result = await _contentStore.record(contentId).update(await _dbClient, updateContent.toJson());
       return ContentInfo.fromJson(result!);
     } catch (error) {
       print('error at ContentRepository.update >>> $error');
@@ -60,8 +53,7 @@ class ContentRepository {
     return null;
   }
 
-  // 특정 콘텐츠 삭제
-  Future<void> delete(String contentId) async {
+  Future<void> delete(String contentId) async{
     try {
       await _contentStore.record(contentId).delete(await _dbClient);
     } catch (error) {
@@ -69,12 +61,11 @@ class ContentRepository {
     }
   }
 
-  // 모든 콘텐츠 삭제
-  Future<void> deleteAllDatas() async {
+  Future<void> deleteAll() async{
     try {
       await _contentStore.delete(await _dbClient);
     } catch (error) {
-      print('error at ContentRepository.delete >>> $error');
+      print('error at ContentRepository.deleteAll >>> $error');
     }
   }
 

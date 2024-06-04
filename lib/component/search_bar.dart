@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../utils/ui/colors.dart';
-import '../utils/ui/fonts.dart';
+import '../utils/ui/color.dart';
+import '../utils/ui/font.dart';
 
 
 

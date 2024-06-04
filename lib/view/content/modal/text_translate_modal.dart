@@ -3,11 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../components/text_button.dart';
-import '../../../feature/content/controller/current_language_controller.dart';
+import '../../../component/text_button.dart';
 import '../../../feature/content/controller/text_edit_controller.dart';
-import '../../../utils/ui/colors.dart';
-import '../component/languages_bar.dart';
+import '../../../utils/ui/color.dart';
+import '../component/language_list_bar.dart';
 
 
 
@@ -31,13 +30,11 @@ class _TextTranslateModalState extends ConsumerState<TextTranslateModal> {
   }
 
 
-
   @override
   Widget build(BuildContext context) {
 
-    final contentInfo = ref.watch(textEditControllerProvider);
-    _inputController.text = contentInfo!.text;
-    _outputController.text = ref.watch(textEditControllerProvider.notifier).translateResult();
+    _inputController.text = ref.watch(textEditControllerProvider).text;
+    _outputController.text = ref.watch(translateResultProvider);
 
     return Container(
       width: 1.sw,
@@ -50,7 +47,7 @@ class _TextTranslateModalState extends ConsumerState<TextTranslateModal> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            LanguagesBar(type: 'input'),
+            LanguageListBar(type: 'input'),
             SizedBox(height: .02.sh),
             Container(
               width: .89.sw,
@@ -68,12 +65,13 @@ class _TextTranslateModalState extends ConsumerState<TextTranslateModal> {
                   enabledBorder: InputBorder.none
                 ),
                 maxLines: null,
+                onChanged: (value) => ref.watch(textEditControllerProvider.notifier).setText(value),
               ),
             ),
             SizedBox(height: .03.sh),
             Icon(Icons.arrow_drop_down, color: FlexiColor.primary, size: .05.sh),
             SizedBox(height: .03.sh),
-            LanguagesBar(type: 'output'),
+            LanguageListBar(type: 'output'),
             SizedBox(height: .02.sh),
             Container(
               width: .89.sw,
@@ -100,7 +98,7 @@ class _TextTranslateModalState extends ConsumerState<TextTranslateModal> {
               text: 'Add',
               fillColor: FlexiColor.primary,
               onPressed: () async {
-                ref.watch(textEditControllerProvider.notifier).setText(ref.watch(textEditControllerProvider.notifier).translateResult());          
+                ref.watch(textEditControllerProvider.notifier).setText(_outputController.text);
                 context.pop();
               },
             )

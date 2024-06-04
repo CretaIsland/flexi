@@ -1,28 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'hotspot_provider.dart';
+part of 'content_send_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$accessibilityNetworksHash() =>
-    r'71c216e34924f54affc59f047c7f463a8029dbdf';
+String _$contentSendControllerHash() =>
+    r'2cf014610976d0820cf82ca8aae7768f36a81e41';
 
-/// See also [accessibilityNetworks].
-@ProviderFor(accessibilityNetworks)
-final accessibilityNetworksProvider =
-    AutoDisposeFutureProvider<Stream<List<NetworkInfo>>>.internal(
-  accessibilityNetworks,
-  name: r'accessibilityNetworksProvider',
+/// See also [ContentSendController].
+@ProviderFor(ContentSendController)
+final contentSendControllerProvider =
+    AutoDisposeNotifierProvider<ContentSendController, void>.internal(
+  ContentSendController.new,
+  name: r'contentSendControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$accessibilityNetworksHash,
+      : _$contentSendControllerHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef AccessibilityNetworksRef
-    = AutoDisposeFutureProviderRef<Stream<List<NetworkInfo>>>;
+typedef _$ContentSendController = AutoDisposeNotifier<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

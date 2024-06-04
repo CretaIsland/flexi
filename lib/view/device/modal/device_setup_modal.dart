@@ -2,15 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wifi_iot/wifi_iot.dart';
 
-import '../../../common/providers/network_control_provider.dart';
-import '../../../components/loading_overlay.dart';
-import '../../../components/text_button.dart';
-import '../../../feature/device/controller/wifi_setup_controller.dart';
-import '../../../feature/device/provider/timezone_provider.dart';
-import '../../../utils/ui/colors.dart';
-import '../../../utils/ui/fonts.dart';
+import '../../../component/loading_overlay.dart';
+import '../../../component/text_button.dart';
+import '../../../utils/ui/color.dart';
+import '../../../utils/ui/font.dart';
 
 
 
@@ -19,11 +15,6 @@ class DeviceSetupModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-    final wifiCredentials = ref.watch(wifiCredentialsControllerProvider);
-    final networkController = ref.watch(networkControllerProvider.notifier);
-
-    
     return Container(
       width: .93.sw,
       height: .35.sh,
@@ -48,35 +39,9 @@ class DeviceSetupModal extends ConsumerWidget {
             onPressed: () async {
               OverlayEntry loadingOverlay = OverlayEntry(builder: (_) => const LoadingOverlay());
               Navigator.of(context).overlay!.insert(loadingOverlay);
-
-              // register 메세지 전송
-              var registerData = {
-                'register': {
-                  'command': 'register',
-                  'deviceId': 'DBAP0001',
-                  'ssid': wifiCredentials['ssid'],
-                  'type': wifiCredentials['type'],
-                  'password': wifiCredentials['passphrase'],
-                  'timezone': ref.watch(selectTimezoneProvider)
-                }
-              };
-              // socket을 이용해 전송
-              
-              final isConnect = await networkController.connectNetwork(
-                ssid: wifiCredentials['ssid']!,
-                password: wifiCredentials['passphrase'],
-                security: wifiCredentials['type'] == 'WPA' ? 
-                  NetworkSecurity.WPA : wifiCredentials['type'] == 'WEP' ? 
-                    NetworkSecurity.WEP : NetworkSecurity.NONE
-              );
-              
               loadingOverlay.remove();
               context.pop();
-              if(isConnect) {
-                ref.invalidate(selectTimezoneProvider);
-                ref.invalidate(wifiCredentialsControllerProvider);
-                context.go('/device/list');
-              }
+              context.go('/device/list');
             },
           ),
           SizedBox(

@@ -7,12 +7,12 @@ part of 'background_edit_controller.dart';
 // **************************************************************************
 
 String _$backgroundEditControllerHash() =>
-    r'6bcfd3aa43823f039722efed9eed9354c28e8908';
+    r'c9ac7b958d914f8848e195bcb4be0a74903fceea';
 
 /// See also [BackgroundEditController].
 @ProviderFor(BackgroundEditController)
-final backgroundEditControllerProvider = AutoDisposeNotifierProvider<
-    BackgroundEditController, ContentInfo?>.internal(
+final backgroundEditControllerProvider =
+    AutoDisposeNotifierProvider<BackgroundEditController, ContentInfo>.internal(
   BackgroundEditController.new,
   name: r'backgroundEditControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -22,6 +22,23 @@ final backgroundEditControllerProvider = AutoDisposeNotifierProvider<
   allTransitiveDependencies: null,
 );
 
-typedef _$BackgroundEditController = AutoDisposeNotifier<ContentInfo?>;
+typedef _$BackgroundEditController = AutoDisposeNotifier<ContentInfo>;
+String _$localStorageControllerHash() =>
+    r'c11bd9a8a95a8b5bc717324f69a78a0a6cdb69b5';
+
+/// See also [LocalStorageController].
+@ProviderFor(LocalStorageController)
+final localStorageControllerProvider = AutoDisposeNotifierProvider<
+    LocalStorageController, List<AssetEntity>>.internal(
+  LocalStorageController.new,
+  name: r'localStorageControllerProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$localStorageControllerHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$LocalStorageController = AutoDisposeNotifier<List<AssetEntity>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

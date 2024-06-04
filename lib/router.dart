@@ -54,7 +54,7 @@ GoRouter router = GoRouter(
           path: '/device/setWifi',
           pageBuilder: (context, state) => NoTransitionPage(child: WifiSetScreen(rootContext: context)),
         ),
-        // ********** Content **********
+        // // ********** Content **********
         GoRoute(
           path: '/content/list',
           pageBuilder: (context, state) => NoTransitionPage(child: ContentListScreen(rootContext: context)),
@@ -63,7 +63,7 @@ GoRouter router = GoRouter(
           path: '/content/info',
           pageBuilder: (context, state) => const NoTransitionPage(child: ContentInfoScreen()),
         ),
-        // ********** Settings **********
+        // // ********** Settings **********
         GoRoute(
           path: '/settings',
           pageBuilder: (context, state) => const NoTransitionPage(child: SettingsScreen()),
@@ -80,7 +80,6 @@ GoRouter router = GoRouter(
           path: '/settings/deviceRecovery',
           pageBuilder: (context, state) => const NoTransitionPage(child: DeviceRecoveryScreen()),
         ),
-        
       ]
     ),
     // ********** QR Code **********
@@ -95,16 +94,16 @@ GoRouter router = GoRouter(
     // ********** Edit Content **********
     GoRoute(
       path: '/content/editText',
-      pageBuilder: (context, state) => NoTransitionPage(child: TextEditScreen(rootContext: context)),
+      pageBuilder: (context, state) => const NoTransitionPage(child: TextEditScreen()),
     ),
     GoRoute(
       path: '/content/editBackground',
-      pageBuilder: (context, state) => NoTransitionPage(child: BackgroundEditScreen()),
+      pageBuilder: (context, state) => const NoTransitionPage(child: BackgroundEditScreen()),
     ),
     // ********** Send Content **********
     GoRoute(
       path: '/content/send',
-      pageBuilder: (context, state) => NoTransitionPage(child: ContentSendScreen()),
+      pageBuilder: (context, state) => const NoTransitionPage(child: ContentSendScreen()),
     ),
   ]
 );

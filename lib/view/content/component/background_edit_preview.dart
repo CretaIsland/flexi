@@ -5,7 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../feature/content/model/content_info.dart';
-import '../../../utils/ui/colors.dart';
+import '../../../utils/ui/color.dart';
+import 'content_clipper.dart';
 
 
 
@@ -15,7 +16,7 @@ class BackgroundEditPreview extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
+    
     double aspectRatio = contentInfo.width / contentInfo.height;
     double responsiveWidth = contentInfo.width <= 360 ? 1.sw : (1.sw / 360) * contentInfo.width;
     double responsiveHeight = responsiveWidth / aspectRatio;
@@ -38,10 +39,8 @@ class BackgroundEditPreview extends ConsumerWidget {
               height: (responsiveHeight + .005.sh) * (contentInfo.width / 360).ceil(),
             ),
             ...chunkContent(
-              contentWidth: contentInfo.width,
-              contentHeight: contentInfo.height,
-              width: responsiveWidth, 
-              height: responsiveHeight, 
+              width: responsiveWidth,
+              height: responsiveHeight,
               content: Container(
                 width: responsiveWidth,
                 height: responsiveHeight,
@@ -73,7 +72,7 @@ class BackgroundEditPreview extends ConsumerWidget {
     );
   }
 
-  List<Widget> chunkContent({required int contentWidth, required int contentHeight, required double width, required double height, required Widget content}) {
+  List<Widget> chunkContent({required double width, required double height, required Widget content}) {
     List<Widget> chunks = [];
 
     if(contentInfo.width <= 360) {
@@ -93,11 +92,11 @@ class BackgroundEditPreview extends ConsumerWidget {
       );
     }
 
-    if(contentWidth % 360 != 0.0) {
+    if(contentInfo.width % 360 != 0.0) {
       chunks.add(
         Positioned(
           left: chunks.length * -1.sw,
-          top: chunks.length * (height + 10),
+          top: chunks.length * (height + .005.sh),
           child: ClipRect(
             clipper: ContentClipper(dx: (chunks.length * 1.sw), width: width % 1.sw, height: height),
             child: content,
@@ -105,28 +104,8 @@ class BackgroundEditPreview extends ConsumerWidget {
         )
       );
     }
+
     return chunks;
-  }
-
-
-}
-
-
-class ContentClipper extends CustomClipper<Rect> {
-  ContentClipper({required this.dx, required this.width, required this.height});
-  
-  final double dx;
-  final double width;
-  final double height;
-
-  @override
-  Rect getClip(Size size) {
-    return Rect.fromLTWH(dx, 0.0, width, height);
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) {
-    return false;
   }
 
 }

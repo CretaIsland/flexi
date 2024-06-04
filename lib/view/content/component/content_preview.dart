@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../feature/content/model/content_info.dart';
-import '../../../utils/ui/colors.dart';
+import '../../../utils/ui/color.dart';
 
 
 

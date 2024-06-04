@@ -36,7 +36,7 @@ mixin _$ContentInfo {
   String get languageType => throw _privateConstructorUsedError;
   String get backgroundType => throw _privateConstructorUsedError;
   String get backgroundColor => throw _privateConstructorUsedError;
-  String get contentBytes => throw _privateConstructorUsedError;
+  String get contentPath => throw _privateConstructorUsedError;
   String get contentFileName => throw _privateConstructorUsedError;
   String get contentThumbnail => throw _privateConstructorUsedError;
 
@@ -69,7 +69,7 @@ abstract class $ContentInfoCopyWith<$Res> {
       String languageType,
       String backgroundType,
       String backgroundColor,
-      String contentBytes,
+      String contentPath,
       String contentFileName,
       String contentThumbnail});
 }
@@ -103,7 +103,7 @@ class _$ContentInfoCopyWithImpl<$Res, $Val extends ContentInfo>
     Object? languageType = null,
     Object? backgroundType = null,
     Object? backgroundColor = null,
-    Object? contentBytes = null,
+    Object? contentPath = null,
     Object? contentFileName = null,
     Object? contentThumbnail = null,
   }) {
@@ -172,9 +172,9 @@ class _$ContentInfoCopyWithImpl<$Res, $Val extends ContentInfo>
           ? _value.backgroundColor
           : backgroundColor // ignore: cast_nullable_to_non_nullable
               as String,
-      contentBytes: null == contentBytes
-          ? _value.contentBytes
-          : contentBytes // ignore: cast_nullable_to_non_nullable
+      contentPath: null == contentPath
+          ? _value.contentPath
+          : contentPath // ignore: cast_nullable_to_non_nullable
               as String,
       contentFileName: null == contentFileName
           ? _value.contentFileName
@@ -213,7 +213,7 @@ abstract class _$$ContentInfoImplCopyWith<$Res>
       String languageType,
       String backgroundType,
       String backgroundColor,
-      String contentBytes,
+      String contentPath,
       String contentFileName,
       String contentThumbnail});
 }
@@ -245,7 +245,7 @@ class __$$ContentInfoImplCopyWithImpl<$Res>
     Object? languageType = null,
     Object? backgroundType = null,
     Object? backgroundColor = null,
-    Object? contentBytes = null,
+    Object? contentPath = null,
     Object? contentFileName = null,
     Object? contentThumbnail = null,
   }) {
@@ -314,9 +314,9 @@ class __$$ContentInfoImplCopyWithImpl<$Res>
           ? _value.backgroundColor
           : backgroundColor // ignore: cast_nullable_to_non_nullable
               as String,
-      contentBytes: null == contentBytes
-          ? _value.contentBytes
-          : contentBytes // ignore: cast_nullable_to_non_nullable
+      contentPath: null == contentPath
+          ? _value.contentPath
+          : contentPath // ignore: cast_nullable_to_non_nullable
               as String,
       contentFileName: null == contentFileName
           ? _value.contentFileName
@@ -350,7 +350,7 @@ class _$ContentInfoImpl extends _ContentInfo {
       this.languageType = '',
       this.backgroundType = 'color',
       this.backgroundColor = 'Color(0xff000000)',
-      this.contentBytes = '',
+      this.contentPath = '',
       this.contentFileName = '',
       this.contentThumbnail = ''})
       : super._();
@@ -407,7 +407,7 @@ class _$ContentInfoImpl extends _ContentInfo {
   final String backgroundColor;
   @override
   @JsonKey()
-  final String contentBytes;
+  final String contentPath;
   @override
   @JsonKey()
   final String contentFileName;
@@ -417,7 +417,7 @@ class _$ContentInfoImpl extends _ContentInfo {
 
   @override
   String toString() {
-    return 'ContentInfo(id: $id, name: $name, width: $width, height: $height, x: $x, y: $y, isReverse: $isReverse, text: $text, textSizeType: $textSizeType, textSize: $textSize, textColor: $textColor, isBold: $isBold, isItalic: $isItalic, languageType: $languageType, backgroundType: $backgroundType, backgroundColor: $backgroundColor, contentBytes: $contentBytes, contentFileName: $contentFileName, contentThumbnail: $contentThumbnail)';
+    return 'ContentInfo(id: $id, name: $name, width: $width, height: $height, x: $x, y: $y, isReverse: $isReverse, text: $text, textSizeType: $textSizeType, textSize: $textSize, textColor: $textColor, isBold: $isBold, isItalic: $isItalic, languageType: $languageType, backgroundType: $backgroundType, backgroundColor: $backgroundColor, contentPath: $contentPath, contentFileName: $contentFileName, contentThumbnail: $contentThumbnail)';
   }
 
   @override
@@ -449,8 +449,8 @@ class _$ContentInfoImpl extends _ContentInfo {
                 other.backgroundType == backgroundType) &&
             (identical(other.backgroundColor, backgroundColor) ||
                 other.backgroundColor == backgroundColor) &&
-            (identical(other.contentBytes, contentBytes) ||
-                other.contentBytes == contentBytes) &&
+            (identical(other.contentPath, contentPath) ||
+                other.contentPath == contentPath) &&
             (identical(other.contentFileName, contentFileName) ||
                 other.contentFileName == contentFileName) &&
             (identical(other.contentThumbnail, contentThumbnail) ||
@@ -477,7 +477,7 @@ class _$ContentInfoImpl extends _ContentInfo {
         languageType,
         backgroundType,
         backgroundColor,
-        contentBytes,
+        contentPath,
         contentFileName,
         contentThumbnail
       ]);
@@ -514,7 +514,7 @@ abstract class _ContentInfo extends ContentInfo {
       final String languageType,
       final String backgroundType,
       final String backgroundColor,
-      final String contentBytes,
+      final String contentPath,
       final String contentFileName,
       final String contentThumbnail}) = _$ContentInfoImpl;
   _ContentInfo._() : super._();
@@ -555,7 +555,7 @@ abstract class _ContentInfo extends ContentInfo {
   @override
   String get backgroundColor;
   @override
-  String get contentBytes;
+  String get contentPath;
   @override
   String get contentFileName;
   @override
