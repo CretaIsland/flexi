@@ -15,35 +15,14 @@ part 'text_edit_controller.g.dart';
 final keyboardEventProvider = StateProvider<FocusNode>((ref) => FocusNode());
 final sttModeProvider = StateProvider<bool>((ref) => true);
 final isSpeakingProvider = StateProvider<bool>((ref) => false);
-final translateResultProvider = StateProvider<String>((ref) => '');
-
-@riverpod
-String recordData(RecordDataRef ref) {
-  final textEditController = ref.read(textEditControllerProvider.notifier);
-  return textEditController.recordData();
-}
 
 
 @riverpod
 class TextEditController extends _$TextEditController {
-  
-  late GoogleTranslator _translator;
-  late SpeechToText _stt;
-  late String _recordData;
-  late String _translateResult;
-  bool _sttInit = false;
-
-  String recordData() => _recordData;
-  String translateResult() => _translateResult;
-
+ 
 
   @override
   ContentInfo build() {
-    _translator = GoogleTranslator();
-    _stt = SpeechToText();
-    _stt.initialize().then((value) => _sttInit = value);
-    _recordData = '';
-    _translateResult = '';
     return ref.read(contentInfoControllerProvider)!;
   }
 
@@ -79,44 +58,6 @@ class TextEditController extends _$TextEditController {
     state = state.copyWith(isItalic: isItalic);
   }
 
-  
-  // 번역하기
-  Future<String> translate(String inputText, String from, String to) async {
-    try {
-      var outputText = await _translator.translate(
-        inputText, 
-        from: from, 
-        to: to
-      );
-      return _translateResult = outputText.text;
-    } catch (error) {
-      print('error during TextEditController.translate >>> $error');
-    }
-    return '';
-  }
-
-  // 녹음 시작하기
-  void startRecord(String localeId) async {
-    try {
-      if(_sttInit) {
-        _stt.listen(
-          listenOptions: SpeechListenOptions(cancelOnError: true),
-          localeId: localeId,
-          onResult: (value) => _recordData = value.recognizedWords
-        );
-      }
-    } catch (error) {
-      print('error during TextEditController.startRecord >>> $error');
-    }
-  }
-
-  // 녹음 종료하기
-    void stopRecord() async {
-    if(_sttInit) {
-      await _stt.stop();
-    }
-  }
-
 }
 
 
@@ -133,6 +74,7 @@ class CurrentInputLanguagesController extends _$CurrentInputLanguagesController 
   @override
   List<Map<String, String>> build() {
     _currentLanguagesRepository = CurrentLanguagesRepository();
+    getCurrentLanguages();
     return List.empty();
   }
 
@@ -164,6 +106,7 @@ class CurrentOutputLanguagesController extends _$CurrentOutputLanguagesControlle
   @override
   List<Map<String, String>> build() {
     _currentLanguagesRepository = CurrentLanguagesRepository();
+    getCurrentLanguages();
     return List.empty();
   }
 
@@ -181,6 +124,71 @@ class CurrentOutputLanguagesController extends _$CurrentOutputLanguagesControlle
       state = [...state, currentLanguage];
     } else {
       state = [currentLanguage];
+    }
+  }
+
+}
+
+@riverpod
+class SpeechToTextController extends _$SpeechToTextController {
+
+  late SpeechToText _stt;
+  bool _sttInit = false;
+
+
+  @override
+  String build() {
+    _stt = SpeechToText();
+    _stt.initialize().then((value) => _sttInit = value);
+    return '';
+  }
+
+  // 녹음 시작하기
+  void startRecord(String localeId) async {
+    try {
+      if(_sttInit) {
+        _stt.listen(
+          listenOptions: SpeechListenOptions(cancelOnError: true),
+          localeId: localeId,
+          onResult: (value) => state = value.recognizedWords
+        );
+      }
+    } catch (error) {
+      print('error during TextEditController.startRecord >>> $error');
+    }
+  }
+
+  // 녹음 종료하기
+  void stopRecord() async {
+    if(_sttInit) {
+      await _stt.stop();
+    }
+  }
+
+}
+
+@riverpod
+class TextTranslateController extends _$TextTranslateController {
+
+  late GoogleTranslator _translator;
+
+  @override
+  String build() {
+    _translator = GoogleTranslator();
+    return '';
+  }
+
+  // 번역하기
+  Future<void> translate(String inputText, String from, String to) async {
+    try {
+      var outputText = await _translator.translate(
+        inputText,
+        from: from, 
+        to: to
+      );
+      state = outputText.text;
+    } catch (error) {
+      print('error during TextEditController.translate >>> $error');
     }
   }
 

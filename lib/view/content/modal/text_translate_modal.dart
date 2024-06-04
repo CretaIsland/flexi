@@ -34,7 +34,7 @@ class _TextTranslateModalState extends ConsumerState<TextTranslateModal> {
   Widget build(BuildContext context) {
 
     _inputController.text = ref.watch(textEditControllerProvider).text;
-    _outputController.text = ref.watch(translateResultProvider);
+    _outputController.text = ref.watch(textTranslateControllerProvider);
 
     return Container(
       width: 1.sw,
@@ -47,7 +47,7 @@ class _TextTranslateModalState extends ConsumerState<TextTranslateModal> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            LanguageListBar(type: 'input'),
+            const InputLanguageListBar(),
             SizedBox(height: .02.sh),
             Container(
               width: .89.sw,
@@ -71,7 +71,7 @@ class _TextTranslateModalState extends ConsumerState<TextTranslateModal> {
             SizedBox(height: .03.sh),
             Icon(Icons.arrow_drop_down, color: FlexiColor.primary, size: .05.sh),
             SizedBox(height: .03.sh),
-            LanguageListBar(type: 'output'),
+            const OutputLanguageListBar(),
             SizedBox(height: .02.sh),
             Container(
               width: .89.sw,
@@ -99,6 +99,7 @@ class _TextTranslateModalState extends ConsumerState<TextTranslateModal> {
               fillColor: FlexiColor.primary,
               onPressed: () async {
                 ref.watch(textEditControllerProvider.notifier).setText(_outputController.text);
+                ref.invalidate(textTranslateControllerProvider);
                 context.pop();
               },
             )
