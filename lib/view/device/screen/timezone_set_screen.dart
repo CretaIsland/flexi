@@ -4,14 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../component/search_bar.dart';
+import '../../../feature/device/provider/timezone_provider.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 
 
 
 class TimezoneSetScreen extends ConsumerWidget {
-  TimezoneSetScreen({super.key});
-  final selectTimezoneProvider = StateProvider<int>((ref) => -1);
+  const TimezoneSetScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -56,12 +56,13 @@ class TimezoneSetScreen extends ConsumerWidget {
   Consumer timezoneListView() {
     return Consumer(
       builder: (context, ref, child) {
+        final timezones = ref.watch(timezonesProvider);
         return ListView.separated(
           padding: EdgeInsets.zero,
-          itemCount: 10,
+          itemCount: timezones.length,
           itemBuilder: (context, index) {
             return InkWell(
-              onTap: () => ref.watch(selectTimezoneProvider.notifier).state = index,
+              onTap: () => ref.watch(selectTimezoneProvider.notifier).state = timezones[index],
               child: Padding(
                 padding: EdgeInsets.all(.02.sh),
                 child: Row(
@@ -70,8 +71,8 @@ class TimezoneSetScreen extends ConsumerWidget {
                     SizedBox(
                       width: .65.sw,
                       child: Text(
-                        'Timezone', 
-                        style: ref.watch(selectTimezoneProvider) == index ? 
+                        timezones[index]['label']!, 
+                        style: ref.watch(selectTimezoneProvider) == timezones[index] ? 
                           FlexiFont.regular16.copyWith(color: FlexiColor.primary) : 
                           FlexiFont.regular16,
                         overflow: TextOverflow.ellipsis,
@@ -79,7 +80,7 @@ class TimezoneSetScreen extends ConsumerWidget {
                       )
                     ),
                     Visibility(
-                      visible: ref.watch(selectTimezoneProvider) == index,
+                      visible: ref.watch(selectTimezoneProvider) == timezones[index],
                       child: Icon(Icons.check, color: FlexiColor.primary, size: .025.sh),
                     )
                   ],

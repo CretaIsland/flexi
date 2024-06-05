@@ -20,17 +20,17 @@ DeviceInfo _$DeviceInfoFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$DeviceInfo {
-  String? get connectionMode => throw _privateConstructorUsedError;
-  String? get deviceId => throw _privateConstructorUsedError;
-  String? get ip => throw _privateConstructorUsedError;
-  bool? get isRegistered => throw _privateConstructorUsedError;
-  bool? get hasContent => throw _privateConstructorUsedError;
-  bool? get bluetoothBonded => throw _privateConstructorUsedError;
-  String? get bluetooth => throw _privateConstructorUsedError;
-  String? get bluetoothId => throw _privateConstructorUsedError;
-  int? get volume => throw _privateConstructorUsedError;
-  String? get timezone => throw _privateConstructorUsedError;
-  String? get deviceName => throw _privateConstructorUsedError;
+  String get connectionMode => throw _privateConstructorUsedError;
+  String get deviceId => throw _privateConstructorUsedError;
+  String get ip => throw _privateConstructorUsedError;
+  bool get isRegistered => throw _privateConstructorUsedError;
+  bool get hasContent => throw _privateConstructorUsedError;
+  bool get bluetoothBonded => throw _privateConstructorUsedError;
+  String get bluetooth => throw _privateConstructorUsedError;
+  String get bluetoothId => throw _privateConstructorUsedError;
+  int get volume => throw _privateConstructorUsedError;
+  String get timezone => throw _privateConstructorUsedError;
+  String get deviceName => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -45,17 +45,17 @@ abstract class $DeviceInfoCopyWith<$Res> {
       _$DeviceInfoCopyWithImpl<$Res, DeviceInfo>;
   @useResult
   $Res call(
-      {String? connectionMode,
-      String? deviceId,
-      String? ip,
-      bool? isRegistered,
-      bool? hasContent,
-      bool? bluetoothBonded,
-      String? bluetooth,
-      String? bluetoothId,
-      int? volume,
-      String? timezone,
-      String? deviceName});
+      {String connectionMode,
+      String deviceId,
+      String ip,
+      bool isRegistered,
+      bool hasContent,
+      bool bluetoothBonded,
+      String bluetooth,
+      String bluetoothId,
+      int volume,
+      String timezone,
+      String deviceName});
 }
 
 /// @nodoc
@@ -71,63 +71,63 @@ class _$DeviceInfoCopyWithImpl<$Res, $Val extends DeviceInfo>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? connectionMode = freezed,
-    Object? deviceId = freezed,
-    Object? ip = freezed,
-    Object? isRegistered = freezed,
-    Object? hasContent = freezed,
-    Object? bluetoothBonded = freezed,
-    Object? bluetooth = freezed,
-    Object? bluetoothId = freezed,
-    Object? volume = freezed,
-    Object? timezone = freezed,
-    Object? deviceName = freezed,
+    Object? connectionMode = null,
+    Object? deviceId = null,
+    Object? ip = null,
+    Object? isRegistered = null,
+    Object? hasContent = null,
+    Object? bluetoothBonded = null,
+    Object? bluetooth = null,
+    Object? bluetoothId = null,
+    Object? volume = null,
+    Object? timezone = null,
+    Object? deviceName = null,
   }) {
     return _then(_value.copyWith(
-      connectionMode: freezed == connectionMode
+      connectionMode: null == connectionMode
           ? _value.connectionMode
           : connectionMode // ignore: cast_nullable_to_non_nullable
-              as String?,
-      deviceId: freezed == deviceId
+              as String,
+      deviceId: null == deviceId
           ? _value.deviceId
           : deviceId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      ip: freezed == ip
+              as String,
+      ip: null == ip
           ? _value.ip
           : ip // ignore: cast_nullable_to_non_nullable
-              as String?,
-      isRegistered: freezed == isRegistered
+              as String,
+      isRegistered: null == isRegistered
           ? _value.isRegistered
           : isRegistered // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      hasContent: freezed == hasContent
+              as bool,
+      hasContent: null == hasContent
           ? _value.hasContent
           : hasContent // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      bluetoothBonded: freezed == bluetoothBonded
+              as bool,
+      bluetoothBonded: null == bluetoothBonded
           ? _value.bluetoothBonded
           : bluetoothBonded // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      bluetooth: freezed == bluetooth
+              as bool,
+      bluetooth: null == bluetooth
           ? _value.bluetooth
           : bluetooth // ignore: cast_nullable_to_non_nullable
-              as String?,
-      bluetoothId: freezed == bluetoothId
+              as String,
+      bluetoothId: null == bluetoothId
           ? _value.bluetoothId
           : bluetoothId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      volume: freezed == volume
+              as String,
+      volume: null == volume
           ? _value.volume
           : volume // ignore: cast_nullable_to_non_nullable
-              as int?,
-      timezone: freezed == timezone
+              as int,
+      timezone: null == timezone
           ? _value.timezone
           : timezone // ignore: cast_nullable_to_non_nullable
-              as String?,
-      deviceName: freezed == deviceName
+              as String,
+      deviceName: null == deviceName
           ? _value.deviceName
           : deviceName // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
     ) as $Val);
   }
 }
@@ -141,17 +141,17 @@ abstract class _$$DeviceInfoImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String? connectionMode,
-      String? deviceId,
-      String? ip,
-      bool? isRegistered,
-      bool? hasContent,
-      bool? bluetoothBonded,
-      String? bluetooth,
-      String? bluetoothId,
-      int? volume,
-      String? timezone,
-      String? deviceName});
+      {String connectionMode,
+      String deviceId,
+      String ip,
+      bool isRegistered,
+      bool hasContent,
+      bool bluetoothBonded,
+      String bluetooth,
+      String bluetoothId,
+      int volume,
+      String timezone,
+      String deviceName});
 }
 
 /// @nodoc
@@ -165,63 +165,63 @@ class __$$DeviceInfoImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? connectionMode = freezed,
-    Object? deviceId = freezed,
-    Object? ip = freezed,
-    Object? isRegistered = freezed,
-    Object? hasContent = freezed,
-    Object? bluetoothBonded = freezed,
-    Object? bluetooth = freezed,
-    Object? bluetoothId = freezed,
-    Object? volume = freezed,
-    Object? timezone = freezed,
-    Object? deviceName = freezed,
+    Object? connectionMode = null,
+    Object? deviceId = null,
+    Object? ip = null,
+    Object? isRegistered = null,
+    Object? hasContent = null,
+    Object? bluetoothBonded = null,
+    Object? bluetooth = null,
+    Object? bluetoothId = null,
+    Object? volume = null,
+    Object? timezone = null,
+    Object? deviceName = null,
   }) {
     return _then(_$DeviceInfoImpl(
-      connectionMode: freezed == connectionMode
+      connectionMode: null == connectionMode
           ? _value.connectionMode
           : connectionMode // ignore: cast_nullable_to_non_nullable
-              as String?,
-      deviceId: freezed == deviceId
+              as String,
+      deviceId: null == deviceId
           ? _value.deviceId
           : deviceId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      ip: freezed == ip
+              as String,
+      ip: null == ip
           ? _value.ip
           : ip // ignore: cast_nullable_to_non_nullable
-              as String?,
-      isRegistered: freezed == isRegistered
+              as String,
+      isRegistered: null == isRegistered
           ? _value.isRegistered
           : isRegistered // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      hasContent: freezed == hasContent
+              as bool,
+      hasContent: null == hasContent
           ? _value.hasContent
           : hasContent // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      bluetoothBonded: freezed == bluetoothBonded
+              as bool,
+      bluetoothBonded: null == bluetoothBonded
           ? _value.bluetoothBonded
           : bluetoothBonded // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      bluetooth: freezed == bluetooth
+              as bool,
+      bluetooth: null == bluetooth
           ? _value.bluetooth
           : bluetooth // ignore: cast_nullable_to_non_nullable
-              as String?,
-      bluetoothId: freezed == bluetoothId
+              as String,
+      bluetoothId: null == bluetoothId
           ? _value.bluetoothId
           : bluetoothId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      volume: freezed == volume
+              as String,
+      volume: null == volume
           ? _value.volume
           : volume // ignore: cast_nullable_to_non_nullable
-              as int?,
-      timezone: freezed == timezone
+              as int,
+      timezone: null == timezone
           ? _value.timezone
           : timezone // ignore: cast_nullable_to_non_nullable
-              as String?,
-      deviceName: freezed == deviceName
+              as String,
+      deviceName: null == deviceName
           ? _value.deviceName
           : deviceName // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
     ));
   }
 }
@@ -230,44 +230,55 @@ class __$$DeviceInfoImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$DeviceInfoImpl extends _DeviceInfo {
   _$DeviceInfoImpl(
-      {this.connectionMode,
-      this.deviceId,
-      this.ip,
-      this.isRegistered,
-      this.hasContent,
-      this.bluetoothBonded,
-      this.bluetooth,
-      this.bluetoothId,
-      this.volume,
-      this.timezone,
-      this.deviceName})
+      {this.connectionMode = '',
+      this.deviceId = '',
+      this.ip = '',
+      this.isRegistered = false,
+      this.hasContent = false,
+      this.bluetoothBonded = false,
+      this.bluetooth = '',
+      this.bluetoothId = '',
+      this.volume = 50,
+      this.timezone = '',
+      this.deviceName = ''})
       : super._();
 
   factory _$DeviceInfoImpl.fromJson(Map<String, dynamic> json) =>
       _$$DeviceInfoImplFromJson(json);
 
   @override
-  final String? connectionMode;
+  @JsonKey()
+  final String connectionMode;
   @override
-  final String? deviceId;
+  @JsonKey()
+  final String deviceId;
   @override
-  final String? ip;
+  @JsonKey()
+  final String ip;
   @override
-  final bool? isRegistered;
+  @JsonKey()
+  final bool isRegistered;
   @override
-  final bool? hasContent;
+  @JsonKey()
+  final bool hasContent;
   @override
-  final bool? bluetoothBonded;
+  @JsonKey()
+  final bool bluetoothBonded;
   @override
-  final String? bluetooth;
+  @JsonKey()
+  final String bluetooth;
   @override
-  final String? bluetoothId;
+  @JsonKey()
+  final String bluetoothId;
   @override
-  final int? volume;
+  @JsonKey()
+  final int volume;
   @override
-  final String? timezone;
+  @JsonKey()
+  final String timezone;
   @override
-  final String? deviceName;
+  @JsonKey()
+  final String deviceName;
 
   @override
   String toString() {
@@ -333,44 +344,44 @@ class _$DeviceInfoImpl extends _DeviceInfo {
 
 abstract class _DeviceInfo extends DeviceInfo {
   factory _DeviceInfo(
-      {final String? connectionMode,
-      final String? deviceId,
-      final String? ip,
-      final bool? isRegistered,
-      final bool? hasContent,
-      final bool? bluetoothBonded,
-      final String? bluetooth,
-      final String? bluetoothId,
-      final int? volume,
-      final String? timezone,
-      final String? deviceName}) = _$DeviceInfoImpl;
+      {final String connectionMode,
+      final String deviceId,
+      final String ip,
+      final bool isRegistered,
+      final bool hasContent,
+      final bool bluetoothBonded,
+      final String bluetooth,
+      final String bluetoothId,
+      final int volume,
+      final String timezone,
+      final String deviceName}) = _$DeviceInfoImpl;
   _DeviceInfo._() : super._();
 
   factory _DeviceInfo.fromJson(Map<String, dynamic> json) =
       _$DeviceInfoImpl.fromJson;
 
   @override
-  String? get connectionMode;
+  String get connectionMode;
   @override
-  String? get deviceId;
+  String get deviceId;
   @override
-  String? get ip;
+  String get ip;
   @override
-  bool? get isRegistered;
+  bool get isRegistered;
   @override
-  bool? get hasContent;
+  bool get hasContent;
   @override
-  bool? get bluetoothBonded;
+  bool get bluetoothBonded;
   @override
-  String? get bluetooth;
+  String get bluetooth;
   @override
-  String? get bluetoothId;
+  String get bluetoothId;
   @override
-  int? get volume;
+  int get volume;
   @override
-  String? get timezone;
+  String get timezone;
   @override
-  String? get deviceName;
+  String get deviceName;
   @override
   @JsonKey(ignore: true)
   _$$DeviceInfoImplCopyWith<_$DeviceInfoImpl> get copyWith =>

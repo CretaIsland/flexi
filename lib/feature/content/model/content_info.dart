@@ -8,8 +8,8 @@ part 'content_info.g.dart';
 @freezed
 class ContentInfo with _$ContentInfo {
   factory ContentInfo({
-    required String id,
-    @Default('New Content')String name,
+    required String contentId,
+    @Default('New Content')String contentName,
     @Default(360) int width,
     @Default(28) int height,
     @Default(0) int x,
@@ -19,14 +19,14 @@ class ContentInfo with _$ContentInfo {
     @Default('s')String textSizeType,
     @Default(11.2)double textSize,
     @Default('Color(0xffFFFFFF)') String textColor,
-    @Default(false) bool isBold,
-    @Default(false) bool isItalic,
-    @Default('')String languageType,
+    @Default(false) bool bold,
+    @Default(false) bool italic,
+    @Default('')String language,
     @Default('color') String backgroundType,
     @Default('Color(0xff000000)') String backgroundColor,
-    @Default('')String contentPath,
-    @Default('')String contentFileName,
-    @Default('')String contentThumbnail
+    @Default('')String filePath,
+    @Default('')String fileName,
+    @Default('')String fileThumbnail
   }) = _ContentInfo;
 
   ContentInfo._();

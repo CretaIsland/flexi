@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
+import '../../../feature/device/controller/device_setup_controller.dart';
 import '../../../utils/ui/color.dart';
 
 
@@ -34,6 +35,17 @@ class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
     _qrcodeController!.scannedDataStream.listen((scanData) async {
       if(scanData.code != null) {
         _qrcodeController!.pauseCamera();
+        // qrcode가 wifi qrcode인지 확인
+        if(ref.watch(wifiCredentialsControllerProvider.notifier).scanQrcodeValue(scanData.code!)) {
+          context.go('/device/setWifi');
+        } else {
+          Fluttertoast.showToast(
+            msg: 'Invalid QR Code.',
+            toastLength: Toast.LENGTH_LONG,
+            backgroundColor: Colors.white,
+            textColor: FlexiColor.secondary
+          ).whenComplete(() => _qrcodeController!.resumeCamera());
+        }
       }
     });
   }

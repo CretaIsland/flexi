@@ -1,52 +1,96 @@
 import 'dart:async';
-import 'dart:developer' as developer;
+import 'dart:convert';
 import 'dart:io';
-import 'package:connectivity_plus/connectivity_plus.dart';
+
 import 'package:flutter/services.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
-import 'package:network_info_plus/network_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wifi_iot/wifi_iot.dart';
-import 'package:socket_io_client/socket_io_client.dart'
-    as IO; //socket io client
-import 'package:socket_io/socket_io.dart' as socketIOServer; //socket io server
+import 'package:network_info_plus/network_info_plus.dart' as network_info_plus;
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-import '../constants/config.dart';
+import '../../feature/content/model/content_info.dart';
+import '../../feature/device/model/network_info.dart';
 
-part 'network_providers.freezed.dart';
 part 'network_providers.g.dart';
 
-// ** 인터넷 연결 상태 가져오기
-// 안드로이드 <uses-permission android:name="android.permission.INTERNET" />
-// iOS <key>com.apple.security.network.client</key><true/>
-// wifi도 꺼지고 통신사 셀룰러도 안되면 false
+
+
 @riverpod
-Stream<InternetStatus> internetConnection(InternetConnectionRef ref) {
-  developer.log('internetConnectionProvider');
-  return InternetConnection().onStatusChange;
+class UDPBroadcast extends _$UDPBroadcast {
+  late RawDatagramSocket socket;
+  late StreamController<String> controller;
+  String? _other;
+  String? _wifiBroadcast;
+  InternetAddress? myIp;
+
+  get other => _other;
+
+  @override
+  Stream<String> build() {
+    ref.onDispose(() {
+      print('uDPBroadcastProvider dispose');
+      socket.close();
+      controller.close();
+    });
+    print('uDPBroadcastProvider');
+    controller = StreamController<String>();
+    _init();
+    return controller.stream;
+  }
+
+  Future<void> _init() async {
+    myIp = await ref.watch(ipProvider.future);
+    _wifiBroadcast = ref.watch(networkInfoProvider).value?.broadcast;
+
+    socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 4546);
+    socket.broadcastEnabled = true;
+
+    socket.listen((event) {
+      Datagram? d = socket.receive();
+      if (d == null) return;
+
+      _other = d.address.host;
+
+      print('_other:$_other');
+      print('myIp:${myIp?.address}');
+
+      //자기 자신은 자기 가 보낸 메시지 수신 하지 않기(이니면 디버깅 곤란)
+      if (_other != myIp?.address) {
+      //보낸 아이피 여기서 socketIO 서버 아이피를 안다.
+      print('보낸 아이피 $_other');
+      print('소켓 아이오 서버 : $_other');
+
+      String message = utf8.decode(d.data);
+      controller.add(message);
+    }
+  });
+ }
+
+  void sendData(String data) async {
+    //한글 되게 uint8
+    List<int> sendData = utf8.encode(data);
+
+    //iOS는 나가는게 안되는데 wifiBroadcast주소에 보내면 된다.
+    // iOS wifiBroadcast
+    if (Platform.isIOS) {
+      //ios
+      _other = _wifiBroadcast;
+      print("send _wifiBroadcast $_other");
+      socket.send(
+      sendData, InternetAddress('$_other'), 4546);
+    } else {
+      print("send 255.255.255.255");
+      socket.send(sendData, InternetAddress('255.255.255.255'), 4546);
+    }
+  }
 }
 
-// ** 네트워크 변화 감지 (Wifi <=> Hotspot)
-@riverpod
-Stream<List<ConnectivityResult>> networkChange(NetworkChangeRef ref) {
-  developer.log('networkChangeProvider');
-  return Connectivity().onConnectivityChanged;
-}
-
-// ** 아이피 정보 가져오기  IOS에서 널인 경우 많음 networkInfoProvider를 사용하자
 @riverpod
 Future<InternetAddress?> ip(IpRef ref) async {
-  developer.log('ipProvider');
+  print('ipProvider');
   InternetAddress? internetAddress;
   try {
-    // 네트워크 인터페이스 정보 가져오기
-    List<NetworkInterface> interfaces = await NetworkInterface.list(
-        includeLoopback: false, type: InternetAddressType.IPv4);
-
-    //안드로이드 [wlan0], iOS [pdp_ip0, ipsec0, en0, ipsec2, ipsec3]
-    //안드로이드 wlan0, iOS en0
+    List<NetworkInterface> interfaces = await NetworkInterface.list(includeLoopback: false, type: InternetAddressType.IPv4);
     for (var interface in interfaces) {
       //print(interface.name);
       //print(interface.addresses);
@@ -72,320 +116,116 @@ Future<InternetAddress?> ip(IpRef ref) async {
   return internetAddress;
 }
 
-// ** 네트워크 정보 가져오기
-/*
-권한 필요  위치 정보 액세스 권한 팝업
---안드로이드
-ACCESS_FINE_LOCATION 안드로이드 10 이상
-ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION 안드로이드 10 미만
-ACCESS_NETWORK_STATE 안드로이드 12 이상
---iOS
-Info.plist
-NSLocationWhenInUseUsageDescription
-Podfile
-'PERMISSION_LOCATION=1',
-Xcode Signing & Capabilities에서 Access Wi-Fi Information 추가
-*/
 @riverpod
-Future<
-    ({
-      String? wifiName,
-      String? wifiBSSID,
-      String? wifiIP,
-      String? wifiIPv6,
-      String? wifiSubmask,
-      String? wifiBroadcast,
-      String? wifiGateway,
-    })?> networkInfo(NetworkInfoRef ref) async {
+Future<NetworkInfo?> networkInfo(NetworkInfoRef ref) async {
   try {
-    developer.log('networkInfoProvider');
+    print('networkInfoProvider');
     if (await Permission.locationWhenInUse.request().isGranted) {
-      final info = NetworkInfo();
+      final info = network_info_plus.NetworkInfo();
       final wifiName = await info.getWifiName();
       final wifiBSSID = await info.getWifiBSSID();
       final wifiIP = await info.getWifiIP();
       final wifiIPv6 = await info.getWifiIPv6();
-      final wifiSubmask = await info.getWifiSubmask();
       final wifiBroadcast = await info.getWifiBroadcast();
-      final wifiGateway = await info.getWifiGatewayIP();
-      //print('network info wifiName:$wifiName');
-      //print('network info wifiBSSID:$wifiBSSID');
-      //print('network info wifiIP:$wifiIP');
-      //print('network info wifiIPv6:$wifiIPv6');
-      //print('network info wifiSubmask:$wifiSubmask');
-      //print('network info wifiBroadcast:$wifiBroadcast');
-      //print('network info wifiGateway:$wifiGateway');
-      return (
-        wifiName: wifiName,
-        wifiBSSID: wifiBSSID,
-        wifiIP: wifiIP,
-        wifiIPv6: wifiIPv6,
-        wifiSubmask: wifiSubmask,
-        wifiBroadcast: wifiBroadcast,
-        wifiGateway: wifiGateway
+      return NetworkInfo(
+        ssid: wifiName,
+        bssid: wifiBSSID,
+        ip: wifiIP,
+        ipv6: wifiIPv6,
+        broadcast: wifiBroadcast,
       );
     } else {
       print('Unauthorized to get NetworkInfo');
       return null;
     }
   } on PlatformException catch (e) {
-    print('error :$e');
-    return null;
+  print('error :$e');
+  return null;
   }
 }
 
-// ** 주변 access 가능한 wifi ssid 목록 가져오기
-// 안드로이드만 가능 (iOS ??)
-// duplicated error 뜨면 https://velog.io/@mraz3068/Duplicate-class-kotlin.collections.jdk8.CollectionsJDK8Kt-found-in-modules-kotlin-stdlib-1.8.0-org.jetbrains.kotlinkotlin-stdlib1.8.0-and-kotlin-stdlib-jdk8-1.7.20-org.jetbrains.kotlinkotlin-stdlib-jdk81.7.20
-@riverpod
-Future<List<WifiNetworkInfo>> wifis(WifisRef ref) async {
-  developer.log('wifisProvider');
-  try {
-    if (Platform.isAndroid) {
-      final wifiNetworks = await WiFiForIoTPlugin.loadWifiList();
-      return wifiNetworks
-          .map((e) => WifiNetworkInfo(
-              ssid: e.ssid,
-              bssid: e.bssid,
-              capabilities: e.capabilities,
-              frequency: e.frequency,
-              level: e.level,
-              timestamp: e.timestamp,
-              password: e.password))
-          .toList();
-    } else {
-      return [];
-    }
-  } catch (e) {
-    print('error :$e');
-    return [];
-  }
-}
-
-// ** 주변 access 가능한 wifi ssid 목록 가져오기 스트림 (와이파이 상태가 계속 변한다.)
-// 안드로이드만 가능 (iOS ??)
-@riverpod
-Stream<List<WifiNetworkInfo>> wifisStream(WifisStreamRef ref) {
-  developer.log('wifisStreamProvider');
-  return WiFiForIoTPlugin.onWifiScanResultReady.map((event) => event
-      .map((e) => WifiNetworkInfo(
-          ssid: e.ssid,
-          bssid: e.bssid,
-          capabilities: e.capabilities,
-          frequency: e.frequency,
-          level: e.level,
-          timestamp: e.timestamp,
-          password: e.password))
-      .toList());
-}
-
-@freezed
-class WifiNetworkInfo with _$WifiNetworkInfo {
-  const factory WifiNetworkInfo({
-    String? ssid,
-    String? bssid,
-    String? capabilities,
-    int? frequency,
-    int? level,
-    int? timestamp,
-    String? password,
-  }) = _WifiNetworkInfo;
-}
-
-@riverpod
-class NetworkNotifier extends _$NetworkNotifier {
-  @override
-  void build() {
-    developer.log('networkNotifierProvider');
-  }
-
-  Future<void> change({required String ssid, String? password}) async {
-    developer.log('networkNotifierProvider change($ssid, $password)');
-    try {
-      if (await Permission.location.request().isGranted) {
-        final value = await WiFiForIoTPlugin.connect(ssid,
-            password: password, joinOnce: true, security: NetworkSecurity.WPA);
-        developer.log('connected initiated $value');
-      } else {
-        developer.log('Unauthorized to get change wifi');
-      }
-    } on PlatformException catch (e) {
-      developer.log('error :$e');
-    }
-  }
-}
-
-// ** UDP Multicast
-@riverpod
-class UDPMulticast extends _$UDPMulticast {
-  late RawDatagramSocket socket;
-  late StreamController<String> controller;
-  @override
-  Stream<String> build() {
-    ref.onDispose(() {
-      developer.log('uDPMulticastProvider dispose');
-      socket.leaveMulticast(Config.udpMulticastAddress);
-      socket.close();
-
-      controller.close();
-    });
-    developer.log('uDPMulticastProvider');
-    controller = StreamController<String>();
-
-    _init();
-
-    return controller.stream;
-  }
-
-  Future<void> _init() async {
-    socket = await RawDatagramSocket.bind(
-        InternetAddress.anyIPv4, Config.udpMulticastPort);
-
-    socket.joinMulticast(Config.udpMulticastAddress);
-
-    socket.listen((event) {
-      Datagram? d = socket.receive();
-      if (d == null) return;
-      String message = String.fromCharCodes(d.data).trim();
-      controller.add(message);
-    });
-  }
-
-  void sendData(String data) {
-    if (Platform.isAndroid) {
-      socket.send(
-          data.codeUnits, Config.udpMulticastAddress, Config.udpMulticastPort);
-    } else {
-      //iOS는 직접 상대 IP
-      socket.send(data.codeUnits, InternetAddress('192.169.1.7'),
-          Config.udpMulticastPort);
-    }
-  }
-}
-
-@riverpod
-class UDPBroadcast extends _$UDPBroadcast {
-  late RawDatagramSocket socket;
-  late StreamController<String> controller;
-  @override
-  Stream<String> build() {
-    ref.onDispose(() {
-      developer.log('uDPBroadcastProvider dispose');
-
-      socket.close();
-
-      controller.close();
-    });
-    developer.log('uDPBroadcastProvider');
-    controller = StreamController<String>();
-    _init();
-    return controller.stream;
-  }
-
-  Future<void> _init() async {
-    socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 8888);
-
-    socket.listen((event) {
-      Datagram? d = socket.receive();
-      if (d == null) return;
-      String message = String.fromCharCodes(d.data).trim();
-      controller.add(message);
-    });
-  }
-
-  void sendData(String data) {
-    socket.broadcastEnabled = true;
-    socket.send(data.codeUnits, InternetAddress('255.255.255.255'), 8888);
-  }
-}
-
-// ** SocketIO Client
 @riverpod
 class SocketIOClient extends _$SocketIOClient {
-  late StreamController<String> controller;
-  late IO.Socket socketIO;
+  late StreamController<String> _controller;
+  late IO.Socket _socketIO;
 
   @override
   Stream<String> build({
     required String ip,
     required int port,
   }) {
-    developer.log('socketIOClientProvider build');
+    print('socketIOClientProvider build ip:$ip');
     ref.onDispose(() {
-      developer.log('socketIOClientProvider dispose');
+      print('socketIOClientProvider dispose');
 
-      socketIO.close();
-      socketIO.disconnect();
-      socketIO.dispose();
+      _socketIO.close();
+      _socketIO.disconnect();
+      _socketIO.dispose();
 
-      controller.close();
+      _controller.close();
     });
 
-    socketIO = IO.io(
+    connectServer(ip: ip, port: port);
+
+    return _controller.stream;
+  }
+
+  void connectServer({
+    required String ip,
+    required int port,
+  }) {
+    _socketIO = IO.io(
       'http://$ip:$port',
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .disableAutoConnect()
           .build(),
     );
-    socketIO.connect();
-    controller = StreamController<String>();
-    socketIO.onConnect((data) {
-      developer.log('onConnect $data');
+
+    _controller = StreamController<String>();
+    _socketIO.onConnect((data) {
+      print('onConnect $data');
     });
-    socketIO.onDisconnect((data) {
-      developer.log('onDisconnect $data');
+    _socketIO.onDisconnect((data) {
+      print('onDisconnect $data');
     });
-    socketIO.on('message', (data) {
-      developer.log('message from server:$data');
-      controller.add(data);
+    _socketIO.on('message', (data) {
+      List<dynamic> d = List.from(data);
+      List<int> byteArray = d.map((e) => e as int).toList();
+      final receivedData = utf8.decode(byteArray);
+      print('message from server:$receivedData');
+      _controller.add(receivedData);
     });
-    return controller.stream;
+    _socketIO.connect();
   }
 
   void sendData(String data) {
-    developer.log('SocketIOClientNotifier sendData:$data');
-    socketIO.emit('message', data);
-  }
-}
-
-// ** SocketIO Server
-@riverpod
-class SocketIOServer extends _$SocketIOServer {
-  late StreamController<String> controller;
-  late socketIOServer.Server server;
-
-  @override
-  Stream<String> build() {
-    developer.log('socketIOServerProvider build');
-    ref.onDispose(() {
-      developer.log('socketIOServerProvider dispose');
-
-      server.close();
-
-      controller.close();
-    });
-
-    controller = StreamController<String>();
-    server = socketIOServer.Server();
-    server.on('connection', (client) {
-      developer.log('connection ${client.hashCode}');
-
-      client.on('message', (data) {
-        developer.log('message from client:$data');
-        controller.add(data);
-      });
-      client.on('disconnect', (_) {
-        developer.log('disconnect');
-      });
-    });
-    developer.log('socketIOServer open port:${Config.socketIOPort}');
-    server.listen(Config.socketIOPort);
-    return controller.stream;
+    print('SocketIOClientNotifier sendData:$data');
+    _socketIO.emit('message', utf8.encode(data));
   }
 
-  void sendData(String data) {
-    developer.log('socketIOServer sendData:$data');
-    server.emit('message', data);
+  void sendFile({required String deviceId, required File file, required String fileName, required ContentInfo contentInfo}) async {
+    _socketIO.emit('fileStart', utf8.encode(fileName));
+    int total = await file.length();
+    int count = 0;
+    var openRead = file.openRead();
+    openRead.listen(
+      (bytes) {
+        count += bytes.length;
+        _socketIO.emitWithBinary('file', bytes);
+        print('$count/$total');
+      },
+      onDone: () {
+        _socketIO.emit('fileDone');
+        //파일 보내고 컨텐츠 정보 보내기
+        Map<String, dynamic> contentInfoJson = contentInfo.toJson();
+        contentInfoJson.addAll({'command': 'playerContent', 'deviceId': deviceId});
+        contentInfoJson.remove('textSizeType');
+        contentInfoJson.remove('filePath');
+        contentInfoJson.remove('fileThumbnail');
+        String sendData = jsonEncode(contentInfoJson);
+        _socketIO.emit('message', utf8.encode(sendData));
+      },
+    );
   }
 }

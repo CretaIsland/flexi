@@ -74,9 +74,9 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
                 height: responsiveHeight,
                 decoration: BoxDecoration(
                   color: FlexiColor.stringToColor(contentInfo.backgroundColor),
-                  image: contentInfo.backgroundType != 'color' && contentInfo.contentThumbnail.isNotEmpty ?
+                  image: contentInfo.backgroundType != 'color' && contentInfo.fileThumbnail.isNotEmpty ?
                     DecorationImage(
-                      image: Image.memory(base64Decode(contentInfo.contentThumbnail)).image,
+                      image: Image.memory(base64Decode(contentInfo.fileThumbnail)).image,
                       fit: BoxFit.cover
                     ) : null
                 ),
@@ -98,8 +98,8 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
                 ),
                 style: TextStyle(
                   fontSize: textScaler * contentInfo.textSize,
-                  fontWeight: contentInfo.isBold ? FontWeight.bold : FontWeight.normal,
-                  fontStyle: contentInfo.isItalic ? FontStyle.italic : FontStyle.normal,
+                  fontWeight: contentInfo.bold ? FontWeight.bold : FontWeight.normal,
+                  fontStyle: contentInfo.italic ? FontStyle.italic : FontStyle.normal,
                   color: FlexiColor.stringToColor(contentInfo.textColor),
                   height: contentInfo.textSizeType == 's' ? 1.6 : contentInfo.textSizeType == 'm' ? 1.4 : 1.2
                 ),

@@ -7,7 +7,7 @@ part of 'content_send_controller.dart';
 // **************************************************************************
 
 String _$contentSendControllerHash() =>
-    r'2cf014610976d0820cf82ca8aae7768f36a81e41';
+    r'88b802c520b60c465645dcc233c5022fa4c229fb';
 
 /// See also [ContentSendController].
 @ProviderFor(ContentSendController)

@@ -29,9 +29,9 @@ class BackgroundEditController extends _$BackgroundEditController {
     state = state.copyWith(
       backgroundType: 'color', 
       backgroundColor: color.toString(),
-      contentPath: '',
-      contentFileName: '',
-      contentThumbnail: ''
+      filePath: '',
+      fileName: '',
+      fileThumbnail: ''
     );
   }
 
@@ -39,9 +39,9 @@ class BackgroundEditController extends _$BackgroundEditController {
   void setBackgroundContent(String contentType, String contentPath, String contentName, Uint8List contentThumbnail) {
     state = state.copyWith(
       backgroundType: contentType, 
-      contentPath: contentPath,
-      contentFileName: contentName,
-      contentThumbnail: base64Encode(contentThumbnail)
+      filePath: contentPath,
+      fileName: contentName,
+      fileThumbnail: base64Encode(contentThumbnail)
     );
   }
 

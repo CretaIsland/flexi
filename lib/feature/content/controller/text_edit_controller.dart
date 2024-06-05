@@ -50,12 +50,12 @@ class TextEditController extends _$TextEditController {
 
   // 폰트 굵기 변경하기
   void setTextWeight(bool isBold) {
-    state = state.copyWith(isBold: isBold);
+    state = state.copyWith(bold: isBold);
   }
 
   // 폰트 기울기 여부 변경하기
   void setTextItalic(bool isItalic) {
-    state = state.copyWith(isItalic: isItalic);
+    state = state.copyWith(italic: isItalic);
   }
 
 }

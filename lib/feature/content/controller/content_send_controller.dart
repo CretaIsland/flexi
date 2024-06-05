@@ -23,7 +23,7 @@ class ContentSendController extends _$ContentSendController {
   }
 
   Future<void> getContentBytes() async {
-    if(contentInfo.contentPath.startsWith('asset:')) {
+    if(contentInfo.filePath.startsWith('asset:')) {
 
     } else {
 

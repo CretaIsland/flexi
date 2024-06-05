@@ -7,7 +7,7 @@ part of 'background_edit_controller.dart';
 // **************************************************************************
 
 String _$backgroundEditControllerHash() =>
-    r'c9ac7b958d914f8848e195bcb4be0a74903fceea';
+    r'3ed64eb728589ebe46115c56e89cfa86fe85378c';
 
 /// See also [BackgroundEditController].
 @ProviderFor(BackgroundEditController)

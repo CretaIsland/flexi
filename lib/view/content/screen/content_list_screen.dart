@@ -120,11 +120,11 @@ class ContentListScreen extends ConsumerWidget {
                             onLongPress: () => ref.watch(selectModeProvider.notifier).state = true,
                             onTap: () {
                               if(selectMode) {
-                                if(selectContents.contains(data[index].id)) {
+                                if(selectContents.contains(data[index].contentId)) {
                                   selectContents.removeAt(index);
                                   ref.watch(selectContentsProvider.notifier).state = [...selectContents];
                                 } else {
-                                  ref.watch(selectContentsProvider.notifier).state = [...selectContents, data[index].id];
+                                  ref.watch(selectContentsProvider.notifier).state = [...selectContents, data[index].contentId];
                                 }
                               } else {
                                 contentInfoController.setContent(data[index]);
@@ -146,10 +146,10 @@ class ContentListScreen extends ConsumerWidget {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(data[index].name, style: FlexiFont.regular14),
+                                      Text(data[index].contentName, style: FlexiFont.regular14),
                                       Visibility(
                                         visible: selectMode,
-                                        child: selectContents.contains(data[index].id) || selectAll ?
+                                        child: selectContents.contains(data[index].contentId) || selectAll ?
                                           Icon(Icons.check_circle, color: FlexiColor.secondary, size: .025.sh) :
                                           Icon(Icons.check_circle_outline, color: FlexiColor.grey[600], size: .025.sh)
                                       )

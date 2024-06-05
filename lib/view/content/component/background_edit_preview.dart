@@ -46,9 +46,9 @@ class BackgroundEditPreview extends ConsumerWidget {
                 height: responsiveHeight,
                 decoration: BoxDecoration(
                   color: FlexiColor.stringToColor(contentInfo.backgroundColor),
-                  image: contentInfo.backgroundType != 'color' && contentInfo.contentThumbnail.isNotEmpty ?
+                  image: contentInfo.backgroundType != 'color' && contentInfo.fileThumbnail.isNotEmpty ?
                     DecorationImage(
-                      image: Image.memory(base64Decode(contentInfo.contentThumbnail)).image,
+                      image: Image.memory(base64Decode(contentInfo.fileThumbnail)).image,
                       fit: BoxFit.cover
                     ) : null
                 ),
@@ -58,8 +58,8 @@ class BackgroundEditPreview extends ConsumerWidget {
                     contentInfo.text,
                     style: TextStyle(
                       fontSize: contentInfo.textSize * textScaler,
-                      fontWeight: contentInfo.isBold ? FontWeight.bold : FontWeight.normal,
-                      fontStyle: contentInfo.isItalic ? FontStyle.italic : FontStyle.normal,
+                      fontWeight: contentInfo.bold ? FontWeight.bold : FontWeight.normal,
+                      fontStyle: contentInfo.italic ? FontStyle.italic : FontStyle.normal,
                       color: FlexiColor.stringToColor(contentInfo.textColor)
                     ),
                   ),

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wifi_iot/wifi_iot.dart';
 
 import '../../../component/loading_overlay.dart';
 import '../../../component/text_button.dart';
+import '../../../feature/device/controller/device_setup_controller.dart';
+import '../../../feature/device/provider/timezone_provider.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 
@@ -15,6 +18,9 @@ class DeviceSetupModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+    final wifiCredential = ref.watch(wifiCredentialsControllerProvider);
+
     return Container(
       width: .93.sw,
       height: .35.sh,
@@ -39,6 +45,17 @@ class DeviceSetupModal extends ConsumerWidget {
             onPressed: () async {
               OverlayEntry loadingOverlay = OverlayEntry(builder: (_) => const LoadingOverlay());
               Navigator.of(context).overlay!.insert(loadingOverlay);
+              // 데이터 보내기
+              print(ref.watch(selectTimezoneProvider));
+              print(wifiCredential);
+              // 와이파이 연결
+              await ref.watch(networkControllerProvider.notifier).connect(
+                ssid: wifiCredential['ssid']!,
+                password: wifiCredential['passphrase']!,
+                security: wifiCredential['type']!.contains('WPA') ? 
+                  NetworkSecurity.WPA : wifiCredential['type']!.contains('WEP') ?
+                    NetworkSecurity.WEP : NetworkSecurity.NONE
+              );
               loadingOverlay.remove();
               context.pop();
               context.go('/device/list');

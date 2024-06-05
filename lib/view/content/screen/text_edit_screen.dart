@@ -42,8 +42,8 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
     final sttMode = ref.watch(sttModeProvider);
     final isSpeaking = ref.watch(isSpeakingProvider);
     final contentInfo = ref.watch(textEditControllerProvider);
-    final contentInfoController = ref.watch(contentInfoControllerProvider.notifier);
     final textEditController = ref.watch(textEditControllerProvider.notifier);
+    final sttController = ref.watch(speechToTextControllerProvider.notifier);
     
 
     return Scaffold(
@@ -115,9 +115,9 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                       ),
                       Row(
                         children: [
-                          fontEffectButton(Icons.format_bold, () => textEditController.setTextWeight(!contentInfo.isBold)),
+                          fontEffectButton(Icons.format_bold, () => textEditController.setTextWeight(!contentInfo.bold)),
                           SizedBox(width: .02.sw),
-                          fontEffectButton(Icons.format_italic, () => textEditController.setTextItalic(!contentInfo.isItalic)),
+                          fontEffectButton(Icons.format_italic, () => textEditController.setTextItalic(!contentInfo.italic)),
                         ],
                       )
                     ],
@@ -195,7 +195,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                   children: [
                     Column(
                       children: [
-                        LanguageListBar(type: 'input'),
+                        const InputLanguageListBar(),
                         SizedBox(height: .04.sh),
                         SizedBox(
                           width: 1.sw,
@@ -218,10 +218,11 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                     GestureDetector(
                       onLongPressStart: (details) {
                         ref.watch(isSpeakingProvider.notifier).state = true;
-                        textEditController.startRecord(ref.watch(selectInputLanguageProvider)['localeId']!);
+                        sttController.startRecord(ref.watch(selectInputLanguageProvider)['localeId']!);
                       },
                       onLongPressEnd: (details) {
-                        textEditController.stopRecord();
+                        sttController.stopRecord();
+                        textEditController.setText(ref.watch(speechToTextControllerProvider));
                         ref.watch(isSpeakingProvider.notifier).state = false;
                       },
                       child: Container(

@@ -83,7 +83,7 @@ class _ContentPreviewState extends ConsumerState<ContentPreview> {
           decoration: BoxDecoration(
             color: FlexiColor.stringToColor(widget.contentInfo.backgroundColor),
             image: widget.contentInfo.backgroundType != 'color' ? DecorationImage(
-              image: Image.memory(base64Decode(widget.contentInfo.contentThumbnail)).image,
+              image: Image.memory(base64Decode(widget.contentInfo.fileThumbnail)).image,
               fit: BoxFit.cover
             ) : null
           ),
@@ -97,8 +97,8 @@ class _ContentPreviewState extends ConsumerState<ContentPreview> {
                 widget.contentInfo.text, 
                 style: TextStyle(
                   fontSize: textScaler * widget.contentInfo.textSize,
-                  fontWeight: widget.contentInfo.isBold ? FontWeight.bold : FontWeight.normal,
-                  fontStyle: widget.contentInfo.isItalic ? FontStyle.italic : FontStyle.normal,
+                  fontWeight: widget.contentInfo.bold ? FontWeight.bold : FontWeight.normal,
+                  fontStyle: widget.contentInfo.italic ? FontStyle.italic : FontStyle.normal,
                   color: FlexiColor.stringToColor(widget.contentInfo.textColor)
                 )
               )

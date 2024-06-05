@@ -14,7 +14,7 @@ class ContentRespository {
   Future<ContentInfo?> create() async {
     try {
       String contentId = DateTime.now().toString();
-      ContentInfo newContent = ContentInfo(id: contentId);
+      ContentInfo newContent = ContentInfo(contentId: contentId);
       var result = await _contentStore.record(contentId).put(await _dbClient, newContent.toJson());
       return ContentInfo.fromJson(result);
     } catch (error) {

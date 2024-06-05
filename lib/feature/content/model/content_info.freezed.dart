@@ -20,8 +20,8 @@ ContentInfo _$ContentInfoFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ContentInfo {
-  String get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
+  String get contentId => throw _privateConstructorUsedError;
+  String get contentName => throw _privateConstructorUsedError;
   int get width => throw _privateConstructorUsedError;
   int get height => throw _privateConstructorUsedError;
   int get x => throw _privateConstructorUsedError;
@@ -31,14 +31,14 @@ mixin _$ContentInfo {
   String get textSizeType => throw _privateConstructorUsedError;
   double get textSize => throw _privateConstructorUsedError;
   String get textColor => throw _privateConstructorUsedError;
-  bool get isBold => throw _privateConstructorUsedError;
-  bool get isItalic => throw _privateConstructorUsedError;
-  String get languageType => throw _privateConstructorUsedError;
+  bool get bold => throw _privateConstructorUsedError;
+  bool get italic => throw _privateConstructorUsedError;
+  String get language => throw _privateConstructorUsedError;
   String get backgroundType => throw _privateConstructorUsedError;
   String get backgroundColor => throw _privateConstructorUsedError;
-  String get contentPath => throw _privateConstructorUsedError;
-  String get contentFileName => throw _privateConstructorUsedError;
-  String get contentThumbnail => throw _privateConstructorUsedError;
+  String get filePath => throw _privateConstructorUsedError;
+  String get fileName => throw _privateConstructorUsedError;
+  String get fileThumbnail => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -53,8 +53,8 @@ abstract class $ContentInfoCopyWith<$Res> {
       _$ContentInfoCopyWithImpl<$Res, ContentInfo>;
   @useResult
   $Res call(
-      {String id,
-      String name,
+      {String contentId,
+      String contentName,
       int width,
       int height,
       int x,
@@ -64,14 +64,14 @@ abstract class $ContentInfoCopyWith<$Res> {
       String textSizeType,
       double textSize,
       String textColor,
-      bool isBold,
-      bool isItalic,
-      String languageType,
+      bool bold,
+      bool italic,
+      String language,
       String backgroundType,
       String backgroundColor,
-      String contentPath,
-      String contentFileName,
-      String contentThumbnail});
+      String filePath,
+      String fileName,
+      String fileThumbnail});
 }
 
 /// @nodoc
@@ -87,8 +87,8 @@ class _$ContentInfoCopyWithImpl<$Res, $Val extends ContentInfo>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? name = null,
+    Object? contentId = null,
+    Object? contentName = null,
     Object? width = null,
     Object? height = null,
     Object? x = null,
@@ -98,23 +98,23 @@ class _$ContentInfoCopyWithImpl<$Res, $Val extends ContentInfo>
     Object? textSizeType = null,
     Object? textSize = null,
     Object? textColor = null,
-    Object? isBold = null,
-    Object? isItalic = null,
-    Object? languageType = null,
+    Object? bold = null,
+    Object? italic = null,
+    Object? language = null,
     Object? backgroundType = null,
     Object? backgroundColor = null,
-    Object? contentPath = null,
-    Object? contentFileName = null,
-    Object? contentThumbnail = null,
+    Object? filePath = null,
+    Object? fileName = null,
+    Object? fileThumbnail = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      contentId: null == contentId
+          ? _value.contentId
+          : contentId // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+      contentName: null == contentName
+          ? _value.contentName
+          : contentName // ignore: cast_nullable_to_non_nullable
               as String,
       width: null == width
           ? _value.width
@@ -152,17 +152,17 @@ class _$ContentInfoCopyWithImpl<$Res, $Val extends ContentInfo>
           ? _value.textColor
           : textColor // ignore: cast_nullable_to_non_nullable
               as String,
-      isBold: null == isBold
-          ? _value.isBold
-          : isBold // ignore: cast_nullable_to_non_nullable
+      bold: null == bold
+          ? _value.bold
+          : bold // ignore: cast_nullable_to_non_nullable
               as bool,
-      isItalic: null == isItalic
-          ? _value.isItalic
-          : isItalic // ignore: cast_nullable_to_non_nullable
+      italic: null == italic
+          ? _value.italic
+          : italic // ignore: cast_nullable_to_non_nullable
               as bool,
-      languageType: null == languageType
-          ? _value.languageType
-          : languageType // ignore: cast_nullable_to_non_nullable
+      language: null == language
+          ? _value.language
+          : language // ignore: cast_nullable_to_non_nullable
               as String,
       backgroundType: null == backgroundType
           ? _value.backgroundType
@@ -172,17 +172,17 @@ class _$ContentInfoCopyWithImpl<$Res, $Val extends ContentInfo>
           ? _value.backgroundColor
           : backgroundColor // ignore: cast_nullable_to_non_nullable
               as String,
-      contentPath: null == contentPath
-          ? _value.contentPath
-          : contentPath // ignore: cast_nullable_to_non_nullable
+      filePath: null == filePath
+          ? _value.filePath
+          : filePath // ignore: cast_nullable_to_non_nullable
               as String,
-      contentFileName: null == contentFileName
-          ? _value.contentFileName
-          : contentFileName // ignore: cast_nullable_to_non_nullable
+      fileName: null == fileName
+          ? _value.fileName
+          : fileName // ignore: cast_nullable_to_non_nullable
               as String,
-      contentThumbnail: null == contentThumbnail
-          ? _value.contentThumbnail
-          : contentThumbnail // ignore: cast_nullable_to_non_nullable
+      fileThumbnail: null == fileThumbnail
+          ? _value.fileThumbnail
+          : fileThumbnail // ignore: cast_nullable_to_non_nullable
               as String,
     ) as $Val);
   }
@@ -197,8 +197,8 @@ abstract class _$$ContentInfoImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
-      String name,
+      {String contentId,
+      String contentName,
       int width,
       int height,
       int x,
@@ -208,14 +208,14 @@ abstract class _$$ContentInfoImplCopyWith<$Res>
       String textSizeType,
       double textSize,
       String textColor,
-      bool isBold,
-      bool isItalic,
-      String languageType,
+      bool bold,
+      bool italic,
+      String language,
       String backgroundType,
       String backgroundColor,
-      String contentPath,
-      String contentFileName,
-      String contentThumbnail});
+      String filePath,
+      String fileName,
+      String fileThumbnail});
 }
 
 /// @nodoc
@@ -229,8 +229,8 @@ class __$$ContentInfoImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? name = null,
+    Object? contentId = null,
+    Object? contentName = null,
     Object? width = null,
     Object? height = null,
     Object? x = null,
@@ -240,23 +240,23 @@ class __$$ContentInfoImplCopyWithImpl<$Res>
     Object? textSizeType = null,
     Object? textSize = null,
     Object? textColor = null,
-    Object? isBold = null,
-    Object? isItalic = null,
-    Object? languageType = null,
+    Object? bold = null,
+    Object? italic = null,
+    Object? language = null,
     Object? backgroundType = null,
     Object? backgroundColor = null,
-    Object? contentPath = null,
-    Object? contentFileName = null,
-    Object? contentThumbnail = null,
+    Object? filePath = null,
+    Object? fileName = null,
+    Object? fileThumbnail = null,
   }) {
     return _then(_$ContentInfoImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      contentId: null == contentId
+          ? _value.contentId
+          : contentId // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+      contentName: null == contentName
+          ? _value.contentName
+          : contentName // ignore: cast_nullable_to_non_nullable
               as String,
       width: null == width
           ? _value.width
@@ -294,17 +294,17 @@ class __$$ContentInfoImplCopyWithImpl<$Res>
           ? _value.textColor
           : textColor // ignore: cast_nullable_to_non_nullable
               as String,
-      isBold: null == isBold
-          ? _value.isBold
-          : isBold // ignore: cast_nullable_to_non_nullable
+      bold: null == bold
+          ? _value.bold
+          : bold // ignore: cast_nullable_to_non_nullable
               as bool,
-      isItalic: null == isItalic
-          ? _value.isItalic
-          : isItalic // ignore: cast_nullable_to_non_nullable
+      italic: null == italic
+          ? _value.italic
+          : italic // ignore: cast_nullable_to_non_nullable
               as bool,
-      languageType: null == languageType
-          ? _value.languageType
-          : languageType // ignore: cast_nullable_to_non_nullable
+      language: null == language
+          ? _value.language
+          : language // ignore: cast_nullable_to_non_nullable
               as String,
       backgroundType: null == backgroundType
           ? _value.backgroundType
@@ -314,17 +314,17 @@ class __$$ContentInfoImplCopyWithImpl<$Res>
           ? _value.backgroundColor
           : backgroundColor // ignore: cast_nullable_to_non_nullable
               as String,
-      contentPath: null == contentPath
-          ? _value.contentPath
-          : contentPath // ignore: cast_nullable_to_non_nullable
+      filePath: null == filePath
+          ? _value.filePath
+          : filePath // ignore: cast_nullable_to_non_nullable
               as String,
-      contentFileName: null == contentFileName
-          ? _value.contentFileName
-          : contentFileName // ignore: cast_nullable_to_non_nullable
+      fileName: null == fileName
+          ? _value.fileName
+          : fileName // ignore: cast_nullable_to_non_nullable
               as String,
-      contentThumbnail: null == contentThumbnail
-          ? _value.contentThumbnail
-          : contentThumbnail // ignore: cast_nullable_to_non_nullable
+      fileThumbnail: null == fileThumbnail
+          ? _value.fileThumbnail
+          : fileThumbnail // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -334,8 +334,8 @@ class __$$ContentInfoImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ContentInfoImpl extends _ContentInfo {
   _$ContentInfoImpl(
-      {required this.id,
-      this.name = 'New Content',
+      {required this.contentId,
+      this.contentName = 'New Content',
       this.width = 360,
       this.height = 28,
       this.x = 0,
@@ -345,24 +345,24 @@ class _$ContentInfoImpl extends _ContentInfo {
       this.textSizeType = 's',
       this.textSize = 11.2,
       this.textColor = 'Color(0xffFFFFFF)',
-      this.isBold = false,
-      this.isItalic = false,
-      this.languageType = '',
+      this.bold = false,
+      this.italic = false,
+      this.language = '',
       this.backgroundType = 'color',
       this.backgroundColor = 'Color(0xff000000)',
-      this.contentPath = '',
-      this.contentFileName = '',
-      this.contentThumbnail = ''})
+      this.filePath = '',
+      this.fileName = '',
+      this.fileThumbnail = ''})
       : super._();
 
   factory _$ContentInfoImpl.fromJson(Map<String, dynamic> json) =>
       _$$ContentInfoImplFromJson(json);
 
   @override
-  final String id;
+  final String contentId;
   @override
   @JsonKey()
-  final String name;
+  final String contentName;
   @override
   @JsonKey()
   final int width;
@@ -392,13 +392,13 @@ class _$ContentInfoImpl extends _ContentInfo {
   final String textColor;
   @override
   @JsonKey()
-  final bool isBold;
+  final bool bold;
   @override
   @JsonKey()
-  final bool isItalic;
+  final bool italic;
   @override
   @JsonKey()
-  final String languageType;
+  final String language;
   @override
   @JsonKey()
   final String backgroundType;
@@ -407,17 +407,17 @@ class _$ContentInfoImpl extends _ContentInfo {
   final String backgroundColor;
   @override
   @JsonKey()
-  final String contentPath;
+  final String filePath;
   @override
   @JsonKey()
-  final String contentFileName;
+  final String fileName;
   @override
   @JsonKey()
-  final String contentThumbnail;
+  final String fileThumbnail;
 
   @override
   String toString() {
-    return 'ContentInfo(id: $id, name: $name, width: $width, height: $height, x: $x, y: $y, isReverse: $isReverse, text: $text, textSizeType: $textSizeType, textSize: $textSize, textColor: $textColor, isBold: $isBold, isItalic: $isItalic, languageType: $languageType, backgroundType: $backgroundType, backgroundColor: $backgroundColor, contentPath: $contentPath, contentFileName: $contentFileName, contentThumbnail: $contentThumbnail)';
+    return 'ContentInfo(contentId: $contentId, contentName: $contentName, width: $width, height: $height, x: $x, y: $y, isReverse: $isReverse, text: $text, textSizeType: $textSizeType, textSize: $textSize, textColor: $textColor, bold: $bold, italic: $italic, language: $language, backgroundType: $backgroundType, backgroundColor: $backgroundColor, filePath: $filePath, fileName: $fileName, fileThumbnail: $fileThumbnail)';
   }
 
   @override
@@ -425,8 +425,10 @@ class _$ContentInfoImpl extends _ContentInfo {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ContentInfoImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
+            (identical(other.contentId, contentId) ||
+                other.contentId == contentId) &&
+            (identical(other.contentName, contentName) ||
+                other.contentName == contentName) &&
             (identical(other.width, width) || other.width == width) &&
             (identical(other.height, height) || other.height == height) &&
             (identical(other.x, x) || other.x == x) &&
@@ -440,29 +442,28 @@ class _$ContentInfoImpl extends _ContentInfo {
                 other.textSize == textSize) &&
             (identical(other.textColor, textColor) ||
                 other.textColor == textColor) &&
-            (identical(other.isBold, isBold) || other.isBold == isBold) &&
-            (identical(other.isItalic, isItalic) ||
-                other.isItalic == isItalic) &&
-            (identical(other.languageType, languageType) ||
-                other.languageType == languageType) &&
+            (identical(other.bold, bold) || other.bold == bold) &&
+            (identical(other.italic, italic) || other.italic == italic) &&
+            (identical(other.language, language) ||
+                other.language == language) &&
             (identical(other.backgroundType, backgroundType) ||
                 other.backgroundType == backgroundType) &&
             (identical(other.backgroundColor, backgroundColor) ||
                 other.backgroundColor == backgroundColor) &&
-            (identical(other.contentPath, contentPath) ||
-                other.contentPath == contentPath) &&
-            (identical(other.contentFileName, contentFileName) ||
-                other.contentFileName == contentFileName) &&
-            (identical(other.contentThumbnail, contentThumbnail) ||
-                other.contentThumbnail == contentThumbnail));
+            (identical(other.filePath, filePath) ||
+                other.filePath == filePath) &&
+            (identical(other.fileName, fileName) ||
+                other.fileName == fileName) &&
+            (identical(other.fileThumbnail, fileThumbnail) ||
+                other.fileThumbnail == fileThumbnail));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hashAll([
         runtimeType,
-        id,
-        name,
+        contentId,
+        contentName,
         width,
         height,
         x,
@@ -472,14 +473,14 @@ class _$ContentInfoImpl extends _ContentInfo {
         textSizeType,
         textSize,
         textColor,
-        isBold,
-        isItalic,
-        languageType,
+        bold,
+        italic,
+        language,
         backgroundType,
         backgroundColor,
-        contentPath,
-        contentFileName,
-        contentThumbnail
+        filePath,
+        fileName,
+        fileThumbnail
       ]);
 
   @JsonKey(ignore: true)
@@ -498,8 +499,8 @@ class _$ContentInfoImpl extends _ContentInfo {
 
 abstract class _ContentInfo extends ContentInfo {
   factory _ContentInfo(
-      {required final String id,
-      final String name,
+      {required final String contentId,
+      final String contentName,
       final int width,
       final int height,
       final int x,
@@ -509,23 +510,23 @@ abstract class _ContentInfo extends ContentInfo {
       final String textSizeType,
       final double textSize,
       final String textColor,
-      final bool isBold,
-      final bool isItalic,
-      final String languageType,
+      final bool bold,
+      final bool italic,
+      final String language,
       final String backgroundType,
       final String backgroundColor,
-      final String contentPath,
-      final String contentFileName,
-      final String contentThumbnail}) = _$ContentInfoImpl;
+      final String filePath,
+      final String fileName,
+      final String fileThumbnail}) = _$ContentInfoImpl;
   _ContentInfo._() : super._();
 
   factory _ContentInfo.fromJson(Map<String, dynamic> json) =
       _$ContentInfoImpl.fromJson;
 
   @override
-  String get id;
+  String get contentId;
   @override
-  String get name;
+  String get contentName;
   @override
   int get width;
   @override
@@ -545,21 +546,21 @@ abstract class _ContentInfo extends ContentInfo {
   @override
   String get textColor;
   @override
-  bool get isBold;
+  bool get bold;
   @override
-  bool get isItalic;
+  bool get italic;
   @override
-  String get languageType;
+  String get language;
   @override
   String get backgroundType;
   @override
   String get backgroundColor;
   @override
-  String get contentPath;
+  String get filePath;
   @override
-  String get contentFileName;
+  String get fileName;
   @override
-  String get contentThumbnail;
+  String get fileThumbnail;
   @override
   @JsonKey(ignore: true)
   _$$ContentInfoImplCopyWith<_$ContentInfoImpl> get copyWith =>

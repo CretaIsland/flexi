@@ -37,7 +37,7 @@ class ContentInfoController extends _$ContentInfoController {
   }
 
   Future<void> saveChange() async {
-    state = await _contentRespository.update(state!.id, state!);
+    state = await _contentRespository.update(state!.contentId, state!);
     _originalContent = state;
   }
 
@@ -45,7 +45,7 @@ class ContentInfoController extends _$ContentInfoController {
   // =================== 콘텐츠 메타데이터 수정 =================== 
   // 콘텐츠 이름 변경
   void setName(String name) {
-    state = state!.copyWith(name: name);
+    state = state!.copyWith(contentName: name);
   }
 
   // 콘텐츠 가로 사이즈 변경

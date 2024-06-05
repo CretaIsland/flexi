@@ -23,8 +23,11 @@ class DeviceListController extends _$DeviceListController {
 
   @override
   List<DeviceInfo> build() {
+    ref.onDispose(() {
+      _socket.close();
+    });
     initialize();
-    return List.empty();
+    return [];
   }
 
   Future<void> initialize() async {
@@ -33,16 +36,21 @@ class DeviceListController extends _$DeviceListController {
       Datagram? d = _socket.receive();
       if(d == null) return;
 
-      String dataStr = String.fromCharCodes(d.data).trim();
-      Map<String, dynamic> dataJson = jsonDecode(dataStr);
-      if(dataJson.keys.first == 'playerStatus') {
-        DeviceInfo newDeviceInfo = DeviceInfo.fromJson(dataJson.values.first);
+      Map<String, dynamic> data = jsonDecode(utf8.decode(d.data));
+      if(data['command'] == 'playerStatus') {
+        data.remove('command');
+        DeviceInfo newDevice = DeviceInfo.fromJson(data);
+        var isExist = state.indexWhere((element) => element.deviceId == newDevice.deviceId);
+        if(isExist != -1) {
+          if(state[isExist] == newDevice) {
+            state.removeAt(isExist);
+            state = [...state, newDevice];
+          }
+        } else {
+          state = [...state, newDevice];
+        }
       }
     });
-  }
-
-  Future<void> unRegister() async {
-
   }
 
 }

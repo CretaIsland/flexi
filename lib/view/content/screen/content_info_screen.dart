@@ -58,7 +58,7 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
     final contentInfo = ref.watch(contentInfoControllerProvider);
     final contentInfoController = ref.watch(contentInfoControllerProvider.notifier);
 
-    _nameController.text = contentInfo!.name;
+    _nameController.text = contentInfo!.contentName;
     _widthController.text = contentInfo.width.toString();
     _heightController.text = contentInfo.height.toString();
     _xController.text = contentInfo.x.toString();

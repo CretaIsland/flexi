@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../component/text_field.dart';
+import '../../../feature/device/controller/device_setup_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 import '../modal/device_setup_modal.dart';
@@ -44,62 +45,92 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    _ssidController.text = ref.watch(wifiCredentialsControllerProvider)['ssid']!;
+    _typeController.text = ref.watch(wifiCredentialsControllerProvider)['type']!;
+    _passphraseController.text = ref.watch(wifiCredentialsControllerProvider)['passphrase']!;
+
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                onPressed: () => context.go('/device/setTimezone'),
-                icon: Icon(Icons.arrow_back_ios, color: FlexiColor.primary, size: .03.sh),
-              ),
-              Text('Wifi Setup', style: FlexiFont.semiBold20),
-              TextButton(
-                onPressed: () => showModalBottomSheet(
-                  context: widget.rootContext,
-                  backgroundColor: Colors.transparent,
-                  builder: (context) => const DeviceSetupModal(),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () => context.go('/device/setTimezone'),
+                  icon: Icon(Icons.arrow_back_ios, color: FlexiColor.primary, size: .03.sh),
                 ),
-                child: Text('OK', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary)),
-              )
-            ],
-          ),
-          SizedBox(height: .02.sh),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              qrcodeButton('Scan \nQR-CODE', Icons.qr_code, '/qrcode/scan'),
-              qrcodeButton('Load from \nImage', Icons.add_photo_alternate_outlined, '/qrcode/load')
-            ],
-          ),
-          SizedBox(height: .03.sh),
-          Text('SSID', style: FlexiFont.regular14),
-          SizedBox(height: .01.sh),
-          FlexiTextField(
-            width: .89.sw, 
-            height: .06.sh,
-            controller: _ssidController
-          ),
-          SizedBox(height: .025.sh),
-          Text('Type', style: FlexiFont.regular14),
-          SizedBox(height: .01.sh),
-          FlexiTextField(
-            width: .89.sw, 
-            height: .06.sh,
-            controller: _typeController
-          ),
-          SizedBox(height: .025.sh),
-          Text('Passphrase', style: FlexiFont.regular14),
-          SizedBox(height: .01.sh),
-          FlexiTextField(
-            width: .89.sw, 
-            height: .06.sh,
-            controller: _passphraseController
-          )
-        ],
+                Text('Wifi Setup', style: FlexiFont.semiBold20),
+                TextButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: widget.rootContext,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => const DeviceSetupModal(),
+                    );
+                  },
+                  child: Text('OK', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary)),
+                )
+              ],
+            ),
+            SizedBox(height: .02.sh),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                qrcodeButton('Scan \nQR-CODE', Icons.qr_code, '/qrcode/scan'),
+                qrcodeButton('Load from \nImage', Icons.add_photo_alternate_outlined, '/qrcode/load')
+              ],
+            ),
+            SizedBox(height: .03.sh),
+            Text('SSID', style: FlexiFont.regular14),
+            SizedBox(height: .01.sh),
+            FlexiTextField(
+              width: .89.sw, 
+              height: .06.sh,
+              controller: _ssidController,
+              onChanged: (value) {
+                ref.watch(wifiCredentialsControllerProvider.notifier).setWifiCredentials(
+                  value,
+                  _typeController.text,
+                  _passphraseController.text      
+                );
+              },
+            ),
+            SizedBox(height: .025.sh),
+            Text('Type', style: FlexiFont.regular14),
+            SizedBox(height: .01.sh),
+            FlexiTextField(
+              width: .89.sw, 
+              height: .06.sh,
+              controller: _typeController,
+              onChanged: (value) {
+                ref.watch(wifiCredentialsControllerProvider.notifier).setWifiCredentials(
+                  _ssidController.text,
+                  value,
+                  _passphraseController.text      
+                );
+              },
+            ),
+            SizedBox(height: .025.sh),
+            Text('Passphrase', style: FlexiFont.regular14),
+            SizedBox(height: .01.sh),
+            FlexiTextField(
+              width: .89.sw, 
+              height: .06.sh,
+              controller: _passphraseController,
+              onChanged: (value) {
+                ref.watch(wifiCredentialsControllerProvider.notifier).setWifiCredentials(
+                  _ssidController.text,
+                  _typeController.text,
+                  value      
+                );
+              },
+            )
+          ],
+        ),
       ),
     );
   }

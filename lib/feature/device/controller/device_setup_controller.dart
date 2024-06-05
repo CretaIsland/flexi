@@ -1,8 +1,13 @@
 import 'dart:io';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
+import 'package:network_info_plus/network_info_plus.dart' as network_info_plus;
+import 'package:permission_handler/permission_handler.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wifi_iot/wifi_iot.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 
 import '../model/network_info.dart';
@@ -14,10 +19,6 @@ part 'device_setup_controller.g.dart';
 // 접속 가능한 주변 장비(hotspot) 목록 조회
 @riverpod
 Future<Stream<List<NetworkInfo>>> accessibilityNetworks(AccessibilityNetworksRef ref) async {
-  ref.onDispose(() {
-    print("<<<<<<< accessibilityNetworksProvider dispose <<<<<<<");
-  });
-  print(">>>>>>> accessibilityNetworksProvider build >>>>>>");
   try {
     final can = await WiFiScan.instance.canStartScan(askPermissions: true);
     if(can == CanStartScan.yes) {
@@ -36,7 +37,44 @@ Future<Stream<List<NetworkInfo>>> accessibilityNetworks(AccessibilityNetworksRef
   }
   return const Stream.empty();
 }
+final selectHotspotProvider = StateProvider<NetworkInfo?>((ref) => null);
 
+// 네트워크 조작
+@riverpod
+class NetworkController extends _$NetworkController {
+  @override
+  String? build() {
+    print('NetworkController');
+    getNetworkInfo();
+    return null;
+  }
+
+  Future<void> getNetworkInfo() async {
+    try {
+      if(await Permission.locationWhenInUse.request().isGranted) {
+        final info = network_info_plus.NetworkInfo();
+        state = await info.getWifiName();
+      }
+    } catch (error) {
+      print("error during get network info >>> $error");
+    }
+    state = null;
+  }
+
+  Future<bool> connect({required String ssid, String? password, NetworkSecurity security = NetworkSecurity.WPA}) async {
+    try {
+      if(await Permission.location.request().isGranted) {
+        final value = await WiFiForIoTPlugin.connect(ssid, 
+          password: password, security: security, joinOnce: true, withInternet: true);
+        if(value) await getNetworkInfo();
+        return value;
+      }
+    } catch (error) {
+      print("error during connect network >>> $error");
+    }
+    return false;
+  }
+}
 
 // 플레이어에 등록 할 WiFi Credentials 상태 관리
 @riverpod
@@ -111,6 +149,54 @@ class WifiCredentialsController extends _$WifiCredentialsController {
       'type': type,
       'passphrase': passphrase
     };
+  }
+
+}
+
+@riverpod 
+class LocalStorageController extends _$LocalStorageController {
+
+  int _pageIndex = 0;
+  final int _pageCount = 20;
+  late PermissionState _storagePermission;
+
+
+  @override
+  List<AssetEntity> build() {
+    ref.onDispose(() {
+      print("<<<<<<< LocalStorageController dispose <<<<<<<");
+    });
+    print("<<<<<<< LocalStorageController build <<<<<<<");
+    initialize();
+    return List.empty();
+  }
+
+  Future<void> initialize() async {
+    _storagePermission = await PhotoManager.requestPermissionExtend();
+    if(_storagePermission.isAuth) {
+      state = await PhotoManager.getAssetListPaged(page: _pageIndex, pageCount: _pageCount);
+      // _pageIndex++;
+    }
+  }
+
+  Future<void> nextLoad() async {
+    if(_storagePermission.isAuth) {
+      var nextFiles = await PhotoManager.getAssetListPaged(page: _pageIndex, pageCount: _pageCount);
+      state = [...state, ...nextFiles];
+      _pageIndex++;
+    }
+  }
+
+  Future<String> getFilePath(AssetEntity targetFile) async {
+    try {
+      var file = await targetFile.loadFile();
+      if(file != null) {
+        return file.path;
+      }
+    } catch (error) {
+      print('error at LocalStorageController.getFilePath >>> $error');
+    }
+    return '';
   }
 
 }

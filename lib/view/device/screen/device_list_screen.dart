@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../component/search_bar.dart';
 import '../../../feature/device/controller/device_list_controller.dart';
+import '../../../feature/device/controller/device_setup_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 import '../modal/accessible_device_list_modal.dart';
@@ -22,6 +25,7 @@ class DeviceListScreen extends ConsumerWidget {
     final selectMode = ref.watch(selectModeProvider);
     final selectAll = ref.watch(selectAllProvider);
     final selectDevices = ref.watch(selectDevicesProvider);
+    final networkController = ref.watch(networkControllerProvider.notifier);
 
 
     return GestureDetector(
@@ -41,12 +45,27 @@ class DeviceListScreen extends ConsumerWidget {
                 Text('Devices', style: FlexiFont.semiBold30),
                 InkWell(
                   onTap: () {
-                    showModalBottomSheet(
-                      context: rootContext, 
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => selectMode ? const DeviceResetModal() : AccessibleDeviceListModal(),
-                    );
+                    if(Platform.isIOS) {
+                      if(selectMode) {
+                        showModalBottomSheet(
+                          context: rootContext, 
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) => const DeviceResetModal(),
+                        );
+                      } else {
+                        if(ref.watch(networkControllerProvider)!.contains('DBAP')) {
+                          context.go('/device/setTimezone');
+                        }
+                      }
+                    } else {
+                      showModalBottomSheet(
+                        context: rootContext, 
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => selectMode ? const DeviceResetModal() : AccessibleDeviceListModal(),
+                      );
+                    }
                   },
                   child: Container(
                     width: .04.sh,

@@ -7,7 +7,7 @@ part of 'text_edit_controller.dart';
 // **************************************************************************
 
 String _$textEditControllerHash() =>
-    r'66365ae54583daf4cf939d53a725005929d3eedb';
+    r'913257114a7fe7ba79a5a5bd1526473a79822f23';
 
 /// See also [TextEditController].
 @ProviderFor(TextEditController)
@@ -77,7 +77,7 @@ final speechToTextControllerProvider =
 
 typedef _$SpeechToTextController = AutoDisposeNotifier<String>;
 String _$textTranslateControllerHash() =>
-    r'7a50656430ec046bc87513d1022eb73ba482cd81';
+    r'f6f71c7c5da9e1c64dc0a001a9f2883c596830b6';
 
 /// See also [TextTranslateController].
 @ProviderFor(TextTranslateController)

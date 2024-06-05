@@ -7,7 +7,7 @@ part of 'device_list_controller.dart';
 // **************************************************************************
 
 String _$deviceListControllerHash() =>
-    r'4fa49a2744f611002316124dd6e592e3da8145a6';
+    r'91a14bcacd482a65ee5bcdf2fd75b3a46432bb16';
 
 /// See also [DeviceListController].
 @ProviderFor(DeviceListController)

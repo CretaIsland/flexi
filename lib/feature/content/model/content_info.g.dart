@@ -8,8 +8,8 @@ part of 'content_info.dart';
 
 _$ContentInfoImpl _$$ContentInfoImplFromJson(Map<String, dynamic> json) =>
     _$ContentInfoImpl(
-      id: json['id'] as String,
-      name: json['name'] as String? ?? 'New Content',
+      contentId: json['contentId'] as String,
+      contentName: json['contentName'] as String? ?? 'New Content',
       width: json['width'] as int? ?? 360,
       height: json['height'] as int? ?? 28,
       x: json['x'] as int? ?? 0,
@@ -19,21 +19,21 @@ _$ContentInfoImpl _$$ContentInfoImplFromJson(Map<String, dynamic> json) =>
       textSizeType: json['textSizeType'] as String? ?? 's',
       textSize: (json['textSize'] as num?)?.toDouble() ?? 11.2,
       textColor: json['textColor'] as String? ?? 'Color(0xffFFFFFF)',
-      isBold: json['isBold'] as bool? ?? false,
-      isItalic: json['isItalic'] as bool? ?? false,
-      languageType: json['languageType'] as String? ?? '',
+      bold: json['bold'] as bool? ?? false,
+      italic: json['italic'] as bool? ?? false,
+      language: json['language'] as String? ?? '',
       backgroundType: json['backgroundType'] as String? ?? 'color',
       backgroundColor:
           json['backgroundColor'] as String? ?? 'Color(0xff000000)',
-      contentPath: json['contentPath'] as String? ?? '',
-      contentFileName: json['contentFileName'] as String? ?? '',
-      contentThumbnail: json['contentThumbnail'] as String? ?? '',
+      filePath: json['filePath'] as String? ?? '',
+      fileName: json['fileName'] as String? ?? '',
+      fileThumbnail: json['fileThumbnail'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$ContentInfoImplToJson(_$ContentInfoImpl instance) =>
     <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
+      'contentId': instance.contentId,
+      'contentName': instance.contentName,
       'width': instance.width,
       'height': instance.height,
       'x': instance.x,
@@ -43,12 +43,12 @@ Map<String, dynamic> _$$ContentInfoImplToJson(_$ContentInfoImpl instance) =>
       'textSizeType': instance.textSizeType,
       'textSize': instance.textSize,
       'textColor': instance.textColor,
-      'isBold': instance.isBold,
-      'isItalic': instance.isItalic,
-      'languageType': instance.languageType,
+      'bold': instance.bold,
+      'italic': instance.italic,
+      'language': instance.language,
       'backgroundType': instance.backgroundType,
       'backgroundColor': instance.backgroundColor,
-      'contentPath': instance.contentPath,
-      'contentFileName': instance.contentFileName,
-      'contentThumbnail': instance.contentThumbnail,
+      'filePath': instance.filePath,
+      'fileName': instance.fileName,
+      'fileThumbnail': instance.fileThumbnail,
     };
