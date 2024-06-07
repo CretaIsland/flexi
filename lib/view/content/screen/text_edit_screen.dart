@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../feature/content/controller/content_info_controller.dart';
@@ -35,6 +36,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
 
     final contentInfoController = ref.watch(contentInfoControllerProvider.notifier);
     final textEditController = ref.watch(textEditControllerProvider.notifier);
+    final sttController = ref.watch(speechToTextControllerProvider.notifier);
 
     ContentInfo backgroundInfo = ref.read(textEditControllerProvider);
     ContentInfo textInfo = ref.watch(textEditControllerProvider);
@@ -228,10 +230,17 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                   ),
                   GestureDetector(
                     onLongPressStart: (details) {
-                      ref.watch(isSpeakingProvider.notifier).state = true;
+                      if(ref.watch(selectInputLanguageProvider)['localeId'] == null || ref.watch(selectInputLanguageProvider)['localeId']!.isEmpty) {
+                        Fluttertoast.showToast(msg: 'select language');
+                      } else {
+                        ref.watch(isSpeakingProvider.notifier).state = true;
+                        sttController.startRecord(ref.watch(selectInputLanguageProvider)['localeId']!);
+                        textEditController.setText(ref.watch(speechToTextControllerProvider));
+                      }
                     },
                     onLongPressEnd: (details) {
                       ref.watch(isSpeakingProvider.notifier).state = false;
+                      sttController.stopRecord();
                     },
                     child: Container(
                       margin: EdgeInsets.only(top: .15.sh),

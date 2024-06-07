@@ -21,6 +21,7 @@ class InputLanguageListBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -35,13 +36,13 @@ class InputLanguageListBar extends ConsumerWidget {
                   margin: const EdgeInsets.only(right: 4.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    border: ref.watch(selectInputLanguageProvider) == currentLanguage ?Border.all(color: FlexiColor.primary) : null,
+                    border: ref.watch(selectInputLanguageProvider)['code'] == currentLanguage['code'] ? Border.all(color: FlexiColor.primary) : null,
                     borderRadius: BorderRadius.circular(.005.sh)
                   ),
                   child: Center(
                     child: Text(
                       currentLanguage['name']!, 
-                      style: ref.watch(selectInputLanguageProvider) == currentLanguage ?
+                      style: ref.watch(selectInputLanguageProvider)['code'] == currentLanguage['code'] ?
                         FlexiFont.semiBold14.copyWith(color: FlexiColor.primary): FlexiFont.regular14
                       ),
                   ),
@@ -121,13 +122,13 @@ class OutputLanguageListBar extends ConsumerWidget {
                   margin: const EdgeInsets.only(right: 4.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    border: ref.watch(selectOutputLanguageProvider) == currentLanguage ?Border.all(color: FlexiColor.primary) : null,
+                    border: ref.watch(selectOutputLanguageProvider)['code'] == currentLanguage['code'] ?Border.all(color: FlexiColor.primary) : null,
                     borderRadius: BorderRadius.circular(.005.sh)
                   ),
                   child: Center(
                     child: Text(
                       currentLanguage['name']!, 
-                      style: ref.watch(selectOutputLanguageProvider) == currentLanguage ?
+                      style: ref.watch(selectOutputLanguageProvider)['code'] == currentLanguage['code'] ?
                         FlexiFont.semiBold14.copyWith(color: FlexiColor.primary) : FlexiFont.regular14
                       ),
                   ),
