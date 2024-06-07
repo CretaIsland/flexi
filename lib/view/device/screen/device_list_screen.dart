@@ -58,9 +58,7 @@ class DeviceListScreen extends ConsumerWidget {
                           );
                         }
                       } else {
-                        if(ref.watch(networkControllerProvider)!.contains('DBAP')) {
-                          context.go('/device/setTimezone');
-                        }
+                        context.go('/device/setTimezone');
                       }
                     } else {
                       showModalBottomSheet(

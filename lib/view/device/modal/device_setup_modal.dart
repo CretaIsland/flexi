@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wifi_iot/wifi_iot.dart';
 
+import '../../../common/constants/config.dart';
+import '../../../common/providers/network_providers.dart';
 import '../../../component/loading_overlay.dart';
 import '../../../component/text_button.dart';
 import '../../../feature/device/controller/device_setup_controller.dart';
@@ -20,6 +22,8 @@ class DeviceSetupModal extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 
     final wifiCredential = ref.watch(wifiCredentialsControllerProvider);
+    final deviceInfo = ref.watch(deviceSetupControllerProvider);
+    final socketClient = ref.watch(SocketIOClientProvider(ip: deviceInfo!.ip, port: Config.socketIOPort).notifier);
 
     return Container(
       width: .93.sw,
@@ -46,6 +50,15 @@ class DeviceSetupModal extends ConsumerWidget {
               OverlayEntry loadingOverlay = OverlayEntry(builder: (_) => const LoadingOverlay());
               Navigator.of(context).overlay!.insert(loadingOverlay);
               // 데이터 보내기
+               String sendData = '''
+{
+ "command":"register",
+ "deviceId":"${deviceInfo.deviceId}",
+ "ssid":"${wifiCredential['ssid']}",
+ "password":"${wifiCredential['passphrase']}"
+}
+''';
+              socketClient.sendData(sendData);
               print(ref.watch(selectTimezoneProvider));
               print(wifiCredential);
               // 와이파이 연결
@@ -57,8 +70,8 @@ class DeviceSetupModal extends ConsumerWidget {
                     NetworkSecurity.WEP : NetworkSecurity.NONE
               );
               loadingOverlay.remove();
-              context.pop();
-              context.go('/device/list');
+              // context.pop();
+              // context.go('/device/list');
             },
           ),
           SizedBox(

@@ -4,9 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../component/search_bar.dart';
-import '../../../feature/content/controller/content_send_controller.dart';
+import '../../../feature/content/controller/content_info_controller.dart';
+import '../../../feature/content/controller/content_send_controller.dart' as content_send_controller;
+import '../../../feature/device/controller/device_list_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
+import '../modal/content_send_modal.dart';
 
 
 
@@ -15,6 +18,9 @@ class ContentSendScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+    final contentInfoController = ref.watch(contentInfoControllerProvider);
+
     return Scaffold(
       backgroundColor: FlexiColor.backgroundColor,
       body: Padding(
@@ -25,14 +31,21 @@ class ContentSendScreen extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: () => context.go('/content/info'),
+                  onPressed: () {
+                    ref.invalidate(content_send_controller.selectDeviceProvider);
+                    context.go('/content/info');
+                  },
                   icon: Icon(Icons.arrow_back_ios, color: FlexiColor.primary, size: .03.sh)
                 ),
                 Text('Send to device', style: FlexiFont.semiBold20),
                 TextButton(
                   onPressed: () {
                     // 콘텐츠 전송하기
-                    context.go('/content/info');
+                    showModalBottomSheet(
+                      context: context, 
+                      backgroundColor: Colors.transparent,
+                      builder:(context) => const ContentSendModal(),
+                    );
                   }, 
                   child: Text('Send', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))
                 )
@@ -47,12 +60,20 @@ class ContentSendScreen extends ConsumerWidget {
             Expanded(
               child: Consumer(
                 builder: (context, ref, child) {
+                  final devices = ref.watch(deviceListControllerProvider);
                   return ListView.builder(
                     padding: EdgeInsets.zero,
-                    itemCount: 15,
+                    itemCount: devices.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
-                        onTap: () { },
+                        onTap: () {
+                          print('click');
+                          if(ref.watch(content_send_controller.selectDeviceProvider) == devices[index]) {
+                            ref.watch(content_send_controller.selectDeviceProvider.notifier).state = null;
+                          } else {
+                            ref.watch(content_send_controller.selectDeviceProvider.notifier).state = devices[index];
+                          }
+                        },
                         child: Container(
                           width: .89.sw,
                           height: .1.sh,
@@ -73,17 +94,17 @@ class ContentSendScreen extends ConsumerWidget {
                                     children: [
                                       Icon(Icons.link_rounded, color: FlexiColor.primary, size: .02.sh),
                                       SizedBox(width: .015.sh),
-                                      Text("Device name", style: FlexiFont.regular16,)
+                                      Text(devices[index].deviceName, style: FlexiFont.regular16,)
                                     ],
                                   ),
                                   Padding(
                                     padding: EdgeInsets.only(left: .03.sh),
-                                    child: Text("Device ID", style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
+                                    child: Text(devices[index].deviceId, style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
                                   )
                                 ],
                               ),
-                              ref.watch(selectDeviceProvider) == index ? 
-                                Icon(Icons.check_circle, color: FlexiColor.secondary, size: .025.sh) :
+                              ref.watch(content_send_controller.selectDeviceProvider) == devices[index] ? 
+                                Icon(Icons.check_circle, color: FlexiColor.primary, size: .025.sh) :
                                 Icon(Icons.check_circle_outline, color: FlexiColor.grey[600], size: .025.sh)
                             ],
                           ),

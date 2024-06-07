@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wifi_iot/wifi_iot.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 
+import '../../../common/constants/config.dart';
+import '../../../common/providers/network_providers.dart';
+import '../model/device_info.dart';
 import '../model/network_info.dart';
 
 part 'device_setup_controller.g.dart';
@@ -193,6 +197,62 @@ class LocalStorageController extends _$LocalStorageController {
       var nextFiles = await PhotoManager.getAssetListPaged(page: _pageIndex, pageCount: _pageCount);
       state = [...state, ...nextFiles];
       _pageIndex++;
+    }
+  }
+
+}
+
+
+@riverpod
+class DeviceSetupController extends _$DeviceSetupController {
+
+  late RawDatagramSocket _socket;
+  late String _other;
+
+
+  @override
+  DeviceInfo? build() {
+    ref.onDispose(() {
+      _socket.close();
+    });
+    initialize();
+    return null;
+  }
+
+  Future<void> initialize() async {
+    _socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, Config.udpBroadcastProt);
+
+    ref.watch(networkInfoProvider).when(
+      data: (data) {
+        _other = data!.broadcast ?? '';
+        sendData('{"command":"test"}');
+      }, 
+      error: (errror, stackTrace) {}, 
+      loading: () {}
+    );
+
+    _socket.listen((event) {
+      Datagram? d = _socket.receive();
+      if(d == null) return;
+
+      Map<String, dynamic> data = jsonDecode(utf8.decode(d.data));
+      if(data['command'] == 'playerStatus') {
+        data.remove('command');
+        state = DeviceInfo.fromJson(data);
+      }
+    });
+  }
+
+  void sendData(String data) async {
+    //한글 되게 uint8
+    List<int> sendData = utf8.encode(data);
+    if (Platform.isIOS) {
+      print("send _wifiBroadcast $_other");
+      _socket.send(
+      sendData, InternetAddress('$_other'), 4546);
+    } else {
+      print("send 255.255.255.255");
+      _socket.send(sendData, InternetAddress('255.255.255.255'), 4546);
     }
   }
 
