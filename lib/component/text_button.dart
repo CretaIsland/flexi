@@ -23,10 +23,10 @@ class FlexiTextButton extends StatelessWidget {
       child: TextButton(
         onPressed: onPressed,
         style: ButtonStyle(
-          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(.01.sh))
           ),
-          backgroundColor: WidgetStateProperty.all(fillColor),
+          backgroundColor: MaterialStateProperty.all(fillColor),
         ), 
         child: Text(text, style: textStyle ?? FlexiFont.semiBold16.copyWith(color: textColor))
       ),

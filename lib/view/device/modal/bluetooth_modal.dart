@@ -8,7 +8,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/constants/config.dart';
 import '../../../common/providers/network_providers.dart';
 import '../../../feature/device/controller/device_info_controller.dart';
-import '../../../feature/device/model/bluetooth_info.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 
@@ -53,7 +52,6 @@ class BluetoothModal extends ConsumerWidget {
                 AdvancedSwitch(
                   width: .11.sw,
                   height: .025.sh,
-                  enabled: Platform.isAndroid,
                   activeColor: FlexiColor.primary,
                   initialValue: deviceInfo.bluetoothBonded,
                   onChanged: (value) {
@@ -116,8 +114,10 @@ class BluetoothModal extends ConsumerWidget {
                                   ref.watch(deviceInfoControllerProvider.notifier).registerBluetooth(data[index]);
                                   String sendData = '''
                                     {
-                                    "command": "bluetoothUnregister",
-                                    "deviceId": ${deviceInfo.deviceId}
+                                    "command": "bluetoothRRegister",
+                                    "deviceId": ${deviceInfo.deviceId},
+                                    "bluetooth":${deviceInfo.bluetooth},
+                                    "bluetoothId":${deviceInfo.bluetoothId}
                                     }
                                   ''';
                                   socketClient.sendData(sendData);
@@ -160,8 +160,10 @@ class BluetoothModal extends ConsumerWidget {
                                         ref.watch(deviceInfoControllerProvider.notifier).registerBluetooth(data[index]);
                                         String sendData = '''
                                           {
-                                          "command": "bluetoothUnregister",
-                                          "deviceId": ${deviceInfo.deviceId}
+                                          "command": "bluetoothRRegister",
+                                          "deviceId": ${deviceInfo.deviceId},
+                                          "bluetooth":${deviceInfo.bluetooth},
+                                          "bluetoothId":${deviceInfo.bluetoothId}
                                           }
                                         ''';
                                         socketClient.sendData(sendData);
@@ -216,8 +218,10 @@ class BluetoothModal extends ConsumerWidget {
                                         ref.watch(deviceInfoControllerProvider.notifier).registerBluetooth(data[index]);
                                         String sendData = '''
                                           {
-                                          "command": "bluetoothUnregister",
-                                          "deviceId": ${deviceInfo.deviceId}
+                                          "command": "bluetoothRRegister",
+                                          "deviceId": ${deviceInfo.deviceId},
+                                          "bluetooth":${deviceInfo.bluetooth},
+                                          "bluetoothId":${deviceInfo.bluetoothId}
                                           }
                                         ''';
                                         socketClient.sendData(sendData);

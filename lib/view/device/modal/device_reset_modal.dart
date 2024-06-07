@@ -18,7 +18,9 @@ class DeviceResetModal extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final selectDevices = ref.watch(selectDevicesProvider);
+    final selectDevice = ref.watch(selectDeviceProvider);
+    var socketClient = ref.watch(SocketIOClientProvider(ip: selectDevice != null ? selectDevice.ip : '', port: Config.socketIOPort).notifier);
+   
 
     return Container(
       width: .93.sw,
@@ -42,19 +44,14 @@ class DeviceResetModal extends ConsumerWidget {
             text: 'Reset',
             fillColor: FlexiColor.secondary,
             onPressed: () {
-              for(var device in selectDevices) {
-                String data = '''
-                  {
-                  "command":"unregister",
-                  "deviceId":${device.deviceId}
-                  }
-                ''';
-                ref.watch(SocketIOClientProvider(ip: device.ip, port: Config.socketIOPort).notifier).sendData(data);
-              }
-              ref.watch(selectModeProvider.notifier).state = false;
-              ref.watch(selectAllProvider.notifier).state = false;
-              ref.invalidate(selectDevicesProvider);
-              ref.invalidate(deviceListControllerProvider);
+              String data = '''
+                {
+                "command":"unregister",
+                "deviceId":${selectDevice!.deviceId}
+                }
+              ''';
+              socketClient.sendData(data);
+              ref.invalidate(selectDeviceProvider);
               context.pop();
             },
           ),

@@ -13,7 +13,7 @@ part 'device_list_controller.g.dart';
 
 final selectModeProvider = StateProvider<bool>((ref) => false);
 final selectAllProvider = StateProvider<bool>((ref) => false);
-final selectDevicesProvider = StateProvider<List<DeviceInfo>>((ref) => List.empty());
+final selectDeviceProvider = StateProvider<DeviceInfo?>((ref) => null);
 
 
 @riverpod

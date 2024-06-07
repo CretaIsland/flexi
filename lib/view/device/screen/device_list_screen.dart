@@ -25,7 +25,7 @@ class DeviceListScreen extends ConsumerWidget {
 
     final selectMode = ref.watch(selectModeProvider);
     final selectAll = ref.watch(selectAllProvider);
-    final selectDevices = ref.watch(selectDevicesProvider);
+    final selectDevice = ref.watch(selectDeviceProvider);
     final devices = ref.watch(deviceListControllerProvider);
     final deviceInfoController = ref.watch(deviceInfoControllerProvider.notifier);
 
@@ -34,7 +34,7 @@ class DeviceListScreen extends ConsumerWidget {
       onTap: () {
         ref.watch(selectModeProvider.notifier).state = false;
         ref.watch(selectAllProvider.notifier).state = false;
-        ref.invalidate(selectDevicesProvider);
+        ref.invalidate(selectDeviceProvider);
       },
       child: Container(
         color: FlexiColor.backgroundColor,
@@ -49,12 +49,14 @@ class DeviceListScreen extends ConsumerWidget {
                   onTap: () {
                     if(Platform.isIOS) {
                       if(selectMode) {
-                        showModalBottomSheet(
-                          context: rootContext, 
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder: (context) => const DeviceResetModal(),
-                        );
+                        if(selectDevice != null) {
+                          showModalBottomSheet(
+                            context: rootContext, 
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (context) => const DeviceResetModal(),
+                          );
+                        }
                       } else {
                         if(ref.watch(networkControllerProvider)!.contains('DBAP')) {
                           context.go('/device/setTimezone');
@@ -94,34 +96,12 @@ class DeviceListScreen extends ConsumerWidget {
             ),
             SizedBox(height: .025.sh),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Text('${devices.length} Devices', style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
-                    const SizedBox(width: 4),
-                    InkWell(
-                      onTap: () {},
-                      child: Icon(Icons.refresh, color: FlexiColor.grey[600], size: .02.sh),
-                    )
-                  ],
-                ),
-                Visibility(
-                  visible: selectMode,
-                  child: Row(
-                    children: [
-                      Text('Select All', style: FlexiFont.regular12,),
-                      const SizedBox(width: 4),
-                      InkWell(
-                        onTap: () {
-                          ref.watch(selectAllProvider.notifier).state = !selectAll;
-                        },
-                        child: selectAll ? 
-                          Icon(Icons.check_circle, color: FlexiColor.secondary, size: .025.sh) :
-                          Icon(Icons.check_circle_outline, color: FlexiColor.grey[600], size: .025.sh)
-                      )
-                    ],
-                  ),
+                Text('${devices.length} Devices', style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
+                const SizedBox(width: 4),
+                InkWell(
+                  onTap: () {},
+                  child: Icon(Icons.refresh, color: FlexiColor.grey[600], size: .02.sh),
                 )
               ],
             ),
@@ -137,11 +117,10 @@ class DeviceListScreen extends ConsumerWidget {
                         onLongPress: () => ref.watch(selectModeProvider.notifier).state = true,
                         onTap: () {
                           if(selectMode) {
-                            if(selectDevices.contains(devices[index])) {
-                              selectDevices.removeAt(index);
-                              ref.watch(selectDevicesProvider.notifier).state = [...selectDevices];
+                            if(selectDevice == devices[index]) {
+                              ref.watch(selectDeviceProvider.notifier).state = null;
                             } else {
-                              ref.watch(selectDevicesProvider.notifier).state = [...selectDevices, devices[index]];
+                              ref.watch(selectDeviceProvider.notifier).state = devices[index];
                             }
                           } else {
                             deviceInfoController.setDevice(devices[index]);
@@ -179,7 +158,7 @@ class DeviceListScreen extends ConsumerWidget {
                               ),
                               Visibility(
                                 visible: selectMode,
-                                child: selectDevices.contains(index) || selectAll ? 
+                                child: selectDevice == devices[index] || selectAll ? 
                                   Icon(Icons.check_circle, color: FlexiColor.secondary, size: .025.sh) :
                                   Icon(Icons.check_circle_outline, color: FlexiColor.grey[600], size: .025.sh)
                               )

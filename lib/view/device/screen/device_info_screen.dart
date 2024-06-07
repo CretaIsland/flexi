@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -158,7 +156,9 @@ class DeviceInfoScreen extends ConsumerWidget {
                       max: 100.0,
                       activeColor: FlexiColor.primary,
                       thumbColor: Colors.white,
-                      onChanged: (value) => deviceInfoController.setVolume(value.toInt())
+                      onChanged: (value) {
+                        deviceInfoController.setVolume(value.toInt());
+                      }
                     ),
                   ),
                   IconButton(
