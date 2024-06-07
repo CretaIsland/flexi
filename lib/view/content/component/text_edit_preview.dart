@@ -22,7 +22,6 @@ class TextEditPreview extends ConsumerStatefulWidget {
 class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
 
   late ContentInfo contentInfo;
-  late TextEditingController textEditingController;
   late double aspectRatio;
   late double responsiveWidth;
   late double responsiveHeight;
@@ -34,7 +33,6 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
     super.initState();
     contentInfo = widget.contentInfo;
 
-    textEditingController = TextEditingController(text: contentInfo.text);
     aspectRatio = contentInfo.width / contentInfo.height;
     responsiveWidth = contentInfo.width <= 360 ? 1.sw : (1.sw / 360) * contentInfo.width;
     responsiveHeight = responsiveWidth / aspectRatio;
@@ -47,15 +45,7 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    textEditingController.dispose();
-  }
-
-
-  @override
   Widget build(BuildContext context) {
-    print('content rebuild');
     contentInfo = widget.contentInfo;
     return Container(
       width: 1.sw,
@@ -86,15 +76,16 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
               width: 1.sw, 
               height: .15.sh,
               child: TextField(
-                controller: textEditingController,
-                maxLines: null,
+                controller: TextEditingController(text: contentInfo.text),
+                maxLines: 2,
                 readOnly: ref.watch(sttModeProvider),
                 focusNode: ref.watch(keyboardEventProvider),
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   contentPadding: EdgeInsets.zero,
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none
+                  focusedBorder: InputBorder.none,
+                  iconColor: FlexiColor.primary
                 ),
                 style: TextStyle(
                   fontSize: textScaler * contentInfo.textSize,

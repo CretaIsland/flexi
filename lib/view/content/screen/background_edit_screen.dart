@@ -2,6 +2,7 @@ import 'package:flexi/feature/content/model/content_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photo_manager/photo_manager.dart';
 
@@ -188,16 +189,18 @@ class BackgroundEditScreen extends ConsumerWidget {
                     if(snapshot.hasData && snapshot.data != null) {
                       return InkWell(
                         onTap: () async {
-                          var filePath = await localStorageController.getFilePath(localStorageFiles[index]);
-                          if(filePath.isNotEmpty) {
+                          var selectFile = await localStorageFiles[index].loadFile();
+                          if(selectFile != null) {
                             ref.watch(backgroundEditControllerProvider.notifier).setBackgroundContent(
-                              localStorageFiles[index].type.name,
-                              filePath,
-                              localStorageFiles[index].title ?? '',
+                              localStorageFiles[index].type.name, 
+                              selectFile.path, 
+                              selectFile.path.split('/').last, 
                               snapshot.data!
                             );
                           } else {
-                            // toast 메세지
+                            Fluttertoast.showToast(
+                              msg: 'error select file'
+                            );
                           }
                         },
                         child: Stack(

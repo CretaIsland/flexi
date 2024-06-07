@@ -100,6 +100,7 @@ class _TextTranslateModalState extends ConsumerState<TextTranslateModal> {
               onPressed: () async {
                 ref.watch(textEditControllerProvider.notifier).setText(_outputController.text);
                 ref.invalidate(textTranslateControllerProvider);
+                ref.watch(currentOutputLanguagesControllerProvider.notifier).saveChange();
                 context.pop();
               },
             )
