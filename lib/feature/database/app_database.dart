@@ -25,7 +25,7 @@ class AppDatabase {
 
   Future _openDatabase() async {
     final appDocumentDir = await getApplicationDocumentsDirectory();
-    final databasePath = '${appDocumentDir.path}flexi.db';
+    final databasePath = '${appDocumentDir.path}/flexi.db';
     final database = await databaseFactoryIo.openDatabase(databasePath);
     _dbOpenCompleter!.complete(database);
   }
