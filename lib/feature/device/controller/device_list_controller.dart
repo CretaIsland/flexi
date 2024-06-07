@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../common/constants/config.dart';
 import '../model/device_info.dart';
 
 part 'device_list_controller.g.dart';
@@ -12,7 +13,7 @@ part 'device_list_controller.g.dart';
 
 final selectModeProvider = StateProvider<bool>((ref) => false);
 final selectAllProvider = StateProvider<bool>((ref) => false);
-final selectDevicesProvider = StateProvider<List<int>>((ref) => List.empty());
+final selectDevicesProvider = StateProvider<List<DeviceInfo>>((ref) => List.empty());
 
 
 @riverpod
@@ -31,7 +32,7 @@ class DeviceListController extends _$DeviceListController {
   }
 
   Future<void> initialize() async {
-    _socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 8888);
+    _socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, Config.udpBroadcastProt);
     _socket.listen((event) {
       Datagram? d = _socket.receive();
       if(d == null) return;
@@ -51,6 +52,7 @@ class DeviceListController extends _$DeviceListController {
         }
       }
     });
+    
   }
 
 }

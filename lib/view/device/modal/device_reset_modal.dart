@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../common/constants/config.dart';
+import '../../../common/providers/network_providers.dart';
 import '../../../component/text_button.dart';
+import '../../../feature/device/controller/device_list_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 
@@ -14,6 +17,9 @@ class DeviceResetModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+    final selectDevices = ref.watch(selectDevicesProvider);
+
     return Container(
       width: .93.sw,
       height: .35.sh,
@@ -36,6 +42,19 @@ class DeviceResetModal extends ConsumerWidget {
             text: 'Reset',
             fillColor: FlexiColor.secondary,
             onPressed: () {
+              for(var device in selectDevices) {
+                String data = '''
+                  {
+                  "command":"unregister",
+                  "deviceId":${device.deviceId}
+                  }
+                ''';
+                ref.watch(SocketIOClientProvider(ip: device.ip, port: Config.socketIOPort).notifier).sendData(data);
+              }
+              ref.watch(selectModeProvider.notifier).state = false;
+              ref.watch(selectAllProvider.notifier).state = false;
+              ref.invalidate(selectDevicesProvider);
+              ref.invalidate(deviceListControllerProvider);
               context.pop();
             },
           ),

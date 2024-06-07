@@ -17,6 +17,10 @@ class ContentInfoController extends _$ContentInfoController {
 
   @override
   ContentInfo? build() {
+    ref.onDispose(() {
+      print("<<<<<<< ContentInfoController dispose <<<<<<<");
+    });
+    print("<<<<<<< ContentInfoController build <<<<<<<");
     _contentRespository = ContentRespository();
     return null;
   }

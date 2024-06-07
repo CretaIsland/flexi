@@ -5,7 +5,6 @@ import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart
 import 'package:network_info_plus/network_info_plus.dart' as network_info_plus;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wifi_iot/wifi_iot.dart';
 import 'package:wifi_scan/wifi_scan.dart';
@@ -19,6 +18,10 @@ part 'device_setup_controller.g.dart';
 // 접속 가능한 주변 장비(hotspot) 목록 조회
 @riverpod
 Future<Stream<List<NetworkInfo>>> accessibilityNetworks(AccessibilityNetworksRef ref) async {
+  ref.onDispose(() {
+    print('<<<<< accessibilityNetworksProvider Dispose <<<<<');
+  });
+  print('<<<<< accessibilityNetworksProvider Build <<<<<');
   try {
     final can = await WiFiScan.instance.canStartScan(askPermissions: true);
     if(can == CanStartScan.yes) {
@@ -39,12 +42,16 @@ Future<Stream<List<NetworkInfo>>> accessibilityNetworks(AccessibilityNetworksRef
 }
 final selectHotspotProvider = StateProvider<NetworkInfo?>((ref) => null);
 
-// 네트워크 조작
+
+// 네트워크 설정
 @riverpod
 class NetworkController extends _$NetworkController {
   @override
   String? build() {
-    print('NetworkController');
+    ref.onDispose(() {
+      print('<<<<< NetworkController Dispose <<<<<');
+    });
+    print('<<<<< NetworkController Build <<<<<');
     getNetworkInfo();
     return null;
   }
@@ -74,7 +81,9 @@ class NetworkController extends _$NetworkController {
     }
     return false;
   }
+
 }
+
 
 // 플레이어에 등록 할 WiFi Credentials 상태 관리
 @riverpod
@@ -90,7 +99,7 @@ class WifiCredentialsController extends _$WifiCredentialsController {
       print('<<<<< WifiCredentialsController Dispose <<<<<');
       _barcodeScanner.close();
     });
-    print('<<<<< WifiCredentialsController Dispose <<<<<');
+    print('<<<<< WifiCredentialsController Build <<<<<');
     _barcodeScanner = BarcodeScanner();
     return {'ssid': '', 'type': '', 'passphrase': ''};
   }
@@ -164,9 +173,9 @@ class LocalStorageController extends _$LocalStorageController {
   @override
   List<AssetEntity> build() {
     ref.onDispose(() {
-      print("<<<<<<< LocalStorageController dispose <<<<<<<");
+      print('<<<<< LocalStorageController Dispose <<<<<');
     });
-    print("<<<<<<< LocalStorageController build <<<<<<<");
+    print('<<<<< LocalStorageController Build <<<<<');
     initialize();
     return List.empty();
   }
@@ -185,18 +194,6 @@ class LocalStorageController extends _$LocalStorageController {
       state = [...state, ...nextFiles];
       _pageIndex++;
     }
-  }
-
-  Future<String> getFilePath(AssetEntity targetFile) async {
-    try {
-      var file = await targetFile.loadFile();
-      if(file != null) {
-        return file.path;
-      }
-    } catch (error) {
-      print('error at LocalStorageController.getFilePath >>> $error');
-    }
-    return '';
   }
 
 }

@@ -21,6 +21,10 @@ class ContentListController extends _$ContentListController {
 
   @override
   Future<List<ContentInfo>> build() async {
+    ref.onDispose(() {
+      print("<<<<<<< ContentListController dispose <<<<<<<");
+    });
+    print("<<<<<<< ContentListController build <<<<<<<");
     _contentRespository = ContentRespository();
     return await getContents();
   }

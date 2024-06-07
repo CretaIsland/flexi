@@ -21,6 +21,10 @@ class BackgroundEditController extends _$BackgroundEditController {
 
   @override
   ContentInfo build() {
+    ref.onDispose(() {
+      print("<<<<<<< BackgroundEditController dispose <<<<<<<");
+    });
+    print("<<<<<<< BackgroundEditController build <<<<<<<");
     return ref.read(contentInfoControllerProvider)!;
   }
 
@@ -80,18 +84,6 @@ class LocalStorageController extends _$LocalStorageController {
       state = [...state, ...nextFiles];
       _pageIndex++;
     }
-  }
-
-  Future<String> getFilePath(AssetEntity targetFile) async {
-    try {
-      var file = await targetFile.loadFile();
-      if(file != null) {
-        return file.path;
-      }
-    } catch (error) {
-      print('error at LocalStorageController.getFilePath >>> $error');
-    }
-    return '';
   }
 
 }

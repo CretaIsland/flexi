@@ -23,6 +23,10 @@ class TextEditController extends _$TextEditController {
 
   @override
   ContentInfo build() {
+    ref.onDispose(() {
+      print("<<<<<<< TextEditController dispose <<<<<<<");
+    });
+    print("<<<<<<< TextEditController build <<<<<<<");
     return ref.read(contentInfoControllerProvider)!;
   }
 
@@ -64,7 +68,6 @@ class TextEditController extends _$TextEditController {
 final selectInputLanguageProvider = StateProvider<Map<String, String>>((ref) => {});
 final selectOutputLanguageProvider = StateProvider<Map<String, String>>((ref) => {});
 
-
 @riverpod
 class CurrentInputLanguagesController extends _$CurrentInputLanguagesController {
 
@@ -73,6 +76,10 @@ class CurrentInputLanguagesController extends _$CurrentInputLanguagesController 
 
   @override
   List<Map<String, String>> build() {
+    ref.onDispose(() {
+      print("<<<<<<< CurrentInputLanguagesController dispose <<<<<<<");
+    });
+    print("<<<<<<< CurrentInputLanguagesController build <<<<<<<");
     _currentLanguagesRepository = CurrentLanguagesRepository();
     getCurrentLanguages();
     return List.empty();
@@ -105,6 +112,10 @@ class CurrentOutputLanguagesController extends _$CurrentOutputLanguagesControlle
 
   @override
   List<Map<String, String>> build() {
+    ref.onDispose(() {
+      print("<<<<<<< CurrentOutputLanguagesController dispose <<<<<<<");
+    });
+    print("<<<<<<< CurrentOutputLanguagesController build <<<<<<<");
     _currentLanguagesRepository = CurrentLanguagesRepository();
     getCurrentLanguages();
     return List.empty();
@@ -138,6 +149,10 @@ class SpeechToTextController extends _$SpeechToTextController {
 
   @override
   String build() {
+    ref.onDispose(() {
+      print("<<<<<<< SpeechToTextController dispose <<<<<<<");
+    });
+    print("<<<<<<< SpeechToTextController build <<<<<<<");
     _stt = SpeechToText();
     _stt.initialize().then((value) => _sttInit = value);
     return '';
@@ -174,6 +189,10 @@ class TextTranslateController extends _$TextTranslateController {
 
   @override
   String build() {
+    ref.onDispose(() {
+      print("<<<<<<< TextTranslateController dispose <<<<<<<");
+    });
+    print("<<<<<<< TextTranslateController build <<<<<<<");
     _translator = GoogleTranslator();
     return '';
   }

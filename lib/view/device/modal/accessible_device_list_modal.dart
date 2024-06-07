@@ -49,37 +49,42 @@ class AccessibleDeviceListModal extends ConsumerWidget {
                     return StreamBuilder(
                       stream: stream, 
                       builder: (context, snapshot) {
-                        return ListView.separated(
-                          padding: EdgeInsets.zero,
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                              onTap: () => ref.watch(selectHotspotProvider.notifier).state = snapshot.data![index],
-                              child: Padding(
-                                padding: EdgeInsets.all(.02.sh),
-                                child: Row(
-                                  children: [
-                                    ref.watch(selectHotspotProvider) == snapshot.data![index] ?
-                                      Icon(Icons.check_circle, color: FlexiColor.primary, size: .025.sh) : 
-                                      Icon(Icons.check_circle_outline, color: FlexiColor.grey[600], size: .025.sh),
-                                    const SizedBox(width: 12),
-                                    Icon(Icons.wifi, color: Colors.black, size: .025.sh),
-                                    const SizedBox(width: 8),
-                                    SizedBox(
-                                      width: .6.sw,
-                                      child: Text(
-                                        snapshot.data![index].ssid ?? '', 
-                                        style: FlexiFont.regular16,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
+                        if(snapshot.data != null ) {
+                          return ListView.separated(
+                            padding: EdgeInsets.zero,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () => ref.watch(selectHotspotProvider.notifier).state = snapshot.data![index],
+                                child: Padding(
+                                  padding: EdgeInsets.all(.02.sh),
+                                  child: Row(
+                                    children: [
+                                      ref.watch(selectHotspotProvider) == snapshot.data![index] ?
+                                        Icon(Icons.check_circle, color: FlexiColor.primary, size: .025.sh) : 
+                                        Icon(Icons.check_circle_outline, color: FlexiColor.grey[600], size: .025.sh),
+                                      const SizedBox(width: 12),
+                                      Icon(Icons.wifi, color: Colors.black, size: .025.sh),
+                                      const SizedBox(width: 8),
+                                      SizedBox(
+                                        width: .6.sw,
+                                        child: Text(
+                                          snapshot.data![index].ssid ?? '', 
+                                          style: FlexiFont.regular16,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                        )
                                       )
-                                    )
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) => Divider(color: FlexiColor.grey[400]),
+                              );
+                            },
+                            separatorBuilder: (context, index) => Divider(color: FlexiColor.grey[400]),
+                          );
+                        }
+                        return Center(
+                          child: CircularProgressIndicator(color: FlexiColor.primary),
                         );
                       },
                     );

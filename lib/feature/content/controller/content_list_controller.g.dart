@@ -7,7 +7,7 @@ part of 'content_list_controller.dart';
 // **************************************************************************
 
 String _$contentListControllerHash() =>
-    r'a8d1b6f9f8d6e47dbb7b110a8dd7f1c26509f5b3';
+    r'0bb65d824c47cadf65e1c51d3cabcbba1066dedf';
 
 /// See also [ContentListController].
 @ProviderFor(ContentListController)

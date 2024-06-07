@@ -7,7 +7,7 @@ part of 'device_setup_controller.dart';
 // **************************************************************************
 
 String _$accessibilityNetworksHash() =>
-    r'f028c74fdd153af1f29a51a9180ffbafc6c6ad37';
+    r'8ac065c7c0b7c20d6195da872ec6370019c96bf3';
 
 /// See also [accessibilityNetworks].
 @ProviderFor(accessibilityNetworks)
@@ -24,7 +24,7 @@ final accessibilityNetworksProvider =
 
 typedef AccessibilityNetworksRef
     = AutoDisposeFutureProviderRef<Stream<List<NetworkInfo>>>;
-String _$networkControllerHash() => r'9566381569ad778937955b1570d904c3f2cdeadf';
+String _$networkControllerHash() => r'b5250b5e96b8b122055f1bd9b6770dc7e28c96c9';
 
 /// See also [NetworkController].
 @ProviderFor(NetworkController)
@@ -41,7 +41,7 @@ final networkControllerProvider =
 
 typedef _$NetworkController = AutoDisposeNotifier<String?>;
 String _$wifiCredentialsControllerHash() =>
-    r'6d04f1a4162080ec9854e93d31211295b42f4058';
+    r'35c579dd693939e42e6bef3308b87256f5060578';
 
 /// See also [WifiCredentialsController].
 @ProviderFor(WifiCredentialsController)
@@ -58,7 +58,7 @@ final wifiCredentialsControllerProvider = AutoDisposeNotifierProvider<
 
 typedef _$WifiCredentialsController = AutoDisposeNotifier<Map<String, String>>;
 String _$localStorageControllerHash() =>
-    r'c11bd9a8a95a8b5bc717324f69a78a0a6cdb69b5';
+    r'd9acd7c0bc07ebe1625f8eb0ead5cb37d6f2028d';
 
 /// See also [LocalStorageController].
 @ProviderFor(LocalStorageController)

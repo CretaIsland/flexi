@@ -7,7 +7,7 @@ part of 'background_edit_controller.dart';
 // **************************************************************************
 
 String _$backgroundEditControllerHash() =>
-    r'3ed64eb728589ebe46115c56e89cfa86fe85378c';
+    r'89fbda559639b6d9daec7f9d7125325608e4753f';
 
 /// See also [BackgroundEditController].
 @ProviderFor(BackgroundEditController)
@@ -24,7 +24,7 @@ final backgroundEditControllerProvider =
 
 typedef _$BackgroundEditController = AutoDisposeNotifier<ContentInfo>;
 String _$localStorageControllerHash() =>
-    r'c11bd9a8a95a8b5bc717324f69a78a0a6cdb69b5';
+    r'754a29924f21727a229c2abfe4502c5f6b3962c4';
 
 /// See also [LocalStorageController].
 @ProviderFor(LocalStorageController)

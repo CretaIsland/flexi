@@ -7,12 +7,12 @@ part of 'content_send_controller.dart';
 // **************************************************************************
 
 String _$contentSendControllerHash() =>
-    r'88b802c520b60c465645dcc233c5022fa4c229fb';
+    r'2c0a40c676bd27bd7694d89f20d1a6924b1bdc2d';
 
 /// See also [ContentSendController].
 @ProviderFor(ContentSendController)
 final contentSendControllerProvider =
-    AutoDisposeNotifierProvider<ContentSendController, void>.internal(
+    AutoDisposeNotifierProvider<ContentSendController, ContentInfo?>.internal(
   ContentSendController.new,
   name: r'contentSendControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -22,6 +22,6 @@ final contentSendControllerProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$ContentSendController = AutoDisposeNotifier<void>;
+typedef _$ContentSendController = AutoDisposeNotifier<ContentInfo?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

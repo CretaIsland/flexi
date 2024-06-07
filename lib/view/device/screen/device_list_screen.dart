@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../component/search_bar.dart';
+import '../../../feature/device/controller/device_info_controller.dart';
 import '../../../feature/device/controller/device_list_controller.dart';
 import '../../../feature/device/controller/device_setup_controller.dart';
 import '../../../utils/ui/color.dart';
@@ -25,7 +26,8 @@ class DeviceListScreen extends ConsumerWidget {
     final selectMode = ref.watch(selectModeProvider);
     final selectAll = ref.watch(selectAllProvider);
     final selectDevices = ref.watch(selectDevicesProvider);
-    final networkController = ref.watch(networkControllerProvider.notifier);
+    final devices = ref.watch(deviceListControllerProvider);
+    final deviceInfoController = ref.watch(deviceInfoControllerProvider.notifier);
 
 
     return GestureDetector(
@@ -63,7 +65,7 @@ class DeviceListScreen extends ConsumerWidget {
                         context: rootContext, 
                         isScrollControlled: true,
                         backgroundColor: Colors.transparent,
-                        builder: (context) => selectMode ? const DeviceResetModal() : AccessibleDeviceListModal(),
+                        builder: (context) => selectMode ? const DeviceResetModal() : const AccessibleDeviceListModal(),
                       );
                     }
                   },
@@ -96,7 +98,7 @@ class DeviceListScreen extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Text('${15} Devices', style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
+                    Text('${devices.length} Devices', style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
                     const SizedBox(width: 4),
                     InkWell(
                       onTap: () {},
@@ -129,14 +131,20 @@ class DeviceListScreen extends ConsumerWidget {
                 builder: (context, ref, child) {
                   return ListView.builder(
                     padding: EdgeInsets.zero,
-                    itemCount: 15,
+                    itemCount: devices.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onLongPress: () => ref.watch(selectModeProvider.notifier).state = true,
                         onTap: () {
                           if(selectMode) {
-
+                            if(selectDevices.contains(devices[index])) {
+                              selectDevices.removeAt(index);
+                              ref.watch(selectDevicesProvider.notifier).state = [...selectDevices];
+                            } else {
+                              ref.watch(selectDevicesProvider.notifier).state = [...selectDevices, devices[index]];
+                            }
                           } else {
+                            deviceInfoController.setDevice(devices[index]);
                             context.go('/device/info');
                           }
                         },
@@ -160,18 +168,12 @@ class DeviceListScreen extends ConsumerWidget {
                                     children: [
                                       Icon(Icons.link_rounded, color: FlexiColor.primary, size: .02.sh),
                                       SizedBox(width: .015.sh),
-                                      Text("Device name", style: FlexiFont.regular16,)
+                                      Text(devices[index].deviceName, style: FlexiFont.regular16,)
                                     ],
                                   ),
                                   Padding(
                                     padding: EdgeInsets.only(left: .03.sh),
-                                    child: Text("Device ID", style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
-                                    // child: Row(
-                                    //   children: [
-                                    //     Icon(Icons.bluetooth, color: FlexiColor.primary, size: screenHeight * .02),
-                                    //     Text("bluetooth name", style: FlexiFont.regular12.copyWith(color: FlexiColor.primary))
-                                    //   ],
-                                    // ),
+                                    child: Text(devices[index].deviceId, style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
                                   )
                                 ],
                               ),

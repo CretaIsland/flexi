@@ -1,48 +1,34 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../common/constants/config.dart';
+import '../../../common/providers/network_providers.dart';
 import '../../../component/text_field.dart';
+import '../../../feature/device/controller/device_info_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
+import '../modal/bluetooth_modal.dart';
 
 
 
-class DeviceInfoScreen extends ConsumerStatefulWidget {
+class DeviceInfoScreen extends ConsumerWidget {
   const DeviceInfoScreen({super.key, required this.rootContext});
   final BuildContext rootContext;
 
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _DeviceInfoScreenState();
-}
-
-class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
-
-  late TextEditingController _deviceNameController;
-  late TextEditingController _deviceTimezoneController;
-  late TextEditingController _connectedNetworkController;
-
 
   @override
-  void initState() {
-    super.initState();
-    _deviceNameController = TextEditingController();
-    _deviceTimezoneController = TextEditingController();
-    _connectedNetworkController = TextEditingController();
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
 
-  @override
-  void dispose() {
-    super.dispose();
-    _deviceNameController.dispose();
-    _deviceTimezoneController.dispose();
-    _connectedNetworkController.dispose();
-  }
+    final deviceInfoController = ref.watch(deviceInfoControllerProvider.notifier);
+    final deviceInfo = ref.watch(deviceInfoControllerProvider);
+
+    final socketClient = ref.watch(SocketIOClientProvider(ip: deviceInfo.ip, port: Config.socketIOPort).notifier);
 
 
-  @override
-  Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
       child: SingleChildScrollView(
@@ -58,7 +44,19 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                 ),
                 Text('Device Detail', style: FlexiFont.semiBold20),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    String data = '''
+                      {
+                      "command":"playerSetting",
+                      "deviceId":"${deviceInfo.deviceId}",
+                      "deviceName":"${deviceInfo.deviceName}", 
+                      "name":"${deviceInfo.deviceName}",
+                      "timeZone":"${deviceInfo.timezone}",
+                      "volume":${deviceInfo.volume}
+                      }
+                    ''';
+                    socketClient.sendData(data);
+                  },
                   child: Text('OK', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary)),
                 )
               ],
@@ -95,7 +93,12 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                     Text('Bluetooth', style: FlexiFont.regular14),
                     SizedBox(height: .01.sh),
                     InkWell(
-                      onTap: () {},
+                      onTap: () => showModalBottomSheet(
+                        context: rootContext,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => const BluetoothModal(),
+                      ),
                       child: Container(
                         width: .43.sw,
                         height: .125.sh,
@@ -106,8 +109,12 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.bluetooth, color: FlexiColor.primary, size: .045.sh),
-                            Text('Device name', style: FlexiFont.semiBold14.copyWith(color: FlexiColor.primary))
+                            deviceInfo.bluetoothBonded ? 
+                              Icon(Icons.bluetooth, color: FlexiColor.primary, size: .045.sh) : 
+                              Icon(Icons.bluetooth_disabled, color: FlexiColor.secondary, size: .045.sh),
+                            deviceInfo.bluetoothBonded ? 
+                              Text(deviceInfo.bluetooth, style: FlexiFont.semiBold14.copyWith(color: FlexiColor.primary)) : 
+                              Text('Bluetooth Off', style: FlexiFont.semiBold14.copyWith(color: FlexiColor.secondary))
                           ],
                         ),
                       ),
@@ -122,7 +129,8 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
             FlexiTextField(
               width: .89.sw, 
               height: .06.sh,
-              controller: _deviceNameController,
+              controller: TextEditingController(text: deviceInfo.deviceName),
+              onChanged: (value) => deviceInfoController.setName(value),
             ),
             SizedBox(height: .015.sh),
             Text('Device Volume', style: FlexiFont.regular14),
@@ -146,13 +154,11 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                     width: .6.sw,
                     height: .02.sh,
                     child: Slider(
-                      value: 50.0,
+                      value: deviceInfo.volume * 1.0,
                       max: 100.0,
                       activeColor: FlexiColor.primary,
                       thumbColor: Colors.white,
-                      onChanged: (value) {
-
-                      }
+                      onChanged: (value) => deviceInfoController.setVolume(value.toInt())
                     ),
                   ),
                   IconButton(
@@ -168,7 +174,8 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
             FlexiTextField(
               width: .89.sw, 
               height: .06.sh,
-              controller: _deviceTimezoneController,
+              readOnly: true,
+              controller: TextEditingController(text: deviceInfo.timezone),
             ),
             SizedBox(height: .015.sh),
             Text('Network', style: FlexiFont.regular14),
@@ -176,7 +183,8 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
             FlexiTextField(
               width: .89.sw, 
               height: .06.sh,
-              controller: _connectedNetworkController,
+              readOnly: true,
+              controller: TextEditingController(text: deviceInfo.ip),
             )
           ],
         ),
