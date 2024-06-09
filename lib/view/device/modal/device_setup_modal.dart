@@ -22,8 +22,8 @@ class DeviceSetupModal extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 
     final wifiCredential = ref.watch(wifiCredentialsControllerProvider);
-    final deviceInfo = ref.watch(deviceSetupControllerProvider);
-    final socketClient = ref.watch(SocketIOClientProvider(ip: deviceInfo!.ip, port: Config.socketIOPort).notifier);
+    final targetDevice = ref.watch(deviceSetupControllerProvider);
+    final socketClient = ref.watch(SocketIOClientProvider(ip: targetDevice!.ip, port: Config.socketIOPort).notifier);
 
     return Container(
       width: .93.sw,
@@ -53,7 +53,7 @@ class DeviceSetupModal extends ConsumerWidget {
                String sendData = '''
 {
  "command":"register",
- "deviceId":"${deviceInfo.deviceId}",
+ "deviceId":"",
  "ssid":"${wifiCredential['ssid']}",
  "password":"${wifiCredential['passphrase']}"
 }

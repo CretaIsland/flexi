@@ -49,6 +49,7 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
     _ssidController.text = ref.watch(wifiCredentialsControllerProvider)['ssid']!;
     _typeController.text = ref.watch(wifiCredentialsControllerProvider)['type']!;
     _passphraseController.text = ref.watch(wifiCredentialsControllerProvider)['passphrase']!;
+    final targetDevice = ref.watch(deviceSetupControllerProvider);
 
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
