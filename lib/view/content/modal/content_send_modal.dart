@@ -1,10 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../common/constants/config.dart';
+import '../../../common/providers/network_providers.dart';
 import '../../../component/text_button.dart';
+import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../feature/content/controller/content_list_controller.dart';
+import '../../../feature/content/controller/content_send_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 
@@ -17,7 +23,8 @@ class ContentSendModal extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final contentListController = ref.watch(contentListControllerProvider.notifier);
+    final contentInfo = ref.watch(contentInfoControllerProvider);
+    final socketClient = ref.watch(SocketIOClientProvider(ip: ref.watch(selectDeviceProvider)!.ip, port: Config.socketIOPort).notifier);
 
     return Container(
       width: .93.sw,
@@ -41,7 +48,15 @@ class ContentSendModal extends ConsumerWidget {
             text: 'Send',
             fillColor: FlexiColor.primary,
             onPressed: () async {
-              
+              File? contentFile = await ref.watch(contentSendControllerProvider.notifier).getContentFile();
+              if(contentFile != null) {
+                socketClient.sendFile(
+                  deviceId: ref.watch(selectDeviceProvider)!.deviceId, 
+                  file: contentFile, 
+                  fileName: contentInfo!.fileName, 
+                  contentInfo: contentInfo
+                );
+              }
               context.pop();
             },
           ),
