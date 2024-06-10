@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../component/text_button.dart';
 import '../../../component/text_field.dart';
+import '../../../feature/auth/controller/account_controller.dart';
+import '../../../main.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 
@@ -105,8 +107,10 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
             text: 'Logout',
             fillColor: Colors.white,
             textColor: FlexiColor.secondary,
-            onPressed: () {
+            onPressed: () async {
               // 저장된 계정 정보 삭제
+              await ref.watch(accountControllerProvider.notifier).logout();
+              isLogin = false;
               context.go('/');
             },
           )

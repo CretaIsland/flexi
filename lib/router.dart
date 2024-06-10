@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
+import 'main.dart';
 import 'view/content/screen/background_edit_screen.dart';
 import 'view/content/screen/content_info_screen.dart';
 import 'view/content/screen/content_list_screen.dart';
@@ -31,8 +32,18 @@ GoRouter router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      pageBuilder: (context, state) => const NoTransitionPage(child: LoginScreen()),
+      redirect: (context, state) {
+        if(isLogin) {
+          return '/device/list';
+        } else {
+          return '/login';
+        }
+      },
     ),
+    GoRoute(
+      path: '/login',
+      pageBuilder: (context, state) => const NoTransitionPage(child: LoginScreen()),
+     ),
     ShellRoute(
       navigatorKey: shellNavKey,
       pageBuilder: (context, state, child) => NoTransitionPage(child: HomeScreen(state: state, child: child)),

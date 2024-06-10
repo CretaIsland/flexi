@@ -1,9 +1,13 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../component/text_button.dart';
+import '../feature/auth/controller/account_controller.dart';
 import '../utils/ui/color.dart';
 import '../utils/ui/font.dart';
 
@@ -41,6 +45,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final accountController = ref.watch(accountControllerProvider.notifier);
+
     return Scaffold(
       backgroundColor: FlexiColor.primary,
       body: SizedBox(
@@ -126,10 +132,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     height: .06.sh, 
                     text: 'Login',
                     fillColor: FlexiColor.secondary,
-                    onPressed: () {
-                      // 로그인 확인
-                      // 맞으면 계정 정보 저장
-                      context.go('/device/list');
+                    onPressed: () async {
+                      var sha1Password = sha1.convert(utf8.encode(_passwordController.text)).toString();
+                      var result = await accountController.login({'email': _emailController.text, 'password': sha1Password});
+                      if(result) {
+                        context.go('/device/list');
+                      }
                     },
                   )
                 ],
