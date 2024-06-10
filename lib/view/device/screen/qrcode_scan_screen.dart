@@ -67,9 +67,6 @@ class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    final targetDevice = ref.watch(deviceSetupControllerProvider);
-    
     return Scaffold(
       body: Stack(
         children: [

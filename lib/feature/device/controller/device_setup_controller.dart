@@ -203,57 +203,63 @@ class LocalStorageController extends _$LocalStorageController {
 }
 
 
+
+
+
 @riverpod
-class DeviceSetupController extends _$DeviceSetupController {
+class RegisterDeviceInfo extends _$RegisterDeviceInfo{
 
   late RawDatagramSocket _socket;
-  late String _other;
 
 
   @override
   DeviceInfo? build() {
     ref.onDispose(() {
+      print('RegisterDeviceInfo Dispose===================');
       _socket.close();
     });
+    print('RegisterDeviceInfo build=======================');
     initialize();
     return null;
   }
 
   Future<void> initialize() async {
-    _socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, Config.udpBroadcastProt);
-
-    ref.watch(networkInfoProvider).when(
-      data: (data) {
-        _other = data!.broadcast ?? '';
-        sendData('{"command":"test"}');
-      }, 
-      error: (errror, stackTrace) {}, 
-      loading: () {}
-    );
+    _socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, Config.udpBroadcastPort);
+    _socket.broadcastEnabled = true;
 
     _socket.listen((event) {
       Datagram? d = _socket.receive();
       if(d == null) return;
 
       Map<String, dynamic> data = jsonDecode(utf8.decode(d.data));
+      print(data);
       if(data['command'] == 'playerStatus') {
         data.remove('command');
-        state = DeviceInfo.fromJson(data);
+        DeviceInfo newDevice = DeviceInfo.fromJson(data);
+        print(newDevice.toJson());
+        state = newDevice;
       }
     });
+    
+    sendData(jsonEncode({'command': 'test2'}));
   }
 
   void sendData(String data) async {
-    //한글 되게 uint8
+    print('sendData');
     List<int> sendData = utf8.encode(data);
+    // iOS wifiBroadcast
     if (Platform.isIOS) {
-      print("send _wifiBroadcast $_other");
-      _socket.send(
-      sendData, InternetAddress('$_other'), 4546);
+      final info = network_info_plus.NetworkInfo();
+      final wifiBroadcast = await info.getWifiBroadcast();
+      if(wifiBroadcast != null) {
+        print(wifiBroadcast);
+        _socket.send(sendData, InternetAddress(wifiBroadcast), 4546);
+      }
     } else {
       print("send 255.255.255.255");
       _socket.send(sendData, InternetAddress('255.255.255.255'), 4546);
     }
   }
+
 
 }

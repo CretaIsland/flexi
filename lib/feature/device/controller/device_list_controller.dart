@@ -32,13 +32,14 @@ class DeviceListController extends _$DeviceListController {
   }
 
   Future<void> initialize() async {
-    _socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, Config.udpBroadcastProt);
+    _socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, Config.udpBroadcastPort);
     _socket.listen((event) {
       Datagram? d = _socket.receive();
       if(d == null) return;
 
       Map<String, dynamic> data = jsonDecode(utf8.decode(d.data));
       if(data['command'] == 'playerStatus') {
+        print(data);
         data.remove('command');
         DeviceInfo newDevice = DeviceInfo.fromJson(data);
         var isExist = state.indexWhere((element) => element.deviceId == newDevice.deviceId);
