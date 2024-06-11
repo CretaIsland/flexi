@@ -113,12 +113,12 @@ class BluetoothModal extends ConsumerWidget {
                                 onTap: () {
                                   ref.watch(deviceInfoControllerProvider.notifier).registerBluetooth(data[index]);
                                   String sendData = '''
-                                    {
-                                    "command": "bluetoothRRegister",
-                                    "deviceId": ${deviceInfo.deviceId},
-                                    "bluetooth":${deviceInfo.bluetooth},
-                                    "bluetoothId":${deviceInfo.bluetoothId}
-                                    }
+                                  {
+                                    "command": "bluetoothRegister",
+                                    "deviceId": "${deviceInfo.deviceId}",
+                                    "bluetooth":"${data[index].name}",
+                                    "bluetoothId":"${data[index].remoteId}"
+                                  }
                                   ''';
                                   socketClient.sendData(sendData);
                                 },
@@ -160,10 +160,10 @@ class BluetoothModal extends ConsumerWidget {
                                         ref.watch(deviceInfoControllerProvider.notifier).registerBluetooth(data[index]);
                                         String sendData = '''
                                           {
-                                          "command": "bluetoothRRegister",
-                                          "deviceId": ${deviceInfo.deviceId},
-                                          "bluetooth":${deviceInfo.bluetooth},
-                                          "bluetoothId":${deviceInfo.bluetoothId}
+                                          "command": "bluetoothRegister",
+                                          "deviceId": "${deviceInfo.deviceId}",
+                                          "bluetooth":"${data[index].name}",
+                                          "bluetoothId":"${data[index].remoteId}"
                                           }
                                         ''';
                                         socketClient.sendData(sendData);
@@ -218,10 +218,10 @@ class BluetoothModal extends ConsumerWidget {
                                         ref.watch(deviceInfoControllerProvider.notifier).registerBluetooth(data[index]);
                                         String sendData = '''
                                           {
-                                          "command": "bluetoothRRegister",
-                                          "deviceId": ${deviceInfo.deviceId},
-                                          "bluetooth":${deviceInfo.bluetooth},
-                                          "bluetoothId":${deviceInfo.bluetoothId}
+                                          "command": "bluetoothRegister",
+                                          "deviceId": "${deviceInfo.deviceId}",
+                                          "bluetooth":"${data[index].name}",
+                                          "bluetoothId":"${data[index].remoteId}"
                                           }
                                         ''';
                                         socketClient.sendData(sendData);

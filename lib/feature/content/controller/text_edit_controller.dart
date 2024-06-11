@@ -36,6 +36,11 @@ class TextEditController extends _$TextEditController {
     state = state.copyWith(text: text);
   }
 
+  // 텍스트 내용 변경하기
+  void setLanguage(String localeId) {
+    state = state.copyWith(language: localeId);
+  }
+
   // 폰트 색깔 변경하기
   void setTextColor(Color color) {
     state = state.copyWith(textColor: color.toString());
@@ -165,7 +170,10 @@ class SpeechToTextController extends _$SpeechToTextController {
         _stt.listen(
           listenOptions: SpeechListenOptions(cancelOnError: true),
           localeId: localeId,
-          onResult: (value) => state = value.recognizedWords
+          onResult: (value) {
+            print(value);
+            state = value.recognizedWords;
+          }
         );
       }
     } catch (error) {

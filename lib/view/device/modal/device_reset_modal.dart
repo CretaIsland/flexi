@@ -47,7 +47,7 @@ class DeviceResetModal extends ConsumerWidget {
               String data = '''
                 {
                 "command":"unregister",
-                "deviceId":${selectDevice!.deviceId}
+                "deviceId": "${selectDevice!.deviceId}"
                 }
               ''';
               socketClient.sendData(data);
