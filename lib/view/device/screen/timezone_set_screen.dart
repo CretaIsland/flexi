@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../common/providers/network_providers.dart';
 import '../../../component/search_bar.dart';
-import '../../../feature/device/controller/device_setup_controller.dart';
 import '../../../feature/device/provider/timezone_provider.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';

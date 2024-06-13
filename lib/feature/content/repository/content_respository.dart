@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:sembast/sembast.dart';
 
 import '../../database/app_database.dart';
@@ -13,9 +14,9 @@ class ContentRespository {
 
   Future<ContentInfo?> create() async {
     try {
-      String contentId = DateTime.now().toString();
-      ContentInfo newContent = ContentInfo(contentId: contentId);
-      var result = await _contentStore.record(contentId).put(await _dbClient, newContent.toJson());
+      DateTime now = DateTime.now();
+      ContentInfo newContent = ContentInfo(contentId: now.toString(), contentName: 'New Content ${DateFormat('yy/MM/dd HH:mm:ss').format(now)}');
+      var result = await _contentStore.record(newContent.contentId).put(await _dbClient, newContent.toJson());
       return ContentInfo.fromJson(result);
     } catch (error) {
       print('error at ContentRepository.create >>> $error');

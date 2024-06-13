@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import '../../../component/search_bar.dart';
 import '../../../feature/device/controller/device_info_controller.dart';
 import '../../../feature/device/controller/device_list_controller.dart';
-import '../../../feature/device/controller/device_setup_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 import '../modal/accessible_device_list_modal.dart';

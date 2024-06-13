@@ -46,11 +46,10 @@ class DeviceInfoScreen extends ConsumerWidget {
                     String data = '''
                       {
                       "command":"playerSetting",
-                      "deviceId":"${deviceInfo.deviceId}",
-                      "deviceName":"${deviceInfo.deviceName}", 
-                      "name":"${deviceInfo.deviceName}",
-                      "timeZone":"${deviceInfo.timezone}",
-                      "volume":${deviceInfo.volume}
+                      "deviceId": "${deviceInfo.deviceId}",
+                      "deviceName": "${deviceInfo.deviceName}", 
+                      "name": "${deviceInfo.deviceName}",
+                      "volume": ${deviceInfo.volume}
                       }
                     ''';
                     socketClient.sendData(data);

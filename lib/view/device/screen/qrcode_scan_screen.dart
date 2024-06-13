@@ -24,6 +24,12 @@ class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
 
 
   @override
+  void initState() {
+    super.initState();
+    ref.watch(registerDeviceInfoProvider.notifier);
+  }
+
+  @override
   void dispose() {
     super.dispose();
     _qrcodeController!.dispose();

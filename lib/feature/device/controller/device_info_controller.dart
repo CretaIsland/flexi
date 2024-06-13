@@ -32,7 +32,7 @@ class DeviceInfoController extends _$DeviceInfoController {
   }
 
   void setVolume(int volume) {
-    state = state.copyWith();
+    state = state.copyWith(volume: volume);
   }
 
   void registerBluetooth(BluetoothInfo bluetooth) {

@@ -219,7 +219,7 @@ class SocketIOClient extends _$SocketIOClient {
         _socketIO.emit('fileDone');
         //파일 보내고 컨텐츠 정보 보내기
         Map<String, dynamic> contentInfoJson = contentInfo.toJson();
-        contentInfoJson.addAll({'command': 'playerContent', 'deviceId': deviceId});
+        contentInfoJson.addAll({"command": "playerContent", "deviceId": deviceId});
         contentInfoJson.remove('textSizeType');
         contentInfoJson.remove('filePath');
         contentInfoJson.remove('fileThumbnail');

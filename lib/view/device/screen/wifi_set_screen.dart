@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../common/constants/config.dart';
-import '../../../common/providers/network_providers.dart';
 import '../../../component/text_field.dart';
 import '../../../feature/device/controller/device_setup_controller.dart';
 import '../../../utils/ui/color.dart';
@@ -51,9 +49,7 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
     _ssidController.text = ref.watch(wifiCredentialsControllerProvider)['ssid']!;
     _typeController.text = ref.watch(wifiCredentialsControllerProvider)['type']!;
     _passphraseController.text = ref.watch(wifiCredentialsControllerProvider)['passphrase']!;
-    // final targetDevice = ref.watch(deviceSetupControllerProvider);
-
-   final udp = ref.watch(registerDeviceInfoProvider.notifier);
+    ref.watch(registerDeviceInfoProvider.notifier);
     
 
     return Padding(

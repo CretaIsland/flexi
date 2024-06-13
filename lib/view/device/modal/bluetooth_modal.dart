@@ -63,7 +63,7 @@ class BluetoothModal extends ConsumerWidget {
                       String data = '''
                         {
                         "command": "bluetoothUnregister",
-                        "deviceId": ${deviceInfo.deviceId}
+                        "deviceId": "${deviceInfo.deviceId}"
                         }
                       ''';
                       socketClient.sendData(data);
@@ -116,8 +116,8 @@ class BluetoothModal extends ConsumerWidget {
                                   {
                                     "command": "bluetoothRegister",
                                     "deviceId": "${deviceInfo.deviceId}",
-                                    "bluetooth":"${data[index].name}",
-                                    "bluetoothId":"${data[index].remoteId}"
+                                    "bluetooth": "${data[index].name}",
+                                    "bluetoothId": "${data[index].remoteId}"
                                   }
                                   ''';
                                   socketClient.sendData(sendData);
@@ -162,8 +162,8 @@ class BluetoothModal extends ConsumerWidget {
                                           {
                                           "command": "bluetoothRegister",
                                           "deviceId": "${deviceInfo.deviceId}",
-                                          "bluetooth":"${data[index].name}",
-                                          "bluetoothId":"${data[index].remoteId}"
+                                          "bluetooth": "${data[index].name}",
+                                          "bluetoothId": "${data[index].remoteId}"
                                           }
                                         ''';
                                         socketClient.sendData(sendData);
@@ -220,8 +220,8 @@ class BluetoothModal extends ConsumerWidget {
                                           {
                                           "command": "bluetoothRegister",
                                           "deviceId": "${deviceInfo.deviceId}",
-                                          "bluetooth":"${data[index].name}",
-                                          "bluetoothId":"${data[index].remoteId}"
+                                          "bluetooth": "${data[index].name}",
+                                          "bluetoothId": "${data[index].remoteId}"
                                           }
                                         ''';
                                         socketClient.sendData(sendData);
