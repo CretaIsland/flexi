@@ -10,6 +10,7 @@ part 'timezone_provider.g.dart';
 
 // 선택한 타임존
 final selectTimezoneProvider= StateProvider<Map<String, String>>((ref) => {});
+final searchTextProvider = StateProvider<String>((ref) => '');
 
 // 전 세계 타임존 가져오기
 @riverpod

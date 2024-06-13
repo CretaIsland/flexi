@@ -13,14 +13,27 @@ import '../modal/content_send_modal.dart';
 
 
 
-class ContentSendScreen extends ConsumerWidget {
+class ContentSendScreen extends ConsumerStatefulWidget {
   const ContentSendScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _ContentSendScreenState();
+}
 
-    final contentInfoController = ref.watch(contentInfoControllerProvider);
+class _ContentSendScreenState extends ConsumerState<ContentSendScreen> {
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.invalidate(content_send_controller.searchTextProvider);
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    ref.watch(contentInfoControllerProvider);
     return Scaffold(
       backgroundColor: FlexiColor.backgroundColor,
       body: Padding(
@@ -54,7 +67,7 @@ class ContentSendScreen extends ConsumerWidget {
             SizedBox(height: .03.sh),
             FlexiSearchBar(
               hintText: 'Search your device',
-              onChanged: (value) {},
+              onChanged: (value) => ref.watch(content_send_controller.searchTextProvider.notifier).state = value,
             ),
             SizedBox(height: .025.sh),
             Expanded(
@@ -65,7 +78,7 @@ class ContentSendScreen extends ConsumerWidget {
                     padding: EdgeInsets.zero,
                     itemCount: devices.length,
                     itemBuilder: (context, index) {
-                      return GestureDetector(
+                      return devices[index].deviceName.contains(ref.watch(content_send_controller.searchTextProvider)) ? GestureDetector(
                         onTap: () {
                           print('click');
                           if(ref.watch(content_send_controller.selectDeviceProvider) == devices[index]) {
@@ -109,7 +122,7 @@ class ContentSendScreen extends ConsumerWidget {
                             ],
                           ),
                         ),
-                      );
+                      ) : const SizedBox.shrink();
                     },
                   );
                 },

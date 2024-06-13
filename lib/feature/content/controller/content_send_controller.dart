@@ -15,6 +15,7 @@ part 'content_send_controller.g.dart';
 
 
 final selectDeviceProvider = StateProvider<DeviceInfo?>((ref) => null);
+final searchTextProvider = StateProvider<String>((ref) => '');
 
 
 @riverpod

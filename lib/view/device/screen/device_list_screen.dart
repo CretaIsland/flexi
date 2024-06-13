@@ -15,19 +15,29 @@ import '../modal/device_reset_modal.dart';
 
 
 
-class DeviceListScreen extends ConsumerWidget {
+class DeviceListScreen extends ConsumerStatefulWidget {
   const DeviceListScreen({super.key, required this.rootContext});
   final BuildContext rootContext;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _DeviceListScreenState();
+}
 
+class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
+
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => ref.invalidate(searchTextProvider));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final selectMode = ref.watch(selectModeProvider);
     final selectAll = ref.watch(selectAllProvider);
     final selectDevice = ref.watch(selectDeviceProvider);
     final devices = ref.watch(deviceListControllerProvider);
-    final deviceInfoController = ref.watch(deviceInfoControllerProvider.notifier);
-
 
     return GestureDetector(
       onTap: () {
@@ -45,27 +55,24 @@ class DeviceListScreen extends ConsumerWidget {
               children: [
                 Text('Devices', style: FlexiFont.semiBold30),
                 InkWell(
-                  onTap: () {
-                    if(Platform.isIOS) {
-                      if(selectMode) {
-                        if(selectDevice != null) {
-                          showModalBottomSheet(
-                            context: rootContext, 
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            builder: (context) => const DeviceResetModal(),
-                          );
-                        }
-                      } else {
-                        context.go('/device/setTimezone');
-                      }
-                    } else {
+                  onTap: () async {
+                    if(selectMode) {
                       showModalBottomSheet(
-                        context: rootContext, 
-                        isScrollControlled: true,
+                        context: widget.rootContext, 
                         backgroundColor: Colors.transparent,
-                        builder: (context) => selectMode ? const DeviceResetModal() : const AccessibleDeviceListModal(),
+                        builder: (context) => const DeviceResetModal()
                       );
+                    } else {
+                      if(Platform.isIOS) {
+                        context.go('/device/setTimezone');
+                      } else {
+                        showModalBottomSheet(
+                          context: widget.rootContext, 
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) => const AccessibleDeviceListModal()
+                        );
+                      }
                     }
                   },
                   child: Container(
@@ -89,7 +96,7 @@ class DeviceListScreen extends ConsumerWidget {
             SizedBox(height: .02.sh),
             FlexiSearchBar(
               hintText: 'Search your device',
-              onChanged: (value) { },
+              onChanged: (value) => ref.watch(searchTextProvider.notifier).state = value,
             ),
             SizedBox(height: .025.sh),
             Row(
@@ -110,7 +117,7 @@ class DeviceListScreen extends ConsumerWidget {
                     padding: EdgeInsets.zero,
                     itemCount: devices.length,
                     itemBuilder: (context, index) {
-                      return GestureDetector(
+                      return devices[index].deviceName.contains(ref.watch(searchTextProvider)) ? GestureDetector(
                         onLongPress: () => ref.watch(selectModeProvider.notifier).state = true,
                         onTap: () {
                           if(selectMode) {
@@ -120,7 +127,7 @@ class DeviceListScreen extends ConsumerWidget {
                               ref.watch(selectDeviceProvider.notifier).state = devices[index];
                             }
                           } else {
-                            deviceInfoController.setDevice(devices[index]);
+                            ref.watch(deviceInfoControllerProvider.notifier).setDevice(devices[index]);
                             context.go('/device/info');
                           }
                         },
@@ -162,7 +169,7 @@ class DeviceListScreen extends ConsumerWidget {
                             ],
                           ),
                         ),
-                      );
+                      ) : const SizedBox.shrink();
                     },
                   );
                 },

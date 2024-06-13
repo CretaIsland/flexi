@@ -14,6 +14,7 @@ part 'device_list_controller.g.dart';
 final selectModeProvider = StateProvider<bool>((ref) => false);
 final selectAllProvider = StateProvider<bool>((ref) => false);
 final selectDeviceProvider = StateProvider<DeviceInfo?>((ref) => null);
+final searchTextProvider = StateProvider<String>((ref) => '');
 
 
 @riverpod
@@ -25,8 +26,10 @@ class DeviceListController extends _$DeviceListController {
   @override
   List<DeviceInfo> build() {
     ref.onDispose(() {
+      print("<<<<<<< DeviceListController dispose <<<<<<<");
       _socket.close();
     });
+    print("<<<<<<< DeviceListController build <<<<<<<");
     initialize();
     return [];
   }
@@ -40,7 +43,6 @@ class DeviceListController extends _$DeviceListController {
       Map<String, dynamic> data = jsonDecode(utf8.decode(d.data));
       if(data['command'] == 'playerStatus') {
         print(data);
-        data.remove('command');
         DeviceInfo newDevice = DeviceInfo.fromJson(data);
         var isExist = state.indexWhere((element) => element.deviceId == newDevice.deviceId);
         if(isExist != -1) {

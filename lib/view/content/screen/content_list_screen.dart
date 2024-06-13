@@ -13,20 +13,33 @@ import '../modal/content_delete_modal.dart';
 
 
 
-class ContentListScreen extends ConsumerWidget {
+class ContentListScreen extends ConsumerStatefulWidget {
   const ContentListScreen({super.key, required this.rootContext});
   final BuildContext rootContext;
 
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _ContentListScreenState();
+}
+
+class _ContentListScreenState extends ConsumerState<ContentListScreen> {
+
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.invalidate(searchTextProvider);
+    });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     final selectMode = ref.watch(selectModeProvider);
     final selectAll = ref.watch(selectAllProvider);
     final selectContents = ref.watch(selectContentsProvider);
+    final searchText = ref.watch(searchTextProvider);
     final contentListController = ref.watch(contentListControllerProvider.notifier);
     final contentInfoController = ref.watch(contentInfoControllerProvider.notifier);
-
 
     return GestureDetector(
       onTap: () {
@@ -47,7 +60,7 @@ class ContentListScreen extends ConsumerWidget {
                   onTap: () async {
                     if(selectMode) {
                       showModalBottomSheet(
-                        context: rootContext,
+                        context: widget.rootContext,
                         backgroundColor: Colors.transparent, 
                         builder: (context) => const ContentDeleteModal()
                       );
@@ -80,7 +93,9 @@ class ContentListScreen extends ConsumerWidget {
             SizedBox(height: .02.sh),
             FlexiSearchBar(
               hintText: 'Search your content',
-              onChanged: (value) {},
+              onChanged: (value) {
+                ref.watch(searchTextProvider.notifier).state = value;
+              },
             ),
             SizedBox(height: .025.sh),
             Visibility(
@@ -116,7 +131,7 @@ class ContentListScreen extends ConsumerWidget {
                         padding: EdgeInsets.zero,
                         itemCount: data.length,
                         itemBuilder: (context, index) {
-                          return GestureDetector(
+                          return data[index].contentName.contains(searchText) ?  GestureDetector(
                             onLongPress: () => ref.watch(selectModeProvider.notifier).state = true,
                             onTap: () {
                               if(selectMode) {
@@ -163,7 +178,7 @@ class ContentListScreen extends ConsumerWidget {
                                 ],
                               ),
                             )
-                          );
+                          ) : const SizedBox.shrink();
                         },
                       );
                     }, 

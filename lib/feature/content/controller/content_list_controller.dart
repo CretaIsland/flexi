@@ -11,6 +11,7 @@ part 'content_list_controller.g.dart';
 final selectModeProvider = StateProvider<bool>((ref) => false);
 final selectAllProvider = StateProvider<bool>((ref) => false);
 final selectContentsProvider = StateProvider<List<String>>((ref) => List.empty());
+final searchTextProvider = StateProvider<String>((ref) => '');
 
 
 @riverpod
