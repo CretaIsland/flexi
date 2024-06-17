@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../component/text_button.dart';
 import '../../../component/text_field.dart';
-import '../../../feature/auth/controller/account_controller.dart';
+import '../../../feature/auth/service/auth_service.dart';
 import '../../../main.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
@@ -21,8 +21,6 @@ class AccountInfoScreen extends ConsumerStatefulWidget {
 
 class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
 
-  late TextEditingController _roleController;
-  late TextEditingController _accountNameController;
   late TextEditingController _userNameController;
   late TextEditingController _emailController;
 
@@ -30,8 +28,6 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
   @override
   void initState() {
     super.initState();
-    _roleController = TextEditingController();
-    _accountNameController = TextEditingController();
     _userNameController = TextEditingController();
     _emailController = TextEditingController();
   }
@@ -39,8 +35,6 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
   @override
   void dispose() {
     super.dispose();
-    _roleController.dispose();
-    _accountNameController.dispose();
     _userNameController.dispose();
     _emailController.dispose();
   }
@@ -65,24 +59,6 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
             ],
           ),
           SizedBox(height: .03.sh),
-          Text('Role', style: FlexiFont.regular14),
-          SizedBox(height: .01.sh),
-          FlexiTextField(
-            width: .89.sw, 
-            height: .06.sh,
-            controller: _roleController,
-            textStyle: FlexiFont.regular14
-          ),
-          SizedBox(height: .015.sh),
-          Text('Account Name', style: FlexiFont.regular14),
-          SizedBox(height: .01.sh),
-          FlexiTextField(
-            width: .89.sw, 
-            height: .06.sh,
-            controller: _accountNameController,
-            textStyle: FlexiFont.regular14
-          ),
-          SizedBox(height: .015.sh),
           Text('User Name', style: FlexiFont.regular14),
           SizedBox(height: .01.sh),
           FlexiTextField(
@@ -100,7 +76,7 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
             controller: _emailController,
             textStyle: FlexiFont.regular14
           ),
-          SizedBox(height: .25.sh),
+          SizedBox(height: .45.sh),
           FlexiTextButton(
             width: .89.sw, 
             height: .06.sh, 
@@ -109,7 +85,9 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
             textColor: FlexiColor.secondary,
             onPressed: () async {
               // 저장된 계정 정보 삭제
-              await ref.watch(accountControllerProvider.notifier).logout();
+              AuthService authService = AuthService();
+              await authService.initialize();
+              await authService.logout();
               isLogin = false;
               context.go('/');
             },

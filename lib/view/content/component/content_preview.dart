@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../feature/content/model/content_info.dart';
+import '../../../utils/flexi_utils.dart';
 import '../../../utils/ui/color.dart';
 
 
@@ -81,7 +82,7 @@ class _ContentPreviewState extends ConsumerState<ContentPreview> {
           width: responsiveWidth,
           height: responsiveHeight,
           decoration: BoxDecoration(
-            color: FlexiColor.stringToColor(widget.contentInfo.backgroundColor),
+            color: FlexiUtils.stringToColor(widget.contentInfo.backgroundColor),
             image: widget.contentInfo.backgroundType != 'color' ? DecorationImage(
               image: Image.memory(base64Decode(widget.contentInfo.fileThumbnail)).image,
               fit: BoxFit.cover
@@ -99,7 +100,7 @@ class _ContentPreviewState extends ConsumerState<ContentPreview> {
                   fontSize: textScaler * widget.contentInfo.textSize,
                   fontWeight: widget.contentInfo.bold ? FontWeight.bold : FontWeight.normal,
                   fontStyle: widget.contentInfo.italic ? FontStyle.italic : FontStyle.normal,
-                  color: FlexiColor.stringToColor(widget.contentInfo.textColor)
+                  color: FlexiUtils.stringToColor(widget.contentInfo.textColor)
                 )
               )
             ),

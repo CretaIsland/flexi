@@ -7,6 +7,7 @@ import 'package:photo_manager/photo_manager.dart';
 
 import '../../../feature/content/controller/background_edit_controller.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
+import '../../../utils/flexi_utils.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 import '../component/background_edit_preview.dart';
@@ -26,7 +27,7 @@ class BackgroundEditScreen extends ConsumerWidget {
       body: Container(
         width: 1.sw,
         height: 1.sh,
-        color: FlexiColor.stringToColor(contentInfo.backgroundColor),
+        color: FlexiUtils.stringToColor(contentInfo.backgroundColor),
         child: Column(
           children: [
             Container(

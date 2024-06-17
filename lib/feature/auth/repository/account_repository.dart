@@ -6,13 +6,18 @@ import '../../database/app_database.dart';
 
 class AccountRepository {
 
-  final _accountStore = stringMapStoreFactory.store('account');
+  final _accountStore = intMapStoreFactory.store('account');
   Future<Database> get _dbClient async => await AppDatabase.instance.database;
 
 
-  Future<void> create(String email, String password) async {
+  Future<void> create(String email, String password, String type, String userId) async {
     try {
-      _accountStore.add(await _dbClient, {'email': email, 'password': password});
+      await _accountStore.add(await _dbClient, {
+        'email': email, 
+        'password': password, 
+        'type': type,
+        'userId': userId
+      });
     } catch (error) {
       print('error at AccountRepository.create >>> $error');
     }
@@ -21,14 +26,14 @@ class AccountRepository {
   Future<Map<String, String>?> get() async {
     try {
       var result = await _accountStore.find(await _dbClient);
-      return result.first.value.cast<String, String>().map((key, value) => MapEntry(key, value));
+      return result.first.value.cast<String, String>().map((key, value) => MapEntry(key,value));
     } catch (error) {
-      print('error at AccountRepository.get >>> $error');
+      print('error at AccountRepository.delete >>> $error');
     }
     return null;
   }
 
-  Future<void> delete() async{
+  Future<void> delete() async {
     try {
       await _accountStore.delete(await _dbClient);
     } catch (error) {

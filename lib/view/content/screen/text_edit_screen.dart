@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../feature/content/controller/text_edit_controller.dart';
 import '../../../feature/content/model/content_info.dart';
+import '../../../utils/flexi_utils.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 import '../component/language_list_bar.dart';
@@ -43,7 +44,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
 
 
     return Scaffold(
-      backgroundColor: FlexiColor.stringToColor(backgroundInfo.backgroundColor),
+      backgroundColor: FlexiUtils.stringToColor(backgroundInfo.backgroundColor),
       body: Column(
         children: [
           Container(

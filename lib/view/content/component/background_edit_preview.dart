@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../feature/content/model/content_info.dart';
+import '../../../utils/flexi_utils.dart';
 import '../../../utils/ui/color.dart';
 import 'content_clipper.dart';
 
@@ -45,7 +46,7 @@ class BackgroundEditPreview extends ConsumerWidget {
                 width: responsiveWidth,
                 height: responsiveHeight,
                 decoration: BoxDecoration(
-                  color: FlexiColor.stringToColor(contentInfo.backgroundColor),
+                  color: FlexiUtils.stringToColor(contentInfo.backgroundColor),
                   image: contentInfo.backgroundType != 'color' && contentInfo.fileThumbnail.isNotEmpty ?
                     DecorationImage(
                       image: Image.memory(base64Decode(contentInfo.fileThumbnail)).image,
@@ -60,7 +61,7 @@ class BackgroundEditPreview extends ConsumerWidget {
                       fontSize: contentInfo.textSize * textScaler,
                       fontWeight: contentInfo.bold ? FontWeight.bold : FontWeight.normal,
                       fontStyle: contentInfo.italic ? FontStyle.italic : FontStyle.normal,
-                      color: FlexiColor.stringToColor(contentInfo.textColor)
+                      color: FlexiUtils.stringToColor(contentInfo.textColor)
                     ),
                   ),
                 )

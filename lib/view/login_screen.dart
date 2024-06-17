@@ -1,13 +1,10 @@
-import 'dart:convert';
-
-import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../component/text_button.dart';
-import '../feature/auth/controller/account_controller.dart';
+import '../feature/auth/service/auth_service.dart';
 import '../utils/ui/color.dart';
 import '../utils/ui/font.dart';
 
@@ -22,6 +19,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
 
+  late AuthService _authService;
+
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
 
@@ -33,6 +32,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
+    _authService = AuthService();
+    _authService.initialize();
   }
 
   @override
@@ -45,8 +46,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final accountController = ref.watch(accountControllerProvider.notifier);
-
     return Scaffold(
       backgroundColor: FlexiColor.primary,
       body: SizedBox(
@@ -55,10 +54,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: .05.sh),
+              SizedBox(height: .045.sh),
               SizedBox(
                 width: 1.sw,
-                height: .5.sh,
+                height: .45.sh,
                 child: const Image(
                   image: AssetImage('assets/image/login_illustration.png'),
                   fit: BoxFit.contain,
@@ -133,12 +132,41 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     text: 'Login',
                     fillColor: FlexiColor.secondary,
                     onPressed: () async {
-                      var sha1Password = sha1.convert(utf8.encode(_passwordController.text)).toString();
-                      var result = await accountController.login({'email': _emailController.text, 'password': sha1Password});
+                      var result = await _authService.loginByEmail(_emailController.text, _passwordController.text);
                       if(result) {
                         context.go('/device/list');
                       }
                     },
+                  ),
+                  SizedBox(height: .025.sh),
+                  InkWell(
+                    onTap: () async {
+                      var result = await _authService.loginByGoogle();
+                      if(result) {
+                        context.go('/device/list');
+                      }
+                    },
+                    child: Container(
+                      width: .82.sw, 
+                      height: .06.sh,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(.01.sh)
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: .03.sh,
+                            child: Image.asset(
+                              'assets/image/google_logo.png',
+                            ),
+                          ),
+                          SizedBox(width: .05.sw),
+                          Text('Login By Google', style: FlexiFont.semiBold16,)
+                        ],
+                      ),
+                    ),
                   )
                 ],
               )
