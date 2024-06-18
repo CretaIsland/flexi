@@ -52,7 +52,7 @@ class AuthService {
       String encryptPassword = FlexiUtils.stringToSha1(password);
       if(encryptPassword == account['password']) {
         await _accountRepository.delete();
-        await _accountRepository.create(email, encryptPassword, account['accountSignUpType'], account['userId']);
+        await _accountRepository.create(email, encryptPassword, account['accountSignUpType'].toString(), account['userId']);
         return true;
       }
     } catch (error) {

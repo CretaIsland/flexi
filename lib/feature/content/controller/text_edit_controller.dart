@@ -36,7 +36,7 @@ class TextEditController extends _$TextEditController {
     state = state.copyWith(text: text);
   }
 
-  // 텍스트 내용 변경하기
+  // 텍스트 언어 변경하기
   void setLanguage(String localeId) {
     state = state.copyWith(language: localeId);
   }

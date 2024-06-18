@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:intl/intl.dart';
 import 'package:sembast/sembast.dart';
 
@@ -15,7 +17,8 @@ class ContentRespository {
   Future<ContentInfo?> create() async {
     try {
       DateTime now = DateTime.now();
-      ContentInfo newContent = ContentInfo(contentId: now.toString(), contentName: 'New Content ${DateFormat('yy/MM/dd HH:mm:ss').format(now)}');
+      String localeId = Platform.localeName.replaceAll("_", "-");
+      ContentInfo newContent = ContentInfo(contentId: now.toString(), contentName: 'New Content ${DateFormat('yy/MM/dd HH:mm:ss').format(now)}', language: localeId);
       var result = await _contentStore.record(newContent.contentId).put(await _dbClient, newContent.toJson());
       return ContentInfo.fromJson(result);
     } catch (error) {

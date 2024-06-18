@@ -235,13 +235,15 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                         Fluttertoast.showToast(msg: 'select language');
                       } else {
                         ref.watch(isSpeakingProvider.notifier).state = true;
+                        textEditController.setLanguage(ref.watch(selectInputLanguageProvider)['localeId']!.replaceAll("_", "-"));
                         sttController.startRecord(ref.watch(selectInputLanguageProvider)['localeId']!);
-                        textEditController.setText(ref.watch(speechToTextControllerProvider));
+                        
                       }
                     },
                     onLongPressEnd: (details) {
                       ref.watch(isSpeakingProvider.notifier).state = false;
                       sttController.stopRecord();
+                      textEditController.setText(ref.watch(speechToTextControllerProvider));
                     },
                     child: Container(
                       margin: EdgeInsets.only(top: .15.sh),

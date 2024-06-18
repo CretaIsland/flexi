@@ -98,6 +98,7 @@ class _TextTranslateModalState extends ConsumerState<TextTranslateModal> {
               text: 'Add',
               fillColor: FlexiColor.primary,
               onPressed: () async {
+                ref.watch(textEditControllerProvider.notifier).setLanguage(ref.watch(selectOutputLanguageProvider)['localeId']!.replaceAll("_", "-"));
                 ref.watch(textEditControllerProvider.notifier).setText(_outputController.text);
                 ref.invalidate(textTranslateControllerProvider);
                 ref.watch(currentOutputLanguagesControllerProvider.notifier).saveChange();
