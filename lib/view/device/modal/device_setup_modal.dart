@@ -52,15 +52,15 @@ class DeviceSetupModal extends ConsumerWidget {
               // 데이터 보내기
                String sendData = '''
 {
- "command":"register",
- "deviceId":"${targetDevice.deviceId}",
- "ssid":"${wifiCredential['ssid']}",
- "password":"${wifiCredential['passphrase']}"
+"command": "register",
+"deviceId": "device",
+"ssid": "${wifiCredential['ssid']}",
+"security": "${wifiCredential['type'] == '' ? 'NONE' : wifiCredential['type']}",
+"password": "${wifiCredential['passphrase']}",
+"timeZone": "${ref.watch(selectTimezoneProvider)['locationName']}"
 }
 ''';
               socketClient.sendData(sendData);
-              print(ref.watch(selectTimezoneProvider));
-              print(wifiCredential);
               // 와이파이 연결
               await ref.watch(networkControllerProvider.notifier).connect(
                 ssid: wifiCredential['ssid']!,
@@ -70,8 +70,8 @@ class DeviceSetupModal extends ConsumerWidget {
                     NetworkSecurity.WEP : NetworkSecurity.NONE
               );
               loadingOverlay.remove();
-              // context.pop();
-              // context.go('/device/list');
+              context.pop();
+              context.go('/device/list');
             },
           ),
           SizedBox(
