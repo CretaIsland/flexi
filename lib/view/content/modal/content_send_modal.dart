@@ -64,8 +64,7 @@ class ContentSendModal extends ConsumerWidget {
                 contentInfoJson.remove('textSizeType');
                 contentInfoJson.remove('filePath');
                 contentInfoJson.remove('fileThumbnail');
-                contentInfoJson['textSize'] = 11;
-                contentInfoJson['language'] = 'en-US';
+                contentInfoJson['textSize'] = contentInfo.textSize.floor();
                 print(contentInfoJson);
                 String sendData = jsonEncode(contentInfoJson);
                 socketClient.sendData(sendData);

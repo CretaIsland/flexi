@@ -17,7 +17,7 @@ class DeviceInfo with _$DeviceInfo {
     @Default('')String bluetooth,
     @Default('')String bluetoothId,
     @Default(50)int volume,
-    @Default('')String timezone,
+    @Default('')String timeZone,
     @Default('')String registeredSSID,
     @Default('')String deviceName
   }) = _DeviceInfo;

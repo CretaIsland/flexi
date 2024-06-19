@@ -241,7 +241,7 @@ class RegisterDeviceInfo extends _$RegisterDeviceInfo{
       }
     });
     
-    sendData(jsonEncode({'command': 'test2'}));
+    sendData(jsonEncode({'command': 'test'}));
   }
 
   void sendData(String data) async {

@@ -112,7 +112,7 @@ class AccessibleDeviceListModal extends ConsumerWidget {
                 // connect network
                 final value = await ref.read(networkControllerProvider.notifier).connect(
                   ssid: ref.watch(selectHotspotProvider)!.ssid!, 
-                  password: "sqisoft74307"
+                  password: "esl!UU8x"
                 );
                 if(value) {
                   context.pop();

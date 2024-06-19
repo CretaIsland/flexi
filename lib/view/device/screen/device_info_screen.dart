@@ -14,8 +14,9 @@ import '../modal/bluetooth_modal.dart';
 
 
 class DeviceInfoScreen extends ConsumerWidget {
-  const DeviceInfoScreen({super.key, required this.rootContext});
+  DeviceInfoScreen({super.key, required this.rootContext});
   final BuildContext rootContext;
+  late TextEditingController _deviceNameController;
 
 
   @override
@@ -26,6 +27,7 @@ class DeviceInfoScreen extends ConsumerWidget {
 
     final socketClient = ref.watch(SocketIOClientProvider(ip: deviceInfo.ip, port: Config.socketIOPort).notifier);
 
+    _deviceNameController = TextEditingController(text: deviceInfo.deviceName);
 
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
@@ -43,6 +45,8 @@ class DeviceInfoScreen extends ConsumerWidget {
                 Text('Device Detail', style: FlexiFont.semiBold20),
                 TextButton(
                   onPressed: () {
+                    deviceInfoController.setName(_deviceNameController.text);
+                    print(deviceInfo.deviceName);
                     String data = '''
                       {
                       "command":"playerSetting",
@@ -126,8 +130,7 @@ class DeviceInfoScreen extends ConsumerWidget {
             FlexiTextField(
               width: .89.sw, 
               height: .06.sh,
-              controller: TextEditingController(text: deviceInfo.deviceName),
-              onChanged: (value) => deviceInfoController.setName(value),
+              controller: _deviceNameController
             ),
             SizedBox(height: .015.sh),
             Text('Device Volume', style: FlexiFont.regular14),
@@ -174,7 +177,7 @@ class DeviceInfoScreen extends ConsumerWidget {
               width: .89.sw, 
               height: .06.sh,
               readOnly: true,
-              controller: TextEditingController(text: deviceInfo.timezone),
+              controller: TextEditingController(text: deviceInfo.timeZone),
             ),
             SizedBox(height: .015.sh),
             Text('Network', style: FlexiFont.regular14),
@@ -183,7 +186,7 @@ class DeviceInfoScreen extends ConsumerWidget {
               width: .89.sw, 
               height: .06.sh,
               readOnly: true,
-              controller: TextEditingController(text: deviceInfo.ip),
+              controller: TextEditingController(text: deviceInfo.registeredSSID),
             )
           ],
         ),

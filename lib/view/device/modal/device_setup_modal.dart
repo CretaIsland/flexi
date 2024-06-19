@@ -53,7 +53,7 @@ class DeviceSetupModal extends ConsumerWidget {
                String sendData = '''
 {
 "command": "register",
-"deviceId": "device",
+"deviceId": "${targetDevice.deviceId}",
 "ssid": "${wifiCredential['ssid']}",
 "security": "${wifiCredential['type'] == '' ? 'NONE' : wifiCredential['type']}",
 "password": "${wifiCredential['passphrase']}",
