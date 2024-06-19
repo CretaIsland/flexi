@@ -159,12 +159,14 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   InkWell(
-                    onTap: () => showModalBottomSheet(
+                    onTap: () {
+                      showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
                       backgroundColor: Colors.transparent,
                       builder: (context) => const TextTranslateModal(),
-                    ),
+                      );
+                    },
                     child: Container(
                       width: .05.sh,
                       height: .05.sh,
@@ -224,7 +226,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                         width: 1.sw,
                         height: .15.sh,
                         child: SingleChildScrollView(
-                          child: Text('Speack your text...', style: FlexiFont.regular20,),
+                          child: Text(ref.watch(isSpeakingProvider) ? 'Speak your text' : 'Press and hold the button to record', style: FlexiFont.regular20),
                         ),
                       )
                     ],
@@ -236,14 +238,12 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                       } else {
                         ref.watch(isSpeakingProvider.notifier).state = true;
                         textEditController.setLanguage(ref.watch(selectInputLanguageProvider)['localeId']!.replaceAll("_", "-"));
-                        sttController.startRecord(ref.watch(selectInputLanguageProvider)['localeId']!);
-                        
+                        sttController.startRecord(ref.watch(selectInputLanguageProvider)['localeId']!, (value) { if(value.isNotEmpty) textEditController.setText(value);});
                       }
                     },
-                    onLongPressEnd: (details) {
+                    onLongPressEnd: (details) async {
                       ref.watch(isSpeakingProvider.notifier).state = false;
-                      sttController.stopRecord();
-                      textEditController.setText(ref.watch(speechToTextControllerProvider));
+                      await sttController.stopRecord();
                     },
                     child: Container(
                       margin: EdgeInsets.only(top: .15.sh),

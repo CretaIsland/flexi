@@ -164,16 +164,13 @@ class SpeechToTextController extends _$SpeechToTextController {
   }
 
   // 녹음 시작하기
-  void startRecord(String localeId) async {
+  void startRecord(String localeId, void Function(String value) onEnd) async {
     try {
       if(_sttInit) {
         _stt.listen(
           listenOptions: SpeechListenOptions(cancelOnError: true),
           localeId: localeId,
-          onResult: (value) {
-            print(value);
-            state = value.recognizedWords;
-          }
+          onResult: (value) => onEnd(value.recognizedWords)
         );
       }
     } catch (error) {

@@ -22,6 +22,7 @@ class TextEditPreview extends ConsumerStatefulWidget {
 
 class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
 
+  late TextEditingController _textEditingController;
   late ContentInfo contentInfo;
   late double aspectRatio;
   late double responsiveWidth;
@@ -33,7 +34,7 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
   void initState() {
     super.initState();
     contentInfo = widget.contentInfo;
-
+    _textEditingController = TextEditingController(text: contentInfo.text);
     aspectRatio = contentInfo.width / contentInfo.height;
     responsiveWidth = contentInfo.width <= 360 ? 1.sw : (1.sw / 360) * contentInfo.width;
     responsiveHeight = responsiveWidth / aspectRatio;
@@ -48,6 +49,7 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
   @override
   Widget build(BuildContext context) {
     contentInfo = widget.contentInfo;
+    _textEditingController = TextEditingController(text: contentInfo.text);
     return Container(
       width: 1.sw,
       height: .15.sh,
@@ -77,7 +79,7 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
               width: 1.sw, 
               height: .15.sh,
               child: TextField(
-                controller: TextEditingController(text: contentInfo.text),
+                controller: _textEditingController,
                 maxLines: 2,
                 readOnly: ref.watch(sttModeProvider),
                 focusNode: ref.watch(keyboardEventProvider),
@@ -95,7 +97,9 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
                   color: FlexiUtils.stringToColor(contentInfo.textColor),
                   height: contentInfo.textSizeType == 's' ? 1.6 : contentInfo.textSizeType == 'm' ? 1.4 : 1.2
                 ),
-                onChanged: (value) => ref.watch(textEditControllerProvider.notifier).setText(value)
+                onEditingComplete: () => ref.watch(textEditControllerProvider.notifier).setText(_textEditingController.text),
+                onTapOutside: (event) => ref.watch(textEditControllerProvider.notifier).setText(_textEditingController.text),
+                onSubmitted: (value) => ref.watch(textEditControllerProvider.notifier).setText(_textEditingController.text),
               ),
             )
           ],
