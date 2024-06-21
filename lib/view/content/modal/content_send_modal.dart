@@ -24,7 +24,7 @@ class ContentSendModal extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 
     final contentInfo = ref.watch(contentInfoControllerProvider);
-    final socketClient = ref.watch(SocketIOClientProvider(ip: ref.watch(selectDeviceProvider)!.ip, port: Config.socketIOPort).notifier);
+    final socketClient = ref.watch(SocketIOClientProvider(ip: ref.watch(selectDevicesProvider)[0].ip, port: Config.socketIOPort).notifier);
 
     return Container(
       width: .93.sw,
@@ -50,9 +50,11 @@ class ContentSendModal extends ConsumerWidget {
             onPressed: () async {
               if(contentInfo!.backgroundType != 'color') {
                 File? contentFile = await ref.watch(contentSendControllerProvider.notifier).getContentFile();
+
                 if(contentFile != null) {
+                  print(contentFile.path);
                   socketClient.sendFile(
-                    deviceId: ref.watch(selectDeviceProvider)!.deviceId, 
+                    deviceId: ref.watch(selectDevicesProvider)[0].deviceId, 
                     file: contentFile, 
                     fileName: contentInfo.fileName, 
                     contentInfo: contentInfo
@@ -60,12 +62,11 @@ class ContentSendModal extends ConsumerWidget {
                 }
               } else {
                 Map<String, dynamic> contentInfoJson = contentInfo.toJson();
-                contentInfoJson.addAll({"command": "playerContent", "deviceId": ref.watch(selectDeviceProvider)!.deviceId});
+                contentInfoJson.addAll({"command": "playerContent", "deviceId": ref.watch(selectDevicesProvider)[0].deviceId});
                 contentInfoJson.remove('textSizeType');
                 contentInfoJson.remove('filePath');
                 contentInfoJson.remove('fileThumbnail');
-                contentInfoJson['textSize'] = contentInfo.textSize.floor();
-                print(contentInfoJson);
+                contentInfoJson['textSize'] = contentInfoJson['textSize'].round();
                 String sendData = jsonEncode(contentInfoJson);
                 socketClient.sendData(sendData);
               }

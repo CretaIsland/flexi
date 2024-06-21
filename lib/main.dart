@@ -3,13 +3,9 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'feature/auth/service/auth_service.dart';
+import 'feature/auth/controller/auth_service.dart';
 import 'router.dart';
 
-
-
-late TextScaler textScaler;
-bool isLogin = false;
 
 
 void main() async {
@@ -20,11 +16,9 @@ void main() async {
 }
 
 Future<void> initialize() async {
-  AuthService authService = AuthService();
-  await authService.initialize();
-  var result = await authService.autoLogin();
-  print(result);
-  if(result) isLogin = true;
+  AuthController authController = AuthController();
+  await authController.initialize();
+  await authController.autoLogin();
   FlutterNativeSplash.remove();
 }
 
@@ -34,8 +28,6 @@ class FlexiApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    textScaler = MediaQuery.of(context).textScaler;
-
     return ScreenUtilInit(
       designSize: const Size(360, 800),
       builder: (context, child) {

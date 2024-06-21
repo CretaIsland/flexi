@@ -12,6 +12,7 @@ import 'package:wifi_scan/wifi_scan.dart';
 
 import '../../../common/constants/config.dart';
 import '../../../common/providers/network_providers.dart';
+import '../../auth/controller/auth_service.dart';
 import '../model/device_info.dart';
 import '../model/network_info.dart';
 
@@ -31,7 +32,8 @@ Future<Stream<List<NetworkInfo>>> accessibilityNetworks(AccessibilityNetworksRef
     if(can == CanStartScan.yes) {
       await WiFiScan.instance.startScan();
       return WiFiScan.instance.onScannedResultsAvailable.map((results) {
-        return results.where((element) => element.ssid.isNotEmpty).map((result) {
+        return results.where((element) => element.ssid.contains(currentUser!.enterprise)).map((result) {
+        // return results.where((element) => element.ssid.contains('SQI')).map((result) {
           return NetworkInfo(
             ssid: result.ssid,
             bssid: result.bssid
@@ -77,8 +79,13 @@ class NetworkController extends _$NetworkController {
       if(await Permission.location.request().isGranted) {
         final value = await WiFiForIoTPlugin.connect(ssid, 
           password: password, security: security, joinOnce: true, withInternet: true);
-        if(value) await getNetworkInfo();
-        return value;
+        if(value) {
+          await getNetworkInfo();
+          if(state == null || state!.isEmpty) {
+            return false;
+          }
+          return true;
+        }
       }
     } catch (error) {
       print("error during connect network >>> $error");
@@ -234,7 +241,6 @@ class RegisterDeviceInfo extends _$RegisterDeviceInfo{
       Map<String, dynamic> data = jsonDecode(utf8.decode(d.data));
       print(data);
       if(data['command'] == 'playerStatus') {
-        data.remove('command');
         DeviceInfo newDevice = DeviceInfo.fromJson(data);
         print(newDevice.toJson());
         state = newDevice;

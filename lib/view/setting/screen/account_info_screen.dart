@@ -1,44 +1,17 @@
+import 'package:flexi/feature/auth/controller/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../component/text_button.dart';
 import '../../../component/text_field.dart';
-import '../../../feature/auth/service/auth_service.dart';
-import '../../../main.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 
 
 
-class AccountInfoScreen extends ConsumerStatefulWidget {
+class AccountInfoScreen extends StatelessWidget {
   const AccountInfoScreen({super.key});
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AccountInfoScreenState();
-}
-
-class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
-
-  late TextEditingController _userNameController;
-  late TextEditingController _emailController;
-
-
-  @override
-  void initState() {
-    super.initState();
-    _userNameController = TextEditingController();
-    _emailController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _userNameController.dispose();
-    _emailController.dispose();
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +37,7 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
           FlexiTextField(
             width: .89.sw, 
             height: .06.sh,
-            controller: _userNameController,
+            controller: TextEditingController(text: currentUser!.nickname),
             textStyle: FlexiFont.regular14
           ),
           SizedBox(height: .015.sh),
@@ -73,22 +46,29 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
           FlexiTextField(
             width: .89.sw, 
             height: .06.sh,
-            controller: _emailController,
+            controller: TextEditingController(text: currentUser!.email),
             textStyle: FlexiFont.regular14
           ),
-          SizedBox(height: .45.sh),
+          SizedBox(height: .015.sh),
+          Text('Enterprise', style: FlexiFont.regular14),
+          SizedBox(height: .01.sh),
+          FlexiTextField(
+            width: .89.sw, 
+            height: .06.sh,
+            controller: TextEditingController(text: currentUser!.enterprise),
+            textStyle: FlexiFont.regular14
+          ),
+          SizedBox(height: .35.sh),
           FlexiTextButton(
             width: .89.sw, 
             height: .06.sh, 
             text: 'Logout',
             fillColor: Colors.white,
-            textColor: FlexiColor.secondary,
+            textStyle: FlexiFont.semiBold16.copyWith(color: FlexiColor.secondary),
             onPressed: () async {
-              // 저장된 계정 정보 삭제
-              AuthService authService = AuthService();
-              await authService.initialize();
-              await authService.logout();
-              isLogin = false;
+              AuthController authController = AuthController();
+              await authController.initialize();
+              await authController.logout();
               context.go('/');
             },
           )

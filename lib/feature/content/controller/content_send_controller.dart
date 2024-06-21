@@ -14,7 +14,8 @@ part 'content_send_controller.g.dart';
 
 
 
-final selectDeviceProvider = StateProvider<DeviceInfo?>((ref) => null);
+final selectAllProvider = StateProvider<bool>((ref) => false);
+final selectDevicesProvider = StateProvider<List<DeviceInfo>>((ref) => List.empty());
 final searchTextProvider = StateProvider<String>((ref) => '');
 
 

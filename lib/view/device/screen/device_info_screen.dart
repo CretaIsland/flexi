@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../common/constants/config.dart';
@@ -16,7 +17,7 @@ import '../modal/bluetooth_modal.dart';
 class DeviceInfoScreen extends ConsumerWidget {
   DeviceInfoScreen({super.key, required this.rootContext});
   final BuildContext rootContext;
-  late TextEditingController _deviceNameController;
+  TextEditingController? _deviceNameController;
 
 
   @override
@@ -27,7 +28,7 @@ class DeviceInfoScreen extends ConsumerWidget {
 
     final socketClient = ref.watch(SocketIOClientProvider(ip: deviceInfo.ip, port: Config.socketIOPort).notifier);
 
-    _deviceNameController = TextEditingController(text: deviceInfo.deviceName);
+    _deviceNameController ??= TextEditingController(text: deviceInfo.deviceName);
 
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
@@ -45,18 +46,16 @@ class DeviceInfoScreen extends ConsumerWidget {
                 Text('Device Detail', style: FlexiFont.semiBold20),
                 TextButton(
                   onPressed: () {
-                    deviceInfoController.setName(_deviceNameController.text);
-                    print(deviceInfo.deviceName);
-                    String data = '''
-                      {
+                    deviceInfoController.setName(_deviceNameController!.text);
+                    String data = '''{
                       "command":"playerSetting",
                       "deviceId": "${deviceInfo.deviceId}",
-                      "deviceName": "${deviceInfo.deviceName}", 
-                      "name": "${deviceInfo.deviceName}",
+                      "deviceName": "${_deviceNameController!.text}", 
+                      "name": "${_deviceNameController!.text}",
                       "volume": ${deviceInfo.volume}
-                      }
-                    ''';
+                    }''';
                     socketClient.sendData(data);
+                    Fluttertoast.showToast(msg: 'send data');
                   },
                   child: Text('OK', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary)),
                 )

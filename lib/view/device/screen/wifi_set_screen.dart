@@ -68,13 +68,15 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
                 Text('Wifi Setup', style: FlexiFont.semiBold20),
                 TextButton(
                   onPressed: () {
-                    showModalBottomSheet(
-                      context: widget.rootContext,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => const DeviceSetupModal(),
-                    );
+                    if(ref.watch(registerDeviceInfoProvider) != null) {
+                      showModalBottomSheet(
+                        context: widget.rootContext,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => const DeviceSetupModal(),
+                      );
+                    }
                   },
-                  child: Text('OK', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary)),
+                  child: Text('OK', style: FlexiFont.regular16.copyWith(color: ref.watch(registerDeviceInfoProvider) == null ? FlexiColor.grey[600] : FlexiColor.primary)),
                 )
               ],
             ),

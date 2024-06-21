@@ -60,6 +60,8 @@ class DeviceSetupModal extends ConsumerWidget {
 "timeZone": "${ref.watch(selectTimezoneProvider)['locationName']}"
 }
 ''';
+              print(sendData);
+              print(socketClient.ip);
               socketClient.sendData(sendData);
               // 와이파이 연결
               await ref.watch(networkControllerProvider.notifier).connect(

@@ -148,7 +148,7 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                             },
                             child: Container(
                               width: .38.sw,
-                              height: .13.sh,
+                              height: .14.sh,
                               padding: EdgeInsets.all(.015.sh),
                               margin: EdgeInsets.only(bottom: .02.sh),
                               decoration: BoxDecoration(

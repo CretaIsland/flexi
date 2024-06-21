@@ -42,13 +42,14 @@ class DeviceListController extends _$DeviceListController {
 
       Map<String, dynamic> data = jsonDecode(utf8.decode(d.data));
       if(data['command'] == 'playerStatus') {
-        print(data);
+        if(data['deviceName'] == 'null') data['deviceName'] = data['deviceId'];
         DeviceInfo newDevice = DeviceInfo.fromJson(data);
+        print(newDevice);
         var isExist = state.indexWhere((element) => element.deviceId == newDevice.deviceId);
         if(isExist != -1) {
-          if(state[isExist] == newDevice) {
-            state.removeAt(isExist);
-            state = [...state, newDevice];
+          if(state[isExist] != newDevice) {
+            state[isExist] = newDevice;
+            state = [...state];
           }
         } else {
           state = [...state, newDevice];

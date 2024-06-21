@@ -218,12 +218,16 @@ class SocketIOClient extends _$SocketIOClient {
       onDone: () {
         _socketIO.emit('fileDone');
         //파일 보내고 컨텐츠 정보 보내기
+        
+        print('fileDone!');
         Map<String, dynamic> contentInfoJson = contentInfo.toJson();
         contentInfoJson.addAll({"command": "playerContent", "deviceId": deviceId});
         contentInfoJson.remove('textSizeType');
         contentInfoJson.remove('filePath');
         contentInfoJson.remove('fileThumbnail');
+        contentInfoJson['textSize'] = contentInfoJson['textSize'].round();
         String sendData = jsonEncode(contentInfoJson);
+        print(sendData);
         _socketIO.emit('message', utf8.encode(sendData));
       },
     );

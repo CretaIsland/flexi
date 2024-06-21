@@ -161,10 +161,10 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                   InkWell(
                     onTap: () {
                       showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => const TextTranslateModal(),
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => const TextTranslateModal(),
                       );
                     },
                     child: Container(
@@ -185,7 +185,10 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                         ref.watch(sttModeProvider.notifier).state = false;
                         ref.watch(keyboardEventProvider).requestFocus();
                       } else {
-                        ref.watch(sttModeProvider.notifier).state = true;
+                        ref.watch(keyboardEventProvider).unfocus();
+                        Future.delayed(const Duration(milliseconds: 500), () {
+                          ref.watch(sttModeProvider.notifier).state = true;
+                        });
                       }
                     },
                     child: Container(
@@ -241,9 +244,9 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                         sttController.startRecord(ref.watch(selectInputLanguageProvider)['localeId']!, (value) { if(value.isNotEmpty) textEditController.setText(value);});
                       }
                     },
-                    onLongPressEnd: (details) async {
+                    onLongPressEnd: (details) {
                       ref.watch(isSpeakingProvider.notifier).state = false;
-                      await sttController.stopRecord();
+                      sttController.stopRecord();
                     },
                     child: Container(
                       margin: EdgeInsets.only(top: .15.sh),

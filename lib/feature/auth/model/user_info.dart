@@ -5,11 +5,13 @@ part 'user_info.g.dart';
 
 
 
-@freezed
+@freezed 
 class UserInfo with _$UserInfo {
+
   factory UserInfo({
     required String email,
     @Default('') String nickname,
+    @Default('') String enterprise
   }) = _UserInfo;
 
   UserInfo._();

@@ -26,7 +26,6 @@ class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
   @override
   void initState() {
     super.initState();
-    ref.watch(registerDeviceInfoProvider.notifier);
   }
 
   @override
@@ -73,6 +72,7 @@ class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(registerDeviceInfoProvider);
     return Scaffold(
       body: Stack(
         children: [

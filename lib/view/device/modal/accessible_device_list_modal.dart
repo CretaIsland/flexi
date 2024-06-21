@@ -17,6 +17,9 @@ class AccessibleDeviceListModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    
+    ref.invalidate(selectHotspotProvider);
+
     return Container(
       width: 1.sw,
       height: .9.sh,
@@ -113,6 +116,7 @@ class AccessibleDeviceListModal extends ConsumerWidget {
                 final value = await ref.read(networkControllerProvider.notifier).connect(
                   ssid: ref.watch(selectHotspotProvider)!.ssid!, 
                   password: "esl!UU8x"
+                  // password: "sqisoft74307"
                 );
                 if(value) {
                   context.pop();

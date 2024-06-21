@@ -25,7 +25,7 @@ class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
     final localStorageController = ref.watch(localStorageControllerProvider.notifier);
     final localStorageFiles = ref.watch(localStorageControllerProvider);
     final selectFileIndex = StateProvider<int>((ref) => -1);  
-    ref.watch(registerDeviceInfoProvider.notifier);
+    ref.watch(registerDeviceInfoProvider);
 
     return Scaffold(
       backgroundColor: FlexiColor.backgroundColor,

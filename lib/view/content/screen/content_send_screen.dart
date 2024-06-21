@@ -45,7 +45,7 @@ class _ContentSendScreenState extends ConsumerState<ContentSendScreen> {
               children: [
                 IconButton(
                   onPressed: () {
-                    ref.invalidate(content_send_controller.selectDeviceProvider);
+                    ref.invalidate(content_send_controller.selectDevicesProvider);
                     context.go('/content/info');
                   },
                   icon: Icon(Icons.arrow_back_ios, color: FlexiColor.primary, size: .03.sh)
@@ -70,6 +70,22 @@ class _ContentSendScreenState extends ConsumerState<ContentSendScreen> {
               onChanged: (value) => ref.watch(content_send_controller.searchTextProvider.notifier).state = value,
             ),
             SizedBox(height: .025.sh),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text('Select All', style: FlexiFont.regular12),
+                const SizedBox(width: 4),
+                InkWell(
+                  onTap: () {
+                    ref.watch(content_send_controller.selectAllProvider.notifier).state = !ref.watch(content_send_controller.selectAllProvider);
+                  },
+                  child: ref.watch(content_send_controller.selectAllProvider) ? 
+                    Icon(Icons.check_circle, color: FlexiColor.primary, size: .025.sh) :
+                    Icon(Icons.check_circle_outline, color: FlexiColor.grey[600], size: .025.sh)
+                )
+              ],
+            ),
+            SizedBox(height: .025.sh),
             Expanded(
               child: Consumer(
                 builder: (context, ref, child) {
@@ -80,11 +96,16 @@ class _ContentSendScreenState extends ConsumerState<ContentSendScreen> {
                     itemBuilder: (context, index) {
                       return devices[index].deviceName.contains(ref.watch(content_send_controller.searchTextProvider)) ? GestureDetector(
                         onTap: () {
-                          print('click');
-                          if(ref.watch(content_send_controller.selectDeviceProvider) == devices[index]) {
-                            ref.watch(content_send_controller.selectDeviceProvider.notifier).state = null;
+                          if(ref.watch(content_send_controller.selectDevicesProvider).contains(devices[index])) {
+                            ref.watch(content_send_controller.selectDevicesProvider).remove(devices[index]);
+                            ref.watch(content_send_controller.selectDevicesProvider.notifier).state = [
+                              ...ref.watch(content_send_controller.selectDevicesProvider)
+                            ];
                           } else {
-                            ref.watch(content_send_controller.selectDeviceProvider.notifier).state = devices[index];
+                            ref.watch(content_send_controller.selectDevicesProvider.notifier).state = [
+                              ...ref.watch(content_send_controller.selectDevicesProvider),
+                              devices[index]
+                            ];
                           }
                         },
                         child: Container(
@@ -116,7 +137,7 @@ class _ContentSendScreenState extends ConsumerState<ContentSendScreen> {
                                   )
                                 ],
                               ),
-                              ref.watch(content_send_controller.selectDeviceProvider) == devices[index] ? 
+                              ref.watch(content_send_controller.selectDevicesProvider).contains(devices[index]) || ref.watch(content_send_controller.selectAllProvider) ? 
                                 Icon(Icons.check_circle, color: FlexiColor.primary, size: .025.sh) :
                                 Icon(Icons.check_circle_outline, color: FlexiColor.grey[600], size: .025.sh)
                             ],

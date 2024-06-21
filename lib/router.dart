@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
+import 'feature/auth/controller/auth_service.dart';
 import 'main.dart';
 import 'view/content/screen/background_edit_screen.dart';
 import 'view/content/screen/content_info_screen.dart';
@@ -33,11 +34,10 @@ GoRouter router = GoRouter(
     GoRoute(
       path: '/',
       redirect: (context, state) {
-        if(isLogin) {
+        if(currentUser != null) {
           return '/device/list';
-        } else {
-          return '/login';
         }
+        return '/login';
       },
     ),
     GoRoute(

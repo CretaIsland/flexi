@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../main.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 
@@ -29,14 +28,14 @@ class FlexiFont {
     fontWeight: FontWeight.w400,
     color: Colors.black
   );
-  static TextStyle regular9 = regular.copyWith(fontSize: textScaler.scale(9));
-  static TextStyle regular11 = regular.copyWith(fontSize: textScaler.scale(11));
-  static TextStyle regular12 = regular.copyWith(fontSize: textScaler.scale(12));
-  static TextStyle regular13 = regular.copyWith(fontSize: textScaler.scale(13));
-  static TextStyle regular14= regular.copyWith(fontSize: textScaler.scale(14));
-  static TextStyle regular16 = regular.copyWith(fontSize: textScaler.scale(16));
-  static TextStyle regular20= regular.copyWith(fontSize: textScaler.scale(20));
-  static TextStyle regular24 = regular.copyWith(fontSize: textScaler.scale(24));
+  static TextStyle regular9 = regular.copyWith(fontSize: .015.sh);
+  static TextStyle regular11 = regular.copyWith(fontSize: .0175.sh);
+  static TextStyle regular12 = regular.copyWith(fontSize: .01875.sh);
+  static TextStyle regular13 = regular.copyWith(fontSize: .02.sh);
+  static TextStyle regular14= regular.copyWith(fontSize: .02125.sh);
+  static TextStyle regular16 = regular.copyWith(fontSize: .02375.sh);
+  static TextStyle regular20= regular.copyWith(fontSize: .02875.sh);
+  static TextStyle regular24 = regular.copyWith(fontSize: .03375.sh);
 
   // medium
   static TextStyle medium = const TextStyle(
@@ -44,7 +43,7 @@ class FlexiFont {
     fontWeight: FontWeight.w500,
     color: Colors.black
   );
-  static TextStyle medium12 = medium.copyWith(fontSize: textScaler.scale(12));
+  static TextStyle medium12 = medium.copyWith(fontSize: .01875.sh);
 
   // semiBold
   static TextStyle semiBold = const TextStyle(
@@ -52,12 +51,12 @@ class FlexiFont {
     fontWeight: FontWeight.w600,
     color: Colors.black
   );
-  static TextStyle semiBold11 = semiBold.copyWith(fontSize: textScaler.scale(11));
-  static TextStyle semiBold14 = semiBold.copyWith(fontSize: textScaler.scale(14));
-  static TextStyle semiBold16 = semiBold.copyWith(fontSize: textScaler.scale(16));
-  static TextStyle semiBold20 = semiBold.copyWith(fontSize: textScaler.scale(20));
-  static TextStyle semiBold24 = semiBold.copyWith(fontSize: textScaler.scale(24));
-  static TextStyle semiBold30 = semiBold.copyWith(fontSize: textScaler.scale(30));
+  static TextStyle semiBold11 = semiBold.copyWith(fontSize: .0175.sh);
+  static TextStyle semiBold14 = semiBold.copyWith(fontSize: .02125.sh);
+  static TextStyle semiBold16 = semiBold.copyWith(fontSize: .02375.sh);
+  static TextStyle semiBold20 = semiBold.copyWith(fontSize: .02875.sh);
+  static TextStyle semiBold24 = semiBold.copyWith(fontSize: .03375.sh);
+  static TextStyle semiBold30 = semiBold.copyWith(fontSize: .04125.sh);
 
   // bold
   static TextStyle bold = const TextStyle(
