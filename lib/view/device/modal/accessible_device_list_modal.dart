@@ -19,6 +19,7 @@ class AccessibleDeviceListModal extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     
     ref.invalidate(selectHotspotProvider);
+    ref.invalidate(accessibilityNetworksProvider);
 
     return Container(
       width: 1.sw,

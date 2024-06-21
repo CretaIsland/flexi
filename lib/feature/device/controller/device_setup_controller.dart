@@ -78,13 +78,13 @@ class NetworkController extends _$NetworkController {
     try {
       if(await Permission.location.request().isGranted) {
         final value = await WiFiForIoTPlugin.connect(ssid, 
-          password: password, security: security, joinOnce: true, withInternet: true);
+          password: password, security: security, joinOnce: true, withInternet: true, timeoutInSeconds: 120);
         if(value) {
-          await getNetworkInfo();
-          if(state == null || state!.isEmpty) {
-            return false;
+          final info = network_info_plus.NetworkInfo();
+          var networkSsid = await info.getWifiName();
+          if(networkSsid != null && networkSsid == ssid) {
+            return true;
           }
-          return true;
         }
       }
     } catch (error) {
@@ -233,7 +233,6 @@ class RegisterDeviceInfo extends _$RegisterDeviceInfo{
   Future<void> initialize() async {
     _socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, Config.udpBroadcastPort);
     _socket.broadcastEnabled = true;
-
     _socket.listen((event) {
       Datagram? d = _socket.receive();
       if(d == null) return;

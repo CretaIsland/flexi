@@ -24,6 +24,8 @@ class DeviceSetupModal extends ConsumerWidget {
     final wifiCredential = ref.watch(wifiCredentialsControllerProvider);
     final targetDevice = ref.watch(registerDeviceInfoProvider);
     final socketClient = ref.watch(SocketIOClientProvider(ip: targetDevice!.ip, port: Config.socketIOPort).notifier);
+    
+    print(socketClient.ip);
 
     return Container(
       width: .93.sw,

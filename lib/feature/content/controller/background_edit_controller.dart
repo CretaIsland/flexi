@@ -13,7 +13,7 @@ part 'background_edit_controller.g.dart';
 
 
 
-final tabIndexProvider = StateProvider<int>((ref) => 0);
+final tabIndexProvider = StateProvider<int>((ref) => 1);
 
 
 @riverpod 
