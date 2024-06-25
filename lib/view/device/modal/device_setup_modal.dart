@@ -24,8 +24,6 @@ class DeviceSetupModal extends ConsumerWidget {
     final wifiCredential = ref.watch(wifiCredentialsControllerProvider);
     final targetDevice = ref.watch(registerDeviceInfoProvider);
     final socketClient = ref.watch(SocketIOClientProvider(ip: targetDevice!.ip, port: Config.socketIOPort).notifier);
-    
-    print(socketClient.ip);
 
     return Container(
       width: .93.sw,
@@ -48,7 +46,7 @@ class DeviceSetupModal extends ConsumerWidget {
             height: .06.sh, 
             text: 'Connect',
             fillColor: FlexiColor.primary,
-            onPressed: () async {
+            onPressed: () {
               OverlayEntry loadingOverlay = OverlayEntry(builder: (_) => const LoadingOverlay());
               Navigator.of(context).overlay!.insert(loadingOverlay);
               // 데이터 보내기
@@ -64,18 +62,23 @@ class DeviceSetupModal extends ConsumerWidget {
 ''';
               print(sendData);
               print(socketClient.ip);
+              
+              // device info의 register 상태를 확인하고, true면 그 때 넘기기
               socketClient.sendData(sendData);
-              // 와이파이 연결
-              await ref.watch(networkControllerProvider.notifier).connect(
-                ssid: wifiCredential['ssid']!,
-                password: wifiCredential['passphrase']!,
-                security: wifiCredential['type']!.contains('WPA') ? 
-                  NetworkSecurity.WPA : wifiCredential['type']!.contains('WEP') ?
-                    NetworkSecurity.WEP : NetworkSecurity.NONE
-              );
-              loadingOverlay.remove();
-              context.pop();
-              context.go('/device/list');
+
+              Future.delayed(const Duration(seconds: 1), () async {
+                // 휴대폰이 와이파이 연결
+                await ref.watch(networkControllerProvider.notifier).connect(
+                  ssid: wifiCredential['ssid']!,
+                  password: wifiCredential['passphrase']!,
+                  security: wifiCredential['type']!.contains('WPA') ? 
+                    NetworkSecurity.WPA : wifiCredential['type']!.contains('WEP') ?
+                      NetworkSecurity.WEP : NetworkSecurity.NONE
+                );
+                loadingOverlay.remove();
+                context.pop();
+                context.go('/device/list');
+              });
             },
           ),
           SizedBox(

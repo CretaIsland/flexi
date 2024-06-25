@@ -1,8 +1,10 @@
 import 'package:flexi/feature/auth/controller/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../component/bottom_navigation_bar.dart';
 import '../../../component/text_button.dart';
 import '../../../component/text_field.dart';
 import '../../../utils/ui/color.dart';
@@ -10,11 +12,11 @@ import '../../../utils/ui/font.dart';
 
 
 
-class AccountInfoScreen extends StatelessWidget {
+class AccountInfoScreen extends ConsumerWidget {
   const AccountInfoScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
       child: Column(
@@ -69,6 +71,7 @@ class AccountInfoScreen extends StatelessWidget {
               AuthController authController = AuthController();
               await authController.initialize();
               await authController.logout();
+              ref.invalidate(currentTabIndex);
               context.go('/');
             },
           )

@@ -17,10 +17,6 @@ class AccessibleDeviceListModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    
-    ref.invalidate(selectHotspotProvider);
-    ref.invalidate(accessibilityNetworksProvider);
-
     return Container(
       width: 1.sw,
       height: .9.sh,
@@ -119,6 +115,7 @@ class AccessibleDeviceListModal extends ConsumerWidget {
                   password: "esl!UU8x"
                   // password: "sqisoft74307"
                 );
+                print(value);
                 if(value) {
                   context.pop();
                   context.go("/device/setTimezone");

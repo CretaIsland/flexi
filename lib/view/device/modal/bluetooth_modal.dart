@@ -86,7 +86,7 @@ class BluetoothModal extends ConsumerWidget {
             ),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(deviceInfo.bluetooth, style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))),
+              child: Text(deviceInfo.bluetooth == 'null' ? '' : deviceInfo.bluetooth, style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))),
           ),
           SizedBox(height: .025.sh),
           Consumer(
