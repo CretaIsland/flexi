@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,13 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../common/constants/config.dart';
-import '../../../common/providers/network_providers.dart';
+import '../../../common/providers/socket_client_controller.dart';
 import '../../../component/text_button.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
-import '../../../feature/content/controller/content_send_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
+import '../screen/content_send_screen.dart';
 
 
 
@@ -24,7 +22,6 @@ class ContentSendModal extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 
     final contentInfo = ref.watch(contentInfoControllerProvider);
-    final socketClient = ref.watch(SocketIOClientProvider(ip: ref.watch(selectDevicesProvider)[0].ip, port: Config.socketIOPort).notifier);
 
     return Container(
       width: .93.sw,
@@ -46,29 +43,33 @@ class ContentSendModal extends ConsumerWidget {
             width: .82.sw, 
             height: .06.sh, 
             text: 'Send',
-            fillColor: FlexiColor.primary,
+            backgroundColor: FlexiColor.primary,
             onPressed: () async {
-              if(contentInfo!.backgroundType != 'color') {
-                File? contentFile = await ref.watch(contentSendControllerProvider.notifier).getContentFile();
-
+              if(contentInfo.backgroundType != 'color') {
+                File? contentFile = await ref.watch(contentInfoControllerProvider.notifier).getContentFile();
                 if(contentFile != null) {
-                  print(contentFile.path);
-                  socketClient.sendFile(
-                    deviceId: ref.watch(selectDevicesProvider)[0].deviceId, 
-                    file: contentFile, 
-                    fileName: contentInfo.fileName, 
-                    contentInfo: contentInfo
-                  );
+                  var connected = await ref.watch(socketClientControllerProvider.notifier).connect(ref.watch(selectDevicesProvider)[0].ip);
+                  if(connected) {
+                    Map<String, dynamic> data = contentInfo.toJson();
+                    data.addAll({"command": "playerContent", "deviceId": ref.watch(selectDevicesProvider)[0].deviceId});
+                    data.remove('textSizeType');
+                    data.remove('filePath');
+                    data.remove('fileThumbnail');
+                    data['textSize'] = data['textSize'].round();
+                    ref.watch(socketClientControllerProvider.notifier).sendFile(contentFile, contentInfo.fileName, data);
+                  }
                 }
               } else {
-                Map<String, dynamic> contentInfoJson = contentInfo.toJson();
-                contentInfoJson.addAll({"command": "playerContent", "deviceId": ref.watch(selectDevicesProvider)[0].deviceId});
-                contentInfoJson.remove('textSizeType');
-                contentInfoJson.remove('filePath');
-                contentInfoJson.remove('fileThumbnail');
-                contentInfoJson['textSize'] = contentInfoJson['textSize'].round();
-                String sendData = jsonEncode(contentInfoJson);
-                socketClient.sendData(sendData);
+                var connected = await ref.watch(socketClientControllerProvider.notifier).connect(ref.watch(selectDevicesProvider)[0].ip);
+                if(connected) {
+                  Map<String, dynamic> data = contentInfo.toJson();
+                  data.addAll({"command": "playerContent", "deviceId": ref.watch(selectDevicesProvider)[0].deviceId});
+                  data.remove('textSizeType');
+                  data.remove('filePath');
+                  data.remove('fileThumbnail');
+                  data['textSize'] = data['textSize'].round();
+                  ref.watch(socketClientControllerProvider.notifier).sendData(data);
+                }
               }
               context.pop();
             },

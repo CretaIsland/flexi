@@ -13,6 +13,12 @@ import '../modal/content_delete_modal.dart';
 
 
 
+final searchTextProvider = StateProvider<String>((ref) => '');
+final selectModeProvider = StateProvider<bool>((ref) => false);
+final selectAllProvider = StateProvider<bool>((ref) => false);
+final selectContentsProvider = StateProvider<List<String>>((ref) => List.empty());
+
+
 class ContentListScreen extends ConsumerStatefulWidget {
   const ContentListScreen({super.key, required this.rootContext});
   final BuildContext rootContext;
@@ -34,13 +40,6 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final selectMode = ref.watch(selectModeProvider);
-    final selectAll = ref.watch(selectAllProvider);
-    final selectContents = ref.watch(selectContentsProvider);
-    final searchText = ref.watch(searchTextProvider);
-    final contentListController = ref.watch(contentListControllerProvider.notifier);
-    final contentInfoController = ref.watch(contentInfoControllerProvider.notifier);
-
     return GestureDetector(
       onTap: () {
         ref.watch(selectModeProvider.notifier).state = false;
@@ -58,16 +57,16 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                 Text('Contents', style: FlexiFont.semiBold30),
                 InkWell(
                   onTap: () async {
-                    if(selectMode) {
+                    if(ref.watch(selectModeProvider)) {
                       showModalBottomSheet(
                         context: widget.rootContext,
                         backgroundColor: Colors.transparent, 
                         builder: (context) => const ContentDeleteModal()
                       );
                     } else {
-                      var newContent = await contentListController.createContent();
+                      var newContent = await ref.watch(contentListControllerProvider.notifier).createContent();
                       if(newContent != null) {
-                        contentInfoController.setContent(newContent);
+                        ref.watch(contentInfoControllerProvider.notifier).setContent(newContent);
                         context.go('/content/info');
                       }
                     }
@@ -76,12 +75,12 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                     width: .04.sh,
                     height: .04.sh,
                     decoration: BoxDecoration(
-                      color: selectMode ? FlexiColor.secondary : FlexiColor.primary,
+                      color: ref.watch(selectModeProvider) ? FlexiColor.secondary : FlexiColor.primary,
                       borderRadius: BorderRadius.circular(.02.sh)
                     ),
                     child: Center(
                       child: Icon(
-                        selectMode ? Icons.delete_outline : Icons.add,
+                        ref.watch(selectModeProvider) ? Icons.delete_outline : Icons.add,
                         color: Colors.white, 
                         size: .03.sh
                       ),
@@ -99,7 +98,7 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
             ),
             SizedBox(height: .025.sh),
             Visibility(
-              visible: selectMode,
+              visible: ref.watch(selectModeProvider),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -107,9 +106,15 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                   const SizedBox(width: 4),
                   InkWell(
                     onTap: () {
-                      ref.watch(selectAllProvider.notifier).state = !selectAll;
+                      if(ref.watch(selectModeProvider)) {
+                        ref.watch(selectAllProvider.notifier).state = false;
+                        ref.watch(selectContentsProvider.notifier).state = List.empty();
+                      } else {
+                        ref.watch(selectAllProvider.notifier).state = true;
+                        ref.watch(selectContentsProvider.notifier).state = ref.watch(contentListControllerProvider).value!.map((content) => content.contentId).toList();
+                      }
                     },
-                    child: selectAll ? 
+                    child: ref.watch(selectAllProvider) ? 
                       Icon(Icons.check_circle, color: FlexiColor.secondary, size: .025.sh) :
                       Icon(Icons.check_circle_outline, color: FlexiColor.grey[600], size: .025.sh)
                   )
@@ -131,18 +136,18 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                         padding: EdgeInsets.zero,
                         itemCount: data.length,
                         itemBuilder: (context, index) {
-                          return data[index].contentName.contains(searchText) ?  GestureDetector(
+                          return data[index].contentName.contains(ref.watch(searchTextProvider)) ?  GestureDetector(
                             onLongPress: () => ref.watch(selectModeProvider.notifier).state = true,
                             onTap: () {
-                              if(selectMode) {
-                                if(selectContents.contains(data[index].contentId)) {
-                                  selectContents.removeAt(index);
-                                  ref.watch(selectContentsProvider.notifier).state = [...selectContents];
+                              if(ref.watch(selectModeProvider)) {
+                                if(ref.watch(selectContentsProvider).contains(data[index])) {
+                                  ref.watch(selectContentsProvider).remove(data[index].contentId);
+                                  ref.watch(selectContentsProvider.notifier).state = [...ref.watch(selectContentsProvider)];
                                 } else {
-                                  ref.watch(selectContentsProvider.notifier).state = [...selectContents, data[index].contentId];
+                                  ref.watch(selectContentsProvider.notifier).state = [...ref.watch(selectContentsProvider), data[index].contentId];
                                 }
                               } else {
-                                contentInfoController.setContent(data[index]);
+                                ref.watch(contentInfoControllerProvider.notifier).setContent(data[index]);
                                 context.go('/content/info');
                               }
                             },
@@ -163,8 +168,8 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                                     children: [
                                       Text(data[index].contentName, style: FlexiFont.regular14),
                                       Visibility(
-                                        visible: selectMode,
-                                        child: selectContents.contains(data[index].contentId) || selectAll ?
+                                        visible: ref.watch(selectModeProvider),
+                                        child: ref.watch(selectContentsProvider).contains(data[index].contentId) ?
                                           Icon(Icons.check_circle, color: FlexiColor.secondary, size: .025.sh) :
                                           Icon(Icons.check_circle_outline, color: FlexiColor.grey[600], size: .025.sh)
                                       )

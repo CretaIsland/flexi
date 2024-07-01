@@ -8,13 +8,13 @@ import '../utils/ui/font.dart';
 
 
 
-final currentTabIndex = StateProvider<int>((ref) => 0);
+final currentTabProvider = StateProvider<int>((ref) => 0);
 
-class FlexiBottomNavigationBar extends ConsumerWidget {
+class FlexiBottomNavigationBar extends StatelessWidget {
   const FlexiBottomNavigationBar({super.key});
-
+  
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Container(
       height: .08.sh,
       color: FlexiColor.grey[300],
@@ -24,29 +24,37 @@ class FlexiBottomNavigationBar extends ConsumerWidget {
         children: [
           tabButton('Devices', Icons.connected_tv_outlined, '/device/list', 0),
           tabButton('Contents', Icons.interests, '/content/list', 1),
-          tabButton('Setting', Icons.settings, '/settings', 2)
+          tabButton('Setting', Icons.settings, '/setting', 2)
         ],
       ),
     );
   }
 
-  Widget tabButton(String text, IconData icon, String routePath, int tabIndex) {
+  Consumer tabButton(String text, IconData icon, String routePath, int tabIndex) {
     return Consumer(
       builder: (context, ref, child) {
         return InkWell(
           onTap: () {
-            ref.watch(currentTabIndex.notifier).state = tabIndex;
+            ref.watch(currentTabProvider.notifier).state = tabIndex;
             context.go(routePath);
           },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: ref.watch(currentTabIndex) == tabIndex ? FlexiColor.primary : FlexiColor.grey[600], size: .035.sh),
-              Text(text, style: FlexiFont.medium12.copyWith(color: ref.watch(currentTabIndex) == tabIndex ? FlexiColor.primary : FlexiColor.grey[600]))
+              Icon(
+                icon,
+                color:  ref.watch(currentTabProvider) == tabIndex ? FlexiColor.primary : FlexiColor.grey[600],
+                size: .035.sh,
+              ),
+              Text(
+                text, 
+                style: FlexiFont.medium12.copyWith(color: ref.watch(currentTabProvider) == tabIndex ? FlexiColor.primary : FlexiColor.grey[600])
+              )
             ],
           ),
         );
       },
     );
   }
+
 }

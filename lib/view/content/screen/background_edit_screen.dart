@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,7 +7,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-import '../../../feature/content/controller/background_edit_controller.dart';
+import '../../../common/providers/local_gallery_controller.dart';
+import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../utils/flexi_utils.dart';
 import '../../../utils/ui/color.dart';
@@ -14,14 +17,16 @@ import '../component/background_edit_preview.dart';
 
 
 
+final tabIndexProvider = StateProvider((ref) => 0);
+
+
 class BackgroundEditScreen extends ConsumerWidget {
   const BackgroundEditScreen({super.key});
-
+  
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final contentInfo = ref.watch(backgroundEditControllerProvider);
-    final contentInfoController = ref.watch(contentInfoControllerProvider.notifier);
+    final contentInfo = ref.watch(contentEditControllerProvider);
 
     return Scaffold(
       body: Container(
@@ -48,7 +53,7 @@ class BackgroundEditScreen extends ConsumerWidget {
                       ),
                       TextButton(
                         onPressed: () {
-                          contentInfoController.change(contentInfo);
+                          ref.watch(contentInfoControllerProvider.notifier).change(contentInfo);
                           context.go('/content/info');
                         },
                         child: Text('Apply', style: FlexiFont.regular16.copyWith(color: Colors.white))
@@ -147,7 +152,7 @@ class BackgroundEditScreen extends ConsumerWidget {
           itemCount: colors.length,
           itemBuilder: (context, index) {
             return InkWell(
-              onTap: () => ref.watch(backgroundEditControllerProvider.notifier).setBackgroundColor(colors[index]),
+              onTap: () => ref.watch(contentEditControllerProvider.notifier).setBackgroundColor(colors[index]),
               child: Container(
                 decoration: BoxDecoration(
                   color: colors[index],
@@ -167,8 +172,8 @@ class BackgroundEditScreen extends ConsumerWidget {
     return Consumer(
       builder: (context, ref, child) {  
 
-        final localStorageController = ref.watch(localStorageControllerProvider.notifier);
-        final localStorageFiles = ref.watch(localStorageControllerProvider);     
+        final localStorageController = ref.watch(localGalleryControllerProvider.notifier);
+        final localStorageFiles = ref.watch(localGalleryControllerProvider);     
 
         return NotificationListener<ScrollNotification>(
           onNotification: (notification) {
@@ -191,11 +196,11 @@ class BackgroundEditScreen extends ConsumerWidget {
                         onTap: () async {
                           var selectFile = await localStorageFiles[index].loadFile();
                           if(selectFile != null) {
-                            ref.watch(backgroundEditControllerProvider.notifier).setBackgroundContent(
+                            ref.watch(contentEditControllerProvider.notifier).setBackgroundContent(
                               localStorageFiles[index].type.name, 
                               selectFile.path, 
-                              selectFile.path.split('/').last, 
-                              snapshot.data!
+                              selectFile.path.split('/').last,
+                              snapshot.data! as Uint8List
                             );
                           } else {
                             Fluttertoast.showToast(
@@ -205,7 +210,7 @@ class BackgroundEditScreen extends ConsumerWidget {
                         },
                         child: Stack(
                           children: [
-                            Positioned.fill(child: Image.memory(snapshot.data!, fit: BoxFit.cover)),
+                            Positioned.fill(child: Image.memory(snapshot.data! as Uint8List, fit: BoxFit.cover)),
                             localStorageFiles[index].type == AssetType.video ? Center(child: Icon(Icons.play_arrow_rounded, color: Colors.white, size: .03.sh)) : const SizedBox.shrink()
                           ],
                         ),

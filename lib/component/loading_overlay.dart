@@ -23,9 +23,10 @@ class LoadingOverlay extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(.0125.sh)
           ),
-          child: Image.asset("assets/image/wifi_loading.gif", fit: BoxFit.cover)
+          child: Image.asset('assets/image/wifi_loading.gif', fit: BoxFit.cover),
         ),
       ),
     );
   }
+
 }

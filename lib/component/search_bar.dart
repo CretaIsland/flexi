@@ -7,11 +7,9 @@ import '../utils/ui/font.dart';
 
 
 class FlexiSearchBar extends StatelessWidget {
-  const FlexiSearchBar({super.key, this.hintText, this.controller, this.onChanged, this.onComplete});
+  const FlexiSearchBar({super.key, this.hintText, this.onChanged});
   final String? hintText;
-  final TextEditingController? controller;
   final void Function(String)? onChanged;
-  final void Function()? onComplete;
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +17,13 @@ class FlexiSearchBar extends StatelessWidget {
       width: .89.sw,
       height: .045.sh,
       child: TextField(
-        controller: controller,
         style: FlexiFont.regular16,
         decoration: InputDecoration(
+          contentPadding: const EdgeInsets.only(left: 12),
           hintText: hintText,
           hintStyle: FlexiFont.regular16.copyWith(color: FlexiColor.grey[700]),
-          contentPadding: EdgeInsets.zero,
-          fillColor: FlexiColor.grey[400],
           filled: true,
+          fillColor: FlexiColor.grey[400],
           border: InputBorder.none,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(.025.sh),
@@ -38,9 +35,9 @@ class FlexiSearchBar extends StatelessWidget {
           ),
           prefixIcon: Icon(Icons.search_outlined, color: FlexiColor.grey[700], size: .025.sh)
         ),
-        onChanged: onChanged,
-        onEditingComplete: onComplete,
-      )
+        onChanged: onChanged
+      )  
     );
   }
+
 }

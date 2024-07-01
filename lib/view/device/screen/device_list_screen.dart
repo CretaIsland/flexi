@@ -8,12 +8,18 @@ import 'package:go_router/go_router.dart';
 import '../../../component/search_bar.dart';
 import '../../../feature/device/controller/device_info_controller.dart';
 import '../../../feature/device/controller/device_list_controller.dart';
-import '../../../feature/device/controller/device_setup_controller.dart';
+import '../../../feature/device/model/device_info.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
-import '../modal/accessible_device_list_modal.dart';
+import '../modal/hotspot_list_modal.dart';
 import '../modal/device_reset_modal.dart';
 
+
+
+final searchTextProvider = StateProvider<String>((ref) => '');
+final selectModeProvider = StateProvider<bool>((ref) => false);
+final selectAllProvider = StateProvider<bool>((ref) => false);
+final selectDevicesProvider = StateProvider<List<DeviceInfo>>((ref) => List.empty());
 
 
 class DeviceListScreen extends ConsumerStatefulWidget {
@@ -35,16 +41,14 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final selectMode = ref.watch(selectModeProvider);
-    final selectAll = ref.watch(selectAllProvider);
-    final selectDevice = ref.watch(selectDeviceProvider);
-    final devices = ref.watch(deviceListControllerProvider);
+
+    var devices = ref.watch(deviceListControllerProvider);
 
     return GestureDetector(
       onTap: () {
         ref.watch(selectModeProvider.notifier).state = false;
         ref.watch(selectAllProvider.notifier).state = false;
-        ref.invalidate(selectDeviceProvider);
+        ref.invalidate(selectDevicesProvider);
       },
       child: Container(
         color: FlexiColor.backgroundColor,
@@ -57,7 +61,7 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
                 Text('Devices', style: FlexiFont.semiBold30),
                 InkWell(
                   onTap: () async {
-                    if(selectMode) {
+                    if(ref.watch(selectModeProvider)) {
                       showModalBottomSheet(
                         context: widget.rootContext, 
                         backgroundColor: Colors.transparent,
@@ -67,15 +71,12 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
                       if(Platform.isIOS) {
                         context.go('/device/setTimezone');
                       } else {
-                        ref.invalidate(selectHotspotProvider);
-                        ref.invalidate(accessibilityNetworksProvider);
                         showModalBottomSheet(
                           context: widget.rootContext, 
                           isScrollControlled: true,
                           backgroundColor: Colors.transparent,
                           builder: (context) => const AccessibleDeviceListModal()
                         );
-                        // context.go('/device/setTimezone');
                       }
                     }
                   },
@@ -83,12 +84,12 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
                     width: .04.sh,
                     height: .04.sh,
                     decoration: BoxDecoration(
-                      color: selectMode ? FlexiColor.secondary : FlexiColor.primary,
+                      color: ref.watch(selectModeProvider) ? FlexiColor.secondary : FlexiColor.primary,
                       borderRadius: BorderRadius.circular(.02.sh)
                     ),
                     child: Center(
                       child: Icon(
-                        selectMode ? Icons.link_off : Icons.add,
+                        ref.watch(selectModeProvider) ? Icons.link_off : Icons.add,
                         color: Colors.white,
                         size: .03.sh,
                       ),
@@ -104,12 +105,38 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
             ),
             SizedBox(height: .025.sh),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('${devices.length} Devices', style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
-                const SizedBox(width: 4),
-                InkWell(
-                  onTap: () {},
-                  child: Icon(Icons.refresh, color: FlexiColor.grey[600], size: .02.sh),
+                Row(
+                  children: [
+                    Text('${devices.length} Devices', style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
+                    const SizedBox(width: 4),
+                    InkWell(
+                      onTap: () {},
+                      child: Icon(Icons.refresh, color: FlexiColor.grey[600], size: .02.sh),
+                    )
+                  ],
+                ),
+                Visibility(
+                  visible: ref.watch(selectModeProvider),
+                  child: Row(
+                    children: [
+                      Text('${devices.length} Devices', style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
+                      const SizedBox(width: 4),
+                      InkWell(
+                        onTap: () {
+                          if(ref.watch(selectModeProvider)) {
+                            ref.watch(selectAllProvider.notifier).state = false;
+                            ref.watch(selectDevicesProvider.notifier).state = List.empty();
+                          } else {
+                            ref.watch(selectAllProvider.notifier).state = true;
+                            ref.watch(selectDevicesProvider.notifier).state = devices;
+                          }
+                        },
+                        child: Icon(Icons.refresh, color: FlexiColor.grey[600], size: .02.sh),
+                      )
+                    ],
+                  )
                 )
               ],
             ),
@@ -124,11 +151,12 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
                       return devices[index].deviceName.contains(ref.watch(searchTextProvider)) ? GestureDetector(
                         onLongPress: () => ref.watch(selectModeProvider.notifier).state = true,
                         onTap: () {
-                          if(selectMode) {
-                            if(selectDevice == devices[index]) {
-                              ref.watch(selectDeviceProvider.notifier).state = null;
+                          if(ref.watch(selectModeProvider)) {
+                            if(ref.watch(selectDevicesProvider).contains(devices[index])) {
+                              ref.watch(selectDevicesProvider).remove(devices[index]);
+                              ref.watch(selectDevicesProvider.notifier).state = ref.watch(selectDevicesProvider);
                             } else {
-                              ref.watch(selectDeviceProvider.notifier).state = devices[index];
+                              ref.watch(selectDevicesProvider.notifier).state = [...ref.watch(selectDevicesProvider), devices[index]];
                             }
                           } else {
                             ref.watch(deviceInfoControllerProvider.notifier).setDevice(devices[index]);
@@ -165,8 +193,8 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
                                 ],
                               ),
                               Visibility(
-                                visible: selectMode,
-                                child: selectDevice == devices[index] || selectAll ? 
+                                visible: ref.watch(selectModeProvider),
+                                child: ref.watch(selectDevicesProvider).contains(devices[index]) ? 
                                   Icon(Icons.check_circle, color: FlexiColor.secondary, size: .025.sh) :
                                   Icon(Icons.check_circle_outline, color: FlexiColor.grey[600], size: .025.sh)
                               )

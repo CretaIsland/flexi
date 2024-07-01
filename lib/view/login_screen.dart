@@ -1,38 +1,37 @@
-import '../component/text_button.dart';
-import '../feature/auth/controller/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../component/text_button.dart';
+import '../feature/auth/controller/auth_service.dart';
 import '../utils/ui/color.dart';
 import '../utils/ui/font.dart';
 
 
 
-class LoginScreen extends ConsumerStatefulWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
-
+class _LoginScreenState extends State<LoginScreen> {
+  
   late AuthController _authController;
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
-
-  final _hidePasswordProvider = StateProvider((ref) => true);
-
-
+  late bool _hidePassword;
+  
+  
   @override
   void initState() {
     super.initState();
-    _emailController = TextEditingController();
-    _passwordController = TextEditingController();
     _authController = AuthController();
     _authController.initialize();
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    _hidePassword = true;
   }
 
   @override
@@ -61,7 +60,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   'assets/image/login_illustration.png',
                   fit: BoxFit.contain,
                   alignment: Alignment.bottomCenter,
-                )
+                ),
               ),
               SizedBox(height: .03.sh),
               Column(
@@ -71,6 +70,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   SizedBox(height: .005.sh),
                   Text('Hi there! Nice to see you.', style: FlexiFont.regular12.copyWith(color: Colors.white)),
                   SizedBox(height: .025.sh),
+                  // email text field
                   SizedBox(
                     width: .82.sw, 
                     height: .06.sh,
@@ -89,18 +89,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(.01.sh),
                           borderSide: const BorderSide(color: Colors.white)
-                        ),
-                      ),
-                    ),
+                        )
+                      )
+                    )
                   ),
                   SizedBox(height: .015.sh),
+                  // password text field
                   SizedBox(
                     width: .82.sw, 
                     height: .06.sh,
                     child: TextField(
                       controller: _passwordController,
                       style: FlexiFont.regular16.copyWith(color: Colors.white),
-                      obscureText: ref.watch(_hidePasswordProvider),
+                      obscureText: _hidePassword,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.only(left: 12),
                         hintText: 'Password',
@@ -115,22 +116,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           borderSide: const BorderSide(color: Colors.white)
                         ),
                         suffixIcon: InkWell(
-                          onTap: () => ref.watch(_hidePasswordProvider.notifier).state = !ref.watch(_hidePasswordProvider),
+                          onTap: () => setState(() {
+                            _hidePassword = !_hidePassword;  
+                          }),
                           child: Icon(
-                            ref.watch(_hidePasswordProvider) ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                            _hidePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                             color: Colors.white,
                             size: .025.sh
                           ),
                         )
-                      ),
-                    ),
+                      )
+                    )
                   ),
                   SizedBox(height: .025.sh),
                   FlexiTextButton(
                     width: .82.sw, 
                     height: .06.sh, 
-                    text: 'Login',
-                    fillColor: FlexiColor.secondary,
+                    text: 'Sign in', 
+                    backgroundColor: FlexiColor.secondary,
                     onPressed: () {
                       _authController.loginByEmail(_emailController.text, _passwordController.text).then((value) {
                         if(currentUser != null) {
@@ -164,21 +167,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         children: [
                           Image.asset(
                             'assets/image/google_logo.png',
-                            height: .03.sh,
+                            height: .03.sh
                           ),
                           SizedBox(width: .02.sw),
                           Text('Login by Google', style: FlexiFont.semiBold16)
-                        ],
-                      ),
-                    ),
+                        ]
+                      )
+                    )
                   )
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
+                ]
+              )  
+            ]
+          )
+        )
+      )
     );
   }
-  
+
 }

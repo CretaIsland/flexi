@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-import '../../../feature/device/controller/device_setup_controller.dart';
+import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../utils/ui/color.dart';
 
 
@@ -41,7 +41,7 @@ class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
       if(scanData.code != null) {
         _qrcodeController!.pauseCamera();
         // qrcode가 wifi qrcode인지 확인
-        if(ref.watch(wifiCredentialsControllerProvider.notifier).scanQrcodeValue(scanData.code!)) {
+        if(await ref.watch(registerDataControllerProvider.notifier).scanQrcodeValue(scanData.code!)) {
           context.go('/device/setWifi');
         } else {
           Fluttertoast.showToast(
@@ -72,7 +72,6 @@ class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(registerDeviceInfoProvider);
     return Scaffold(
       body: Stack(
         children: [

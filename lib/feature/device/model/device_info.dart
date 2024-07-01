@@ -1,25 +1,25 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'device_info.freezed.dart';
 part 'device_info.g.dart';
-
+part 'device_info.freezed.dart';
 
 
 @freezed
 class DeviceInfo with _$DeviceInfo {
+
   factory DeviceInfo({
-    @Default('')String connectionMode,
-    @Default('')String deviceId,
-    @Default('')String ip,
+    @Default('') String deviceId,
+    @Default('') String deviceName,
+    @Default('') String ip,
+    @Default('') String connectionMode,
     @Default(false)bool isRegistered,
+    @Default('')String registeredSSID,
     @Default(false)bool hasContent,
     @Default(false)bool bluetoothBonded,
     @Default('')String bluetooth,
     @Default('')String bluetoothId,
-    @Default(50)int volume,
+    @Default(0) int volume,
     @Default('')String timeZone,
-    @Default('')String registeredSSID,
-    @Default('')String deviceName
   }) = _DeviceInfo;
 
   DeviceInfo._();

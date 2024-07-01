@@ -7,6 +7,7 @@ import '../../../component/text_button.dart';
 import '../../../feature/content/controller/content_list_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
+import '../../content/screen/content_list_screen.dart';
 
 
 
@@ -39,12 +40,12 @@ class ContentDeleteModal extends ConsumerWidget {
             width: .82.sw, 
             height: .06.sh, 
             text: 'Delete',
-            fillColor: FlexiColor.secondary,
+            backgroundColor: FlexiColor.secondary,
             onPressed: () async {
               if(ref.watch(selectAllProvider)) {
-                await contentListController.deleteAll();
+                await contentListController.deleteAllContent();
               } else {
-                await contentListController.deleteContents(ref.watch(selectContentsProvider));
+                await contentListController.deleteContent(ref.watch(selectContentsProvider));
               }
               ref.watch(selectModeProvider.notifier).state = false;
               ref.watch(selectAllProvider.notifier).state = false;

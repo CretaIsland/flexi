@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../feature/content/controller/text_edit_controller.dart';
+import '../../../feature/content/controller/content_edit_controller.dart';
+import '../../../feature/content/controller/current_language_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 
@@ -110,8 +111,8 @@ class OutputLanguageListBar extends ConsumerWidget {
               InkWell(
                 onTap: () {
                   ref.watch(selectOutputLanguageProvider.notifier).state = currentLanguage;
-                  ref.watch(textTranslateControllerProvider.notifier).translate(
-                    ref.watch(textEditControllerProvider).text, 
+                  ref.watch(translateControllerProvider.notifier).translate(
+                    ref.watch(contentEditControllerProvider).text, 
                     ref.watch(selectInputLanguageProvider)['code']!,
                     ref.watch(selectOutputLanguageProvider)['code']!
                   );
@@ -167,8 +168,8 @@ class OutputLanguageListBar extends ConsumerWidget {
                     if(!ref.watch(currentOutputLanguagesControllerProvider).contains(language)) {
                       ref.watch(currentOutputLanguagesControllerProvider.notifier).updateCurrentLanguage(language);
                     }
-                    ref.watch(textTranslateControllerProvider.notifier).translate(
-                      ref.watch(textEditControllerProvider).text, 
+                    ref.watch(translateControllerProvider.notifier).translate(
+                      ref.watch(contentEditControllerProvider).text, 
                       ref.watch(selectInputLanguageProvider)['code']!,
                       ref.watch(selectOutputLanguageProvider)['code']!
                     );

@@ -6,11 +6,13 @@ import 'package:go_router/go_router.dart';
 import '../../../component/loading_overlay.dart';
 import '../../../component/search_bar.dart';
 import '../../../component/text_button.dart';
-import '../../../feature/device/controller/device_setup_controller.dart';
+import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 
 
+
+final selectHotspotProvider = StateProvider((ref) => '');
 
 class AccessibleDeviceListModal extends ConsumerWidget {
   const AccessibleDeviceListModal({super.key});
@@ -44,7 +46,7 @@ class AccessibleDeviceListModal extends ConsumerWidget {
             ),
             child: Consumer(
               builder: (context, ref, child) {
-                return ref.watch(accessibilityNetworksProvider).when(
+                return ref.watch(accessibleHotspotsProvider).when(
                   data: (stream) {
                     return StreamBuilder(
                       stream: stream, 
@@ -69,7 +71,7 @@ class AccessibleDeviceListModal extends ConsumerWidget {
                                       SizedBox(
                                         width: .6.sw,
                                         child: Text(
-                                          snapshot.data![index].ssid ?? '', 
+                                          snapshot.data![index], 
                                           style: FlexiFont.regular16,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 2,
@@ -104,15 +106,15 @@ class AccessibleDeviceListModal extends ConsumerWidget {
             width: .89.sw, 
             height: .06.sh, 
             text: 'Add',
-            fillColor: FlexiColor.primary,
+            backgroundColor: FlexiColor.primary,
             onPressed: () async {
-              if(ref.watch(selectHotspotProvider) != null) {
+              if(ref.watch(selectHotspotProvider).isNotEmpty) {
                 OverlayEntry loadingOverlay = OverlayEntry(builder: (_) => const LoadingOverlay());
                 Navigator.of(context).overlay!.insert(loadingOverlay);
                 // connect network
                 final value = await ref.read(networkControllerProvider.notifier).connect(
-                  ssid: ref.watch(selectHotspotProvider)!.ssid!, 
-                  password: "esl!UU8x"
+                  ssid: ref.watch(selectHotspotProvider)!, 
+                  passphrase: "esl!UU8x"
                   // password: "sqisoft74307"
                 );
                 print(value);

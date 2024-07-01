@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:intl/intl.dart';
 import 'package:sembast/sembast.dart';
 
@@ -8,18 +6,17 @@ import '../model/content_info.dart';
 
 
 
-class ContentRespository {
+class ContentRepository {
 
-  final _contentStore = stringMapStoreFactory.store('content');
+  final _store = stringMapStoreFactory.store('content');
   Future<Database> get _dbClient async => await AppDatabase.instance.database;
 
 
   Future<ContentInfo?> create() async {
     try {
       DateTime now = DateTime.now();
-      String localeId = Platform.localeName.replaceAll("_", "-");
-      ContentInfo newContent = ContentInfo(contentId: now.toString(), contentName: 'New Content ${DateFormat('yy/MM/dd HH:mm:ss').format(now)}', language: localeId);
-      var result = await _contentStore.record(newContent.contentId).put(await _dbClient, newContent.toJson());
+      ContentInfo newContent = ContentInfo(contentId: now.toString(), contentName: 'New Content ${DateFormat('yy/MM/dd HH:mm:ss').format(now)}', language: 'en-US');
+      var result = await _store.record(newContent.contentId).put(await _dbClient, newContent.toJson());
       return ContentInfo.fromJson(result);
     } catch (error) {
       print('error at ContentRepository.create >>> $error');
@@ -29,7 +26,7 @@ class ContentRespository {
 
   Future<ContentInfo?> get(String contentId) async {
     try {
-      var result = await _contentStore.record(contentId).get(await _dbClient);
+      var result = await _store.record(contentId).get(await _dbClient);
       return ContentInfo.fromJson(result!);
     } catch (error) {
       print('error at ContentRepository.get >>> $error');
@@ -39,8 +36,8 @@ class ContentRespository {
 
   Future<List<ContentInfo>> getAll() async {
     try {
-      var results = await _contentStore.find(await _dbClient);
-      return results.map((result) => ContentInfo.fromJson(result.value)).toList();
+      var results = await _store.find(await _dbClient);
+      return results.map((element) => ContentInfo.fromJson(element.value)).toList();
     } catch (error) {
       print('error at ContentRepository.getAll >>> $error');
     }
@@ -49,7 +46,7 @@ class ContentRespository {
 
   Future<ContentInfo?> update(String contentId, ContentInfo updateContent) async {
     try {
-      var result = await _contentStore.record(contentId).update(await _dbClient, updateContent.toJson());
+      var result = await _store.record(contentId).update(await _dbClient, updateContent.toJson());
       return ContentInfo.fromJson(result!);
     } catch (error) {
       print('error at ContentRepository.update >>> $error');
@@ -57,17 +54,17 @@ class ContentRespository {
     return null;
   }
 
-  Future<void> delete(String contentId) async{
+  Future<void> delete(String contentId) async {
     try {
-      await _contentStore.record(contentId).delete(await _dbClient);
+      await _store.record(contentId).delete(await _dbClient);
     } catch (error) {
       print('error at ContentRepository.delete >>> $error');
     }
   }
 
-  Future<void> deleteAll() async{
+  Future<void> deleteAll() async {
     try {
-      await _contentStore.delete(await _dbClient);
+      await _store.delete(await _dbClient);
     } catch (error) {
       print('error at ContentRepository.deleteAll >>> $error');
     }

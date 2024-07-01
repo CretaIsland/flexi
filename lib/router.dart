@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import 'feature/auth/controller/auth_service.dart';
-import 'main.dart';
 import 'view/content/screen/background_edit_screen.dart';
 import 'view/content/screen/content_info_screen.dart';
 import 'view/content/screen/content_list_screen.dart';
@@ -46,7 +45,7 @@ GoRouter router = GoRouter(
      ),
     ShellRoute(
       navigatorKey: shellNavKey,
-      pageBuilder: (context, state, child) => NoTransitionPage(child: HomeScreen(state: state, child: child)),
+      pageBuilder: (context, state, child) => NoTransitionPage(child: HomeScreen(child: child)),
       routes: [
         // ********** Device **********
         GoRoute(

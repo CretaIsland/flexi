@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wifi_iot/wifi_iot.dart';
 
-import '../../../common/constants/config.dart';
-import '../../../common/providers/network_providers.dart';
+import '../../../common/providers/socket_client_controller.dart';
 import '../../../component/loading_overlay.dart';
 import '../../../component/text_button.dart';
-import '../../../feature/device/controller/device_setup_controller.dart';
-import '../../../feature/device/provider/timezone_provider.dart';
+import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 
@@ -21,9 +20,7 @@ class DeviceSetupModal extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final wifiCredential = ref.watch(wifiCredentialsControllerProvider);
-    final targetDevice = ref.watch(registerDeviceInfoProvider);
-    final socketClient = ref.watch(SocketIOClientProvider(ip: targetDevice!.ip, port: Config.socketIOPort).notifier);
+    final registerData = ref.watch(registerDataControllerProvider);
 
     return Container(
       width: .93.sw,
@@ -45,39 +42,46 @@ class DeviceSetupModal extends ConsumerWidget {
             width: .82.sw, 
             height: .06.sh, 
             text: 'Connect',
-            fillColor: FlexiColor.primary,
-            onPressed: () {
+            backgroundColor: FlexiColor.primary,
+            onPressed: () async {
               OverlayEntry loadingOverlay = OverlayEntry(builder: (_) => const LoadingOverlay());
               Navigator.of(context).overlay!.insert(loadingOverlay);
-              // 데이터 보내기
-               String sendData = '''
-{
-"command": "register",
-"deviceId": "${targetDevice.deviceId}",
-"ssid": "${wifiCredential['ssid']}",
-"security": "${wifiCredential['type'] == '' ? 'NONE' : wifiCredential['type']}",
-"password": "${wifiCredential['passphrase']}",
-"timeZone": "${ref.watch(selectTimezoneProvider)['locationName']}"
-}
-''';
-              print(sendData);
-              print(socketClient.ip);
-              
-              // device info의 register 상태를 확인하고, true면 그 때 넘기기
-              socketClient.sendData(sendData);
+              ref.watch(registerDeviceControllerProvider).whenData((value) async {
+                if(value == null) {
+                  loadingOverlay.remove();
+                  context.pop();
+                  Fluttertoast.showToast(msg: 'network error');
+                } else {
+                  var connected = await ref.watch(socketClientControllerProvider.notifier).connect(value.ip);
+                  if(connected) {
+                    Map<String, String> data = {
+                      "command": "register",
+                      "deviceId": value.deviceId,
+                      "ssid": registerData['ssid']!,
+                      "security": registerData['security']!,
+                      "password": registerData['password']!,
+                      "timeZone": registerData['timeZone']!
+                    };
+                    ref.watch(socketClientControllerProvider.notifier).sendData(data);
 
-              Future.delayed(const Duration(seconds: 1), () async {
-                // 휴대폰이 와이파이 연결
-                await ref.watch(networkControllerProvider.notifier).connect(
-                  ssid: wifiCredential['ssid']!,
-                  password: wifiCredential['passphrase']!,
-                  security: wifiCredential['type']!.contains('WPA') ? 
-                    NetworkSecurity.WPA : wifiCredential['type']!.contains('WEP') ?
-                      NetworkSecurity.WEP : NetworkSecurity.NONE
-                );
-                loadingOverlay.remove();
-                context.pop();
-                context.go('/device/list');
+                    await Future.delayed(const Duration(seconds: 1));
+
+                    await ref.watch(networkControllerProvider.notifier).connect(
+                      ssid: registerData['ssid']!,
+                      passphrase: registerData['password'],
+                      security: registerData['security']!.contains('WPA') ? 
+                        NetworkSecurity.WPA : registerData['security']!.contains('WEP') ? NetworkSecurity.WEP : NetworkSecurity.NONE
+                    );
+
+                    loadingOverlay.remove();
+                    context.pop();
+                    context.go('/device/list');
+                  } else {
+                    loadingOverlay.remove();
+                    context.pop();
+                    Fluttertoast.showToast(msg: 'network error');
+                  }
+                }
               });
             },
           ),

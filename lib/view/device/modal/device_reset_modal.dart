@@ -3,12 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../common/constants/config.dart';
-import '../../../common/providers/network_providers.dart';
+import '../../../common/providers/socket_client_controller.dart';
 import '../../../component/text_button.dart';
-import '../../../feature/device/controller/device_list_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
+import '../screen/device_list_screen.dart';
 
 
 
@@ -18,9 +17,7 @@ class DeviceResetModal extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final selectDevice = ref.watch(selectDeviceProvider);
-    var socketClient = ref.watch(SocketIOClientProvider(ip: selectDevice != null ? selectDevice.ip : '', port: Config.socketIOPort).notifier);
-   
+    final selectDevices = ref.watch(selectDevicesProvider);
 
     return Container(
       width: .93.sw,
@@ -42,16 +39,21 @@ class DeviceResetModal extends ConsumerWidget {
             width: .82.sw, 
             height: .06.sh, 
             text: 'Reset',
-            fillColor: FlexiColor.secondary,
-            onPressed: () {
-              String data = '''
-                {
-                "command":"unregister",
-                "deviceId": "${selectDevice!.deviceId}"
+            backgroundColor: FlexiColor.secondary,
+            onPressed: () async {
+              for(var device in selectDevices) {
+                Map<String, String> data = {
+                  "command": "unregister",
+                  "deviceId": device.deviceId
+                };
+
+                var connected = await ref.watch(socketClientControllerProvider.notifier).connect(device.ip);
+                if(connected) {
+                  ref.watch(socketClientControllerProvider.notifier).sendData(data);
                 }
-              ''';
-              socketClient.sendData(data);
-              ref.invalidate(selectDeviceProvider);
+                ref.invalidate(socketClientControllerProvider);
+              }
+              ref.invalidate(selectDevicesProvider);
               context.pop();
             },
           ),

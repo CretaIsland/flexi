@@ -4,7 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../component/text_button.dart';
-import '../../../feature/content/controller/text_edit_controller.dart';
+import '../../../feature/content/controller/content_edit_controller.dart';
+import '../../../feature/content/controller/current_language_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../component/language_list_bar.dart';
 
@@ -33,8 +34,8 @@ class _TextTranslateModalState extends ConsumerState<TextTranslateModal> {
   @override
   Widget build(BuildContext context) {
 
-    _inputController.text = ref.watch(textEditControllerProvider).text;
-    _outputController.text = ref.watch(textTranslateControllerProvider);
+    _inputController.text = ref.watch(contentEditControllerProvider).text;
+    _outputController.text = ref.watch(translateControllerProvider);
 
     return Container(
       width: 1.sw,
@@ -65,7 +66,7 @@ class _TextTranslateModalState extends ConsumerState<TextTranslateModal> {
                   enabledBorder: InputBorder.none
                 ),
                 maxLines: null,
-                onChanged: (value) => ref.watch(textEditControllerProvider.notifier).setText(value),
+                onChanged: (value) => ref.watch(contentEditControllerProvider.notifier).setText(value),
               ),
             ),
             SizedBox(height: .03.sh),
@@ -96,11 +97,11 @@ class _TextTranslateModalState extends ConsumerState<TextTranslateModal> {
               width: .89.sw, 
               height: .06.sh, 
               text: 'Add',
-              fillColor: FlexiColor.primary,
+              backgroundColor: FlexiColor.primary,
               onPressed: () async {
-                ref.watch(textEditControllerProvider.notifier).setLanguage(ref.watch(selectOutputLanguageProvider)['localeId']!.replaceAll("_", "-"));
-                ref.watch(textEditControllerProvider.notifier).setText(_outputController.text);
-                ref.invalidate(textTranslateControllerProvider);
+                ref.watch(contentEditControllerProvider.notifier).setLanguage(ref.watch(selectOutputLanguageProvider)['localeId']!.replaceAll("_", "-"));
+                ref.watch(contentEditControllerProvider.notifier).setText(_outputController.text);
+                ref.invalidate(translateControllerProvider);
                 ref.watch(currentOutputLanguagesControllerProvider.notifier).saveChange();
                 context.pop();
               },

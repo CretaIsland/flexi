@@ -1,22 +1,20 @@
-import 'package:flexi/feature/auth/controller/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../component/bottom_navigation_bar.dart';
 import '../../../component/text_button.dart';
 import '../../../component/text_field.dart';
+import '../../../feature/auth/controller/auth_service.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 
 
 
-class AccountInfoScreen extends ConsumerWidget {
+class AccountInfoScreen extends StatelessWidget {
   const AccountInfoScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
       child: Column(
@@ -37,8 +35,6 @@ class AccountInfoScreen extends ConsumerWidget {
           Text('User Name', style: FlexiFont.regular14),
           SizedBox(height: .01.sh),
           FlexiTextField(
-            width: .89.sw, 
-            height: .06.sh,
             controller: TextEditingController(text: currentUser!.nickname),
             textStyle: FlexiFont.regular14
           ),
@@ -46,8 +42,6 @@ class AccountInfoScreen extends ConsumerWidget {
           Text('Email', style: FlexiFont.regular14),
           SizedBox(height: .01.sh),
           FlexiTextField(
-            width: .89.sw, 
-            height: .06.sh,
             controller: TextEditingController(text: currentUser!.email),
             textStyle: FlexiFont.regular14
           ),
@@ -55,8 +49,6 @@ class AccountInfoScreen extends ConsumerWidget {
           Text('Enterprise', style: FlexiFont.regular14),
           SizedBox(height: .01.sh),
           FlexiTextField(
-            width: .89.sw, 
-            height: .06.sh,
             controller: TextEditingController(text: currentUser!.enterprise),
             textStyle: FlexiFont.regular14
           ),
@@ -65,13 +57,12 @@ class AccountInfoScreen extends ConsumerWidget {
             width: .89.sw, 
             height: .06.sh, 
             text: 'Logout',
-            fillColor: Colors.white,
-            textStyle: FlexiFont.semiBold16.copyWith(color: FlexiColor.secondary),
+            backgroundColor: Colors.white,
+            textColor: FlexiColor.secondary,
             onPressed: () async {
               AuthController authController = AuthController();
-              await authController.initialize();
+              authController.initialize();
               await authController.logout();
-              ref.invalidate(currentTabIndex);
               context.go('/');
             },
           )

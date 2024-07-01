@@ -4,7 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../feature/device/controller/device_setup_controller.dart';
+import '../../../common/providers/local_gallery_controller.dart';
+import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 
@@ -19,14 +20,10 @@ class QrcodeLoadScreen extends ConsumerStatefulWidget {
 
 class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
 
+  final selectFileIndex = StateProvider<int>((ref) => -1);  
+
   @override
   Widget build(BuildContext context) {
-
-    final localStorageController = ref.watch(localStorageControllerProvider.notifier);
-    final localStorageFiles = ref.watch(localStorageControllerProvider);
-    final selectFileIndex = StateProvider<int>((ref) => -1);  
-    ref.watch(registerDeviceInfoProvider);
-
     return Scaffold(
       backgroundColor: FlexiColor.backgroundColor,
       body: Column(
@@ -45,9 +42,9 @@ class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
                 TextButton(
                   onPressed: () async {
                     if(ref.watch(selectFileIndex) != -1) {
-                      var selectedFile = await localStorageFiles[ref.watch(selectFileIndex)].file;
+                      var selectedFile = await ref.watch(localGalleryControllerProvider)[ref.watch(selectFileIndex)].file;
                       if(selectedFile != null) {
-                        if(await ref.watch(wifiCredentialsControllerProvider.notifier).scanQrcodeImage(selectedFile)) {
+                        if(await ref.watch(registerDataControllerProvider.notifier).scanQrcodeImage(selectedFile)) {
                           context.go('/device/setWifi');
                         } else {
                           Fluttertoast.showToast(
@@ -68,7 +65,7 @@ class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
           Expanded(
             child: NotificationListener<ScrollNotification>(
               onNotification: (notification) {
-                if(notification is ScrollEndNotification && notification.metrics.pixels == notification.metrics.maxScrollExtent) localStorageController.nextLoad();
+                if(notification is ScrollEndNotification && notification.metrics.pixels == notification.metrics.maxScrollExtent) ref.watch(localGalleryControllerProvider.notifier).nextLoad();
                 return true;
               },
               child: GridView.builder(
@@ -76,12 +73,12 @@ class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3
                 ), 
-                itemCount: localStorageFiles.length,
+                itemCount: ref.watch(localGalleryControllerProvider).length,
                 itemBuilder: (context, index) {
                   return InkWell(
                     onTap: () => ref.watch(selectFileIndex.notifier).state = index,
                     child: FutureBuilder(
-                      future: localStorageFiles[index].thumbnailData,
+                      future: ref.watch(localGalleryControllerProvider)[index].thumbnailData,
                       builder: (context, snapshot) {
                         if(snapshot.hasData && snapshot.data != null) {
                           return Consumer(

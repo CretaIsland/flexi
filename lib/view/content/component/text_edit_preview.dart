@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../feature/content/controller/text_edit_controller.dart';
+import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/model/content_info.dart';
 import '../../../utils/flexi_utils.dart';
 import '../../../utils/ui/color.dart';
+import '../screen/text_edit_screen.dart';
 import 'content_clipper.dart';
 
 
@@ -97,9 +98,9 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
                   color: FlexiUtils.stringToColor(contentInfo.textColor),
                   height: contentInfo.textSizeType == 's' ? 1.6 : contentInfo.textSizeType == 'm' ? 1.4 : 1.2
                 ),
-                onEditingComplete: () => ref.watch(textEditControllerProvider.notifier).setText(_textEditingController.text),
-                onTapOutside: (event) => ref.watch(textEditControllerProvider.notifier).setText(_textEditingController.text),
-                onSubmitted: (value) => ref.watch(textEditControllerProvider.notifier).setText(_textEditingController.text),
+                onEditingComplete: () => ref.watch(contentEditControllerProvider.notifier).setText(_textEditingController.text),
+                onTapOutside: (event) => ref.watch(contentEditControllerProvider.notifier).setText(_textEditingController.text),
+                onSubmitted: (value) => ref.watch(contentEditControllerProvider.notifier).setText(_textEditingController.text),
               ),
             )
           ],

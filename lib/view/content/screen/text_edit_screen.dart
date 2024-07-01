@@ -4,8 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
-import '../../../feature/content/controller/text_edit_controller.dart';
+import '../../../feature/content/controller/current_language_controller.dart';
 import '../../../feature/content/model/content_info.dart';
 import '../../../utils/flexi_utils.dart';
 import '../../../utils/ui/color.dart';
@@ -14,6 +15,11 @@ import '../component/language_list_bar.dart';
 import '../component/text_edit_preview.dart';
 import '../modal/text_translate_modal.dart';
 
+
+
+final sttModeProvider = StateProvider<bool>((ref) => true);
+final isSpeakingProvider = StateProvider<bool>((ref) => true);
+final keyboardEventProvider = StateProvider<FocusNode>((ref) => FocusNode());
 
 
 class TextEditScreen extends ConsumerStatefulWidget {
@@ -36,11 +42,11 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
   Widget build(BuildContext context) {
 
     final contentInfoController = ref.watch(contentInfoControllerProvider.notifier);
-    final textEditController = ref.watch(textEditControllerProvider.notifier);
-    final sttController = ref.watch(speechToTextControllerProvider.notifier);
+    final textEditController = ref.watch(contentEditControllerProvider.notifier);
+    final sttController = ref.watch(sTTControllerProvider.notifier);
 
-    ContentInfo backgroundInfo = ref.read(textEditControllerProvider);
-    ContentInfo textInfo = ref.watch(textEditControllerProvider);
+    ContentInfo backgroundInfo = ref.read(contentEditControllerProvider);
+    ContentInfo textInfo = ref.watch(contentEditControllerProvider);
 
 
     return Scaffold(
@@ -148,7 +154,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
             ),
           ),
           // preview
-          TextEditPreview(contentInfo: ref.watch(textEditControllerProvider)),
+          TextEditPreview(contentInfo: ref.watch(contentEditControllerProvider)),
           Expanded(
             child: Container(
               width: 1.sw,
@@ -267,8 +273,8 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
 
   // font size button
   Widget fontSizeButton(String label, String value, TextStyle labelStyle) {
-    final textEditController = ref.watch(textEditControllerProvider.notifier);
-    final textInfo = ref.watch(textEditControllerProvider);
+    final textEditController = ref.watch(contentEditControllerProvider.notifier);
+    final textInfo = ref.watch(contentEditControllerProvider);
 
     return InkWell(
       onTap: () => textEditController.setTextSize(value),

@@ -9,30 +9,8 @@ import '../../../utils/ui/font.dart';
 
 
 
-class AppInfoScreen extends StatefulWidget {
+class AppInfoScreen extends StatelessWidget {
   const AppInfoScreen({super.key});
-
-  @override
-  State<AppInfoScreen> createState() => _AppInfoScreenState();
-}
-
-class _AppInfoScreenState extends State<AppInfoScreen> {
-
-  late TextEditingController _versionController;
-
-
-  @override
-  void initState() {
-    super.initState();
-    _versionController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _versionController.dispose();
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -56,16 +34,14 @@ class _AppInfoScreenState extends State<AppInfoScreen> {
           Text('App version', style: FlexiFont.regular14),
           SizedBox(height: .01.sh),
           FlexiTextField(
-            width: .89.sw, 
-            height: .06.sh,
-            controller: _versionController,
+            controller: TextEditingController(),
             textStyle: FlexiFont.regular14
           ),
           SizedBox(height: .02.sh),
           FlexiTextButton(
             width: .89.sw, 
             height: .06.sh,
-            fillColor: FlexiColor.primary, 
+            backgroundColor: FlexiColor.primary, 
             text: 'Check For Updates',
             onPressed: () {
               // 앱스토어로 이동

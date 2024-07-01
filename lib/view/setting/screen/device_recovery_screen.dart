@@ -89,10 +89,10 @@ class _DeviceRecoveryScreenState extends ConsumerState<DeviceRecoveryScreen> {
           FlexiTextButton(
             width: .89.sw, 
             height: .06.sh,
-            fillColor: FlexiColor.primary, 
+            backgroundColor: FlexiColor.primary, 
             text: 'Recover',
             onPressed: () {
-              // 앱스토어로 이동
+              // 기기 초기화
             },
           )
         ],

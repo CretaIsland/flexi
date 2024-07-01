@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flexi/feature/auth/model/user_info.dart';
-import 'package:flexi/utils/flexi_utils.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flexi/feature/auth/repository/account_repository.dart';
 
-import '../../../firebase_options.dart';
+import '../../../common/constants/firebase_options.dart';
+import '../../../utils/flexi_utils.dart';
+import '../model/user_info.dart';
+import '../repository/account_repository.dart';
 
 
 

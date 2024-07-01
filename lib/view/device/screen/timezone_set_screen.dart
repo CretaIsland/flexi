@@ -4,11 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../component/search_bar.dart';
-import '../../../feature/device/provider/timezone_provider.dart';
+import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 
 
+
+final searchTextProvider = StateProvider<String>((ref) => '');
 
 class TimezoneSetScreen extends ConsumerWidget {
   const TimezoneSetScreen({super.key});
@@ -67,7 +69,7 @@ class TimezoneSetScreen extends ConsumerWidget {
           itemCount: timezones.length,
           itemBuilder: (context, index) {
             return timezones[index]['label']!.contains(ref.watch(searchTextProvider)) ? InkWell(
-              onTap: () => ref.watch(selectTimezoneProvider.notifier).state = timezones[index],
+              onTap: () => ref.watch(registerDataControllerProvider.notifier).setTimezone(timezones[index]['locationName']!),
               child: Container(
                 padding: EdgeInsets.all(.02.sh),
                 decoration: BoxDecoration(
@@ -80,7 +82,7 @@ class TimezoneSetScreen extends ConsumerWidget {
                       width: .65.sw,
                       child: Text(
                         timezones[index]['label']!, 
-                        style: ref.watch(selectTimezoneProvider) == timezones[index] ? 
+                        style: ref.watch(registerDataControllerProvider)['timeZone'] == timezones[index]['locationName'] ? 
                           FlexiFont.regular16.copyWith(color: FlexiColor.primary) : 
                           FlexiFont.regular16,
                         overflow: TextOverflow.ellipsis,
@@ -88,7 +90,7 @@ class TimezoneSetScreen extends ConsumerWidget {
                       )
                     ),
                     Visibility(
-                      visible: ref.watch(selectTimezoneProvider) == timezones[index],
+                      visible: ref.watch(registerDataControllerProvider)['timeZone'] == timezones[index]['locationName'],
                       child: Icon(Icons.check, color: FlexiColor.primary, size: .025.sh),
                     )
                   ],

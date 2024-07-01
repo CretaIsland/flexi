@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../component/text_field.dart';
-import '../../../feature/device/controller/device_setup_controller.dart';
+import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../utils/ui/color.dart';
 import '../../../utils/ui/font.dart';
 import '../modal/device_setup_modal.dart';
@@ -29,9 +29,9 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
   @override
   void initState() {
     super.initState();
-    _ssidController = TextEditingController();
-    _typeController = TextEditingController();
-    _passphraseController = TextEditingController();
+    _ssidController = TextEditingController(text: ref.watch(registerDataControllerProvider)['ssid']);
+    _typeController = TextEditingController(text: ref.watch(registerDataControllerProvider)['security']);
+    _passphraseController = TextEditingController(text: ref.watch(registerDataControllerProvider)['password']);
   }
 
   @override
@@ -45,13 +45,6 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    _ssidController.text = ref.watch(wifiCredentialsControllerProvider)['ssid']!;
-    _typeController.text = ref.watch(wifiCredentialsControllerProvider)['type']!;
-    _passphraseController.text = ref.watch(wifiCredentialsControllerProvider)['passphrase']!;
-    ref.watch(registerDeviceInfoProvider.notifier);
-    
-
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
       child: SingleChildScrollView(
@@ -68,15 +61,18 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
                 Text('Wifi Setup', style: FlexiFont.semiBold20),
                 TextButton(
                   onPressed: () {
-                    if(ref.watch(registerDeviceInfoProvider) != null) {
-                      showModalBottomSheet(
-                        context: widget.rootContext,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) => const DeviceSetupModal(),
-                      );
-                    }
+                    ref.watch(registerDataControllerProvider.notifier).setWifiCredential(
+                      _ssidController.text,
+                      _typeController.text,
+                      _passphraseController.text      
+                    );
+                    showModalBottomSheet(
+                      context: widget.rootContext,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => const DeviceSetupModal(),
+                    );    
                   },
-                  child: Text('OK', style: FlexiFont.regular16.copyWith(color: ref.watch(registerDeviceInfoProvider) == null ? FlexiColor.grey[600] : FlexiColor.primary)),
+                  child: Text('OK', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary)),
                 )
               ],
             ),
@@ -92,46 +88,25 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
             Text('SSID', style: FlexiFont.regular14),
             SizedBox(height: .01.sh),
             FlexiTextField(
-              width: .89.sw, 
-              height: .06.sh,
               controller: _ssidController,
-              onChanged: (value) {
-                ref.watch(wifiCredentialsControllerProvider.notifier).setWifiCredentials(
-                  value,
-                  _typeController.text,
-                  _passphraseController.text      
-                );
-              },
+              backgroundColor: Colors.white,
+              textStyle: FlexiFont.regular16,
             ),
             SizedBox(height: .025.sh),
             Text('Type', style: FlexiFont.regular14),
             SizedBox(height: .01.sh),
             FlexiTextField(
-              width: .89.sw, 
-              height: .06.sh,
               controller: _typeController,
-              onChanged: (value) {
-                ref.watch(wifiCredentialsControllerProvider.notifier).setWifiCredentials(
-                  _ssidController.text,
-                  value,
-                  _passphraseController.text      
-                );
-              },
+              backgroundColor: Colors.white,
+              textStyle: FlexiFont.regular16,
             ),
             SizedBox(height: .025.sh),
             Text('Passphrase', style: FlexiFont.regular14),
             SizedBox(height: .01.sh),
             FlexiTextField(
-              width: .89.sw, 
-              height: .06.sh,
               controller: _passphraseController,
-              onChanged: (value) {
-                ref.watch(wifiCredentialsControllerProvider.notifier).setWifiCredentials(
-                  _ssidController.text,
-                  _typeController.text,
-                  value      
-                );
-              },
+              backgroundColor: Colors.white,
+              textStyle: FlexiFont.regular16,
             )
           ],
         ),

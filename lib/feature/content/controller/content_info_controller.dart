@@ -1,80 +1,88 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../model/content_info.dart';
-import '../repository/content_respository.dart';
+import '../repository/content_repository.dart';
 
 part 'content_info_controller.g.dart';
 
 
 
-@riverpod
+@riverpod 
 class ContentInfoController extends _$ContentInfoController {
 
-  late ContentRespository _contentRespository;
-  ContentInfo? _originalContent;
+  late ContentRepository _contentRepository;
 
 
   @override
-  ContentInfo? build() {
+  ContentInfo build() {
     ref.onDispose(() {
-      print("<<<<<<< ContentInfoController dispose <<<<<<<");
+      print('ContentInfoController dispose');
     });
-    print("<<<<<<< ContentInfoController build <<<<<<<");
-    _contentRespository = ContentRespository();
-    return null;
+    print('ContentInfoController build');
+    return ContentInfo(contentId: '');
   }
 
 
-  void setContent(ContentInfo targetContent) {
-    state = targetContent;
-    _originalContent = targetContent;
-  }
-
-  void undo() {
-    state = _originalContent;
+  void setContent(ContentInfo content) {
+    state = content;
   }
 
   void change(ContentInfo updateContent) {
     state = updateContent;
-    _originalContent = updateContent;
   }
 
   Future<void> saveChange() async {
-    state = await _contentRespository.update(state!.contentId, state!);
-    _originalContent = state;
+    try {
+      state = (await _contentRepository.update(state.contentId, state))!;
+    } catch (error) {
+      print('error at ContentInfoController.saveChange >>> $error');
+    }
   }
 
-  
-  // =================== 콘텐츠 메타데이터 수정 =================== 
-  // 콘텐츠 이름 변경
   void setName(String name) {
-    state = state!.copyWith(contentName: name);
+    state = state.copyWith(contentName: name);
   }
 
-  // 콘텐츠 가로 사이즈 변경
   void setWidth(int width) {
-    state = state!.copyWith(width: width);
+    state = state.copyWith(width: width);
   }
-  
-  // 콘텐츠 세로 사이즈 변경
+
   void setHeight(int height) {
-    state = state!.copyWith(height: height);
+    state = state.copyWith(height: height);
   }
 
-  // 콘텐츠 X 좌표 변경
   void setX(int x) {
-    state = state!.copyWith(x: x);
+    state = state.copyWith(x: x);
   }
 
-  // 콘텐츠 Y 좌표 변경
   void setY(int y) {
-    state = state!.copyWith(y: y);
+    state = state.copyWith(y: y);
   }
 
-  // 콘텐츠 리버스여부 변경
-  void setReverse(bool isReverse) {
-    state = state!.copyWith(isReverse: isReverse);
+  void setReverse(bool reverse) {
+    state = state.copyWith(isReverse: reverse);
   }
-  
+
+  Future<File?> getContentFile() async {
+    try {
+      if(state.filePath.startsWith('assets/')) {
+        final ByteData assetBytes = await rootBundle.load(state.filePath);
+        final tempFile = File('${(await getTemporaryDirectory()).path}/${state.filePath}');
+        final file = await tempFile.writeAsBytes(assetBytes.buffer.asUint8List(assetBytes.offsetInBytes, assetBytes.lengthInBytes));
+        
+        return file;
+      } else {
+        return File(state.filePath);
+      }
+    } catch (error) {
+      print('error at ContentSendController.getContentFile >>> $error');
+    }
+    return null;
+  }
+
 }
