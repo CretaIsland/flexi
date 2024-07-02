@@ -21,6 +21,7 @@ class DeviceListController extends _$DeviceListController {
       _socket.close();
     });
     print('DeviceListController Build!!!');
+    connect();
     return List.empty();
   }
 

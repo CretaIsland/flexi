@@ -24,7 +24,7 @@ class FlexiBottomNavigationBar extends StatelessWidget {
         children: [
           tabButton('Devices', Icons.connected_tv_outlined, '/device/list', 0),
           tabButton('Contents', Icons.interests, '/content/list', 1),
-          tabButton('Setting', Icons.settings, '/setting', 2)
+          tabButton('Setting', Icons.settings, '/settings', 2)
         ],
       ),
     );

@@ -6,10 +6,10 @@ import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:timezone/browser.dart';
-import 'package:timezone/data/latest.dart';
 import 'package:wifi_iot/wifi_iot.dart';
 import 'package:wifi_scan/wifi_scan.dart';
+import 'package:timezone/data/latest.dart';
+import 'package:timezone/timezone.dart';
 
 import '../../../common/constants/config.dart';
 import '../model/device_info.dart';
@@ -62,7 +62,7 @@ class NetworkController extends _$NetworkController {
       if(await Permission.location.request().isGranted) {
         await WiFiForIoTPlugin.connect(ssid, password: passphrase, security: security, joinOnce: true, withInternet: true, timeoutInSeconds: 20);
         await getNetworkInfo();
-        if(state == ssid) {
+        if(state.replaceAll('"', '') == ssid) {
           return true;
         }
       }
@@ -109,8 +109,12 @@ class RegisterDataController extends _$RegisterDataController {
   }
 
   void setTimezone(String timezone) {
-    state['timeZone'] = timezone;
-    state = state;
+    state = {
+      'timeZone': timezone, 
+      'ssid': state['ssid'] ?? '', 
+      'security': state['security'] ?? '', 
+      'password': state['password'] ?? ''
+    };
   }
 
   Future<bool> scanQrcodeImage(File image) async {
@@ -194,10 +198,11 @@ class RegisterDeviceController extends _$RegisterDeviceController {
       Map<String, dynamic> data = jsonDecode(utf8.decode(d.data));
       if(data['command'] != 'playerStatus') return;
 
+      print(data);
       completer.complete(DeviceInfo.fromJson(data));
     });
 
-    Future.delayed(const Duration(seconds: 10), () {
+    Future.delayed(const Duration(seconds: 20), () {
       completer.complete(null);
     });
     return completer.future;

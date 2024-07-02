@@ -24,6 +24,7 @@ class ContentInfoController extends _$ContentInfoController {
       print('ContentInfoController dispose');
     });
     print('ContentInfoController build');
+    _contentRepository = ContentRepository();
     return ContentInfo(contentId: '');
   }
 

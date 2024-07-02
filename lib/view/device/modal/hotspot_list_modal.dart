@@ -108,17 +108,18 @@ class AccessibleDeviceListModal extends ConsumerWidget {
             text: 'Add',
             backgroundColor: FlexiColor.primary,
             onPressed: () async {
-              if(ref.watch(selectHotspotProvider).isNotEmpty) {
+              if(ref.read(selectHotspotProvider).isNotEmpty) {
                 OverlayEntry loadingOverlay = OverlayEntry(builder: (_) => const LoadingOverlay());
                 Navigator.of(context).overlay!.insert(loadingOverlay);
                 // connect network
                 final value = await ref.read(networkControllerProvider.notifier).connect(
-                  ssid: ref.watch(selectHotspotProvider)!, 
+                  ssid: ref.read(selectHotspotProvider)!, 
                   passphrase: "esl!UU8x"
-                  // password: "sqisoft74307"
+                  // passphrase: "sqisoft74307"
                 );
                 print(value);
                 if(value) {
+                  ref.invalidate(selectHotspotProvider);
                   context.pop();
                   context.go("/device/setTimezone");
                 }

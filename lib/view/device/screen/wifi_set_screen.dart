@@ -29,9 +29,9 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
   @override
   void initState() {
     super.initState();
-    _ssidController = TextEditingController(text: ref.watch(registerDataControllerProvider)['ssid']);
-    _typeController = TextEditingController(text: ref.watch(registerDataControllerProvider)['security']);
-    _passphraseController = TextEditingController(text: ref.watch(registerDataControllerProvider)['password']);
+    // _ssidController = TextEditingController(text: ref.watch(registerDataControllerProvider)['ssid']);
+    // _typeController = TextEditingController(text: ref.watch(registerDataControllerProvider)['security']);
+    // _passphraseController = TextEditingController(text: ref.watch(registerDataControllerProvider)['password']);
   }
 
   @override
@@ -45,6 +45,12 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    _ssidController = TextEditingController(text: ref.watch(registerDataControllerProvider)['ssid']);
+    _typeController = TextEditingController(text: ref.watch(registerDataControllerProvider)['security']);
+    _passphraseController = TextEditingController(text: ref.watch(registerDataControllerProvider)['password']);
+
+    
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
       child: SingleChildScrollView(

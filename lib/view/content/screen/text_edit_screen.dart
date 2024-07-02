@@ -18,7 +18,7 @@ import '../modal/text_translate_modal.dart';
 
 
 final sttModeProvider = StateProvider<bool>((ref) => true);
-final isSpeakingProvider = StateProvider<bool>((ref) => true);
+final isSpeakingProvider = StateProvider<bool>((ref) => false);
 final keyboardEventProvider = StateProvider<FocusNode>((ref) => FocusNode());
 
 

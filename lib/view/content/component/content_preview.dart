@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../feature/content/model/content_info.dart';
 import '../../../utils/flexi_utils.dart';
-import '../../../utils/ui/color.dart';
 
 
 
