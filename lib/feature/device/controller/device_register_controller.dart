@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -97,6 +98,7 @@ List<Map<String, String>> timezones(TimezonesRef ref) {
 }
 
 
+final selectTimezone = StateProvider<String>((ref) => '');
 @riverpod 
 class RegisterDataController extends _$RegisterDataController {
 
@@ -105,32 +107,22 @@ class RegisterDataController extends _$RegisterDataController {
       print('RegisterDataController Dispose!!!');
     });
     print('RegisterDataController Build!!!');
-    return {'timeZone': '', 'ssid': '', 'security': '', 'password': ''};
-  }
-
-  void setTimezone(String timezone) {
-    state = {
-      'timeZone': timezone, 
-      'ssid': state['ssid'] ?? '', 
-      'security': state['security'] ?? '', 
-      'password': state['password'] ?? ''
-    };
+    return {'ssid': '', 'seurity': '', 'password': ''};
   }
 
   Future<bool> scanQrcodeImage(File image) async {
     try {
       List<String> wifiEncryptionTypes = ['', 'OPEN', 'WPA', 'WEP'];
       var barcodeScanner = BarcodeScanner(formats: [BarcodeFormat.qrCode]);
-
       var result = await barcodeScanner.processImage(InputImage.fromFile(image));
       for(var data in result) {
         if(data.type == BarcodeType.wifi) {
           var wifiInfo = data.value as BarcodeWifi;
-          setWifiCredential(
-            wifiInfo.ssid ?? '', 
-            wifiInfo.encryptionType == null ? wifiEncryptionTypes[0] : wifiEncryptionTypes[wifiInfo.encryptionType!],
-            wifiInfo.password ?? ''
-          );
+          state = {
+            'ssid': wifiInfo.ssid ?? '',
+            'security': wifiInfo.encryptionType == null ? wifiEncryptionTypes[0] : wifiEncryptionTypes[wifiInfo.encryptionType!],
+            'password': wifiInfo.password ?? ''
+          };
           return true;
         }
       }
@@ -142,19 +134,20 @@ class RegisterDataController extends _$RegisterDataController {
 
   Future<bool> scanQrcodeValue(String qrcodeValue) async {
     try {
+      Map<String, String> wifiCredential = {'ssid': '', 'security': '', 'password': ''};
       if(qrcodeValue.contains('WIFI')) {
         List<String> parts = qrcodeValue.split(';');
         for(var part in parts) {
           List<String> value = part.split(':');
           if(value.contains('S')) {
-            state['ssid'] = value.last;
+            wifiCredential['ssid'] = value.last;
           } else if(value.contains('T')) {
-            state['security'] = value.last;
+            wifiCredential['security'] = value.last;
           } else if(value.contains('P')) {
-            state['password'] = value.last;
+            wifiCredential['password'] = value.last;
           }
         }
-        state = state;
+        state = wifiCredential;
         return true;
       }
     } catch (error) {
@@ -164,10 +157,11 @@ class RegisterDataController extends _$RegisterDataController {
   }
 
   void setWifiCredential(String ssid, String security, String password) {
-    state['ssid'] = ssid;
-    state['security'] = security;
-    state['password'] = password;
-    state = state;
+    state = {
+      'ssid': ssid,
+      'security': security,
+      'password': password
+    };
   }
 
 }

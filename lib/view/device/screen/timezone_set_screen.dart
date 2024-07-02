@@ -69,7 +69,7 @@ class TimezoneSetScreen extends ConsumerWidget {
           itemCount: timezones.length,
           itemBuilder: (context, index) {
             return timezones[index]['label']!.contains(ref.watch(searchTextProvider)) ? InkWell(
-              onTap: () => ref.watch(registerDataControllerProvider.notifier).setTimezone(timezones[index]['locationName']!),
+              onTap: () => ref.watch(selectTimezone.notifier).state = timezones[index]['locationName']!,
               child: Container(
                 padding: EdgeInsets.all(.02.sh),
                 decoration: BoxDecoration(
@@ -82,7 +82,7 @@ class TimezoneSetScreen extends ConsumerWidget {
                       width: .65.sw,
                       child: Text(
                         timezones[index]['label']!, 
-                        style: ref.watch(registerDataControllerProvider)['timeZone'] == timezones[index]['locationName'] ? 
+                        style: ref.watch(selectTimezone)== timezones[index]['locationName'] ? 
                           FlexiFont.regular16.copyWith(color: FlexiColor.primary) : 
                           FlexiFont.regular16,
                         overflow: TextOverflow.ellipsis,
@@ -90,7 +90,7 @@ class TimezoneSetScreen extends ConsumerWidget {
                       )
                     ),
                     Visibility(
-                      visible: ref.watch(registerDataControllerProvider)['timeZone'] == timezones[index]['locationName'],
+                      visible: ref.watch(selectTimezone) == timezones[index]['locationName'],
                       child: Icon(Icons.check, color: FlexiColor.primary, size: .025.sh),
                     )
                   ],

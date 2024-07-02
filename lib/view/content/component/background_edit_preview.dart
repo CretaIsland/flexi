@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../feature/content/model/content_info.dart';
 import '../../../utils/flexi_utils.dart';
-import '../../../utils/ui/color.dart';
 import 'content_clipper.dart';
 
 

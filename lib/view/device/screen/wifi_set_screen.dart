@@ -46,9 +46,10 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
   @override
   Widget build(BuildContext context) {
 
-    _ssidController = TextEditingController(text: ref.watch(registerDataControllerProvider)['ssid']);
-    _typeController = TextEditingController(text: ref.watch(registerDataControllerProvider)['security']);
-    _passphraseController = TextEditingController(text: ref.watch(registerDataControllerProvider)['password']);
+    Map<String, String> wifiCredential = ref.watch(registerDataControllerProvider);
+    _ssidController = TextEditingController(text: wifiCredential['ssid']);
+    _typeController = TextEditingController(text: wifiCredential['security']);
+    _passphraseController = TextEditingController(text: wifiCredential['password']);
 
     
     return Padding(
