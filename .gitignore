@@ -46,3 +46,8 @@ app.*.map.json
 # build_runner file
 *.g.dart
 *.freezed.dart
+
+# firebase
+/android/app/google-services.json
+/firebase.json
+/lib/common/constants/firebase_options.dart
