@@ -19,21 +19,21 @@ class SettingsScreen extends StatelessWidget {
         children: [
           Text('Setting', style: FlexiFont.semiBold30),
           SizedBox(height: .05.sh),
-          menuButton('Account', '/settings/account', context),
+          menuButton(context, 'Account', '/settings/account'),
           SizedBox(height: .03.sh),
-          menuButton('Device Recovery', '/settings/deviceRecovery', context),
+          menuButton(context, 'App Update', '/settings/app/info'),
           SizedBox(height: .03.sh),
-          menuButton('App Update', '/settings/app', context),
+          menuButton(context, 'App Setting', '/settings/app/option'),
+          SizedBox(height: .03.sh),
+          menuButton(context, 'Device Recovery', '/settings/deviceRecovery')
         ],
       ),
     );
   }
 
-  Widget menuButton(String label, String routePath, BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        context.go(routePath);
-      },
+  Widget menuButton(BuildContext context, String text, String routePath) {
+    return InkWell(
+      onTap: () => context.go(routePath),
       child: Container(
         width: .89.sw,
         height: .06.sh,
@@ -46,11 +46,11 @@ class SettingsScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label, style: FlexiFont.regular14),
+            Text(text, style: FlexiFont.regular14),
             Icon(Icons.arrow_forward_ios, color: FlexiColor.grey[400], size: .03.sh)
           ],
         ),
-      ),
+      )
     );
   }
 

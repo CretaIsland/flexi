@@ -146,6 +146,8 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
             Text('Device Name', style: FlexiFont.regular14),
             SizedBox(height: .01.sh),
             FlexiTextField(
+              width: .89.sw,
+              height: .06.sh,
               controller: _nameController,
               backgroundColor: Colors.white,
               textStyle: FlexiFont.regular16
@@ -192,6 +194,8 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
             Text('Device Timezone', style: FlexiFont.regular14),
             SizedBox(height: .01.sh),
             FlexiTextField(
+              width: .89.sw,
+              height: .06.sh,
               readOnly: true,
               controller: TextEditingController(text: deviceInfo.timeZone),
               backgroundColor: Colors.white,
@@ -201,6 +205,8 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
             Text('Network', style: FlexiFont.regular14),
             SizedBox(height: .01.sh),
             FlexiTextField(
+              width: .89.sw,
+              height: .06.sh,
               readOnly: true,
               controller: TextEditingController(text: deviceInfo.registeredSSID),
               backgroundColor: Colors.white,

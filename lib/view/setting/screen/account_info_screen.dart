@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../component/bottom_navigation_bar.dart';
 import '../../../component/text_button.dart';
 import '../../../component/text_field.dart';
 import '../../../feature/auth/controller/auth_service.dart';
@@ -10,11 +12,11 @@ import '../../../utils/ui/font.dart';
 
 
 
-class AccountInfoScreen extends StatelessWidget {
+class AccountInfoScreen extends ConsumerWidget {
   const AccountInfoScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
       child: Column(
@@ -29,27 +31,36 @@ class AccountInfoScreen extends StatelessWidget {
               ),
               Text('Account Detail', style: FlexiFont.semiBold20),
               SizedBox(width: .06.sh)
-            ],
+            ]
           ),
           SizedBox(height: .03.sh),
           Text('User Name', style: FlexiFont.regular14),
           SizedBox(height: .01.sh),
           FlexiTextField(
+            width: .89.sw,
+            height: .06.sh,
             controller: TextEditingController(text: currentUser!.nickname),
+            readOnly: true,
             textStyle: FlexiFont.regular14
           ),
           SizedBox(height: .015.sh),
           Text('Email', style: FlexiFont.regular14),
           SizedBox(height: .01.sh),
           FlexiTextField(
+            width: .89.sw,
+            height: .06.sh,
             controller: TextEditingController(text: currentUser!.email),
+            readOnly: true,
             textStyle: FlexiFont.regular14
           ),
           SizedBox(height: .015.sh),
           Text('Enterprise', style: FlexiFont.regular14),
           SizedBox(height: .01.sh),
           FlexiTextField(
+            width: .89.sw,
+            height: .06.sh,
             controller: TextEditingController(text: currentUser!.enterprise),
+            readOnly: true,
             textStyle: FlexiFont.regular14
           ),
           SizedBox(height: .35.sh),
@@ -61,8 +72,9 @@ class AccountInfoScreen extends StatelessWidget {
             textColor: FlexiColor.secondary,
             onPressed: () async {
               AuthController authController = AuthController();
-              authController.initialize();
+              await authController.initialize();
               await authController.logout();
+              ref.invalidate(currentTabProvider);
               context.go('/');
             },
           )

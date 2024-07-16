@@ -18,6 +18,7 @@ import 'view/home_screen.dart';
 import 'view/login_screen.dart';
 import 'view/setting/screen/account_info_screen.dart';
 import 'view/setting/screen/app_info_screen.dart';
+import 'view/setting/screen/app_option_screen.dart';
 import 'view/setting/screen/device_recovery_screen.dart';
 import 'view/setting/screen/settings_screen.dart';
 
@@ -83,8 +84,12 @@ GoRouter router = GoRouter(
           pageBuilder: (context, state) => const NoTransitionPage(child: AccountInfoScreen()),
         ),
         GoRoute(
-          path: '/settings/app',
+          path: '/settings/app/info',
           pageBuilder: (context, state) => const NoTransitionPage(child: AppInfoScreen()),
+        ),
+        GoRoute(
+          path: '/settings/app/option',
+          pageBuilder: (context, state) => const NoTransitionPage(child: AppOptionScreen()),
         ),
         GoRoute(
           path: '/settings/deviceRecovery',

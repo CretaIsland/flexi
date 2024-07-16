@@ -3,11 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../component/text_button.dart';
+import '../component/text_field.dart';
 import '../feature/auth/controller/auth_service.dart';
 import '../utils/ui/color.dart';
 import '../utils/ui/font.dart';
-
-
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,13 +16,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  
+
   late AuthController _authController;
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
   late bool _hidePassword;
-  
-  
+
   @override
   void initState() {
     super.initState();
@@ -56,12 +54,8 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 width: 1.sw,
                 height: .45.sh,
-                child: Image.asset(
-                  'assets/image/login_illustration.png',
-                  fit: BoxFit.contain,
-                  alignment: Alignment.bottomCenter,
-                ),
-              ),
+                child: Image.asset('assets/image/login_illustration.png', fit: BoxFit.contain, alignment: Alignment.bottomCenter),
+              ),  
               SizedBox(height: .03.sh),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,32 +65,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text('Hi there! Nice to see you.', style: FlexiFont.regular12.copyWith(color: Colors.white)),
                   SizedBox(height: .025.sh),
                   // email text field
-                  SizedBox(
+                  FlexiTextField(
                     width: .82.sw, 
                     height: .06.sh,
-                    child: TextField(
-                      controller: _emailController,
-                      style: FlexiFont.regular16.copyWith(color: Colors.white),
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.only(left: 12),
-                        hintText: 'Email',
-                        hintStyle: FlexiFont.regular16.copyWith(color: Colors.white),
-                        border: InputBorder.none,
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(.01.sh),
-                          borderSide: const BorderSide(color: Colors.white)
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(.01.sh),
-                          borderSide: const BorderSide(color: Colors.white)
-                        )
-                      )
-                    )
+                    controller: _emailController,
+                    textStyle: FlexiFont.regular16.copyWith(color: Colors.white),
+                    hintText: 'Email',
+                    backgroundColor: Colors.transparent
                   ),
                   SizedBox(height: .015.sh),
                   // password text field
                   SizedBox(
-                    width: .82.sw, 
+                    width: .82.sw,
                     height: .06.sh,
                     child: TextField(
                       controller: _passwordController,
@@ -115,45 +95,41 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(.01.sh),
                           borderSide: const BorderSide(color: Colors.white)
                         ),
-                        suffixIcon: InkWell(
+                        suffixIcon: GestureDetector(
                           onTap: () => setState(() {
                             _hidePassword = !_hidePassword;  
                           }),
                           child: Icon(
-                            _hidePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                            _hidePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
                             color: Colors.white,
                             size: .025.sh
-                          ),
+                          )
                         )
                       )
                     )
                   ),
                   SizedBox(height: .025.sh),
+                  // login by email
                   FlexiTextButton(
                     width: .82.sw, 
                     height: .06.sh, 
-                    text: 'Sign in', 
+                    text: 'Login',
                     backgroundColor: FlexiColor.secondary,
-                    onPressed: () {
-                      _authController.loginByEmail(_emailController.text, _passwordController.text).then((value) {
-                        if(currentUser != null) {
-                          context.go('/device/list');
-                        } else {
-                          // 토스트 메세지
-                        }
-                      });
-                    },
+                    onPressed: () async {
+                      await _authController.loginByEmail(_emailController.text, _passwordController.text);
+                      if(currentUser != null) {
+                        context.go('/device/list');
+                      }
+                    }
                   ),
                   SizedBox(height: .035.sh),
+                  // login by google
                   InkWell(
-                    onTap: () {
-                      _authController.loginByGoogle().then((value) {
-                        if(currentUser != null) {
-                          context.go('/device/list');
-                        } else {
-                          // 토스트 메세지
-                        }
-                      });
+                    onTap: () async {
+                      await _authController.loginByGoogle();
+                      if(currentUser != null) {
+                        context.go('/device/list');
+                      }
                     },
                     child: Container(
                       width: .82.sw,
@@ -165,22 +141,19 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            'assets/image/google_logo.png',
-                            height: .03.sh
-                          ),
+                          Image.asset('assets/image/google_logo.png', height: .03.sh),
                           SizedBox(width: .02.sw),
                           Text('Login by Google', style: FlexiFont.semiBold16)
                         ]
                       )
                     )
                   )
-                ]
-              )  
-            ]
-          )
-        )
-      )
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 

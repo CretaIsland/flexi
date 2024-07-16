@@ -10,11 +10,11 @@ import '../utils/ui/font.dart';
 
 final currentTabProvider = StateProvider<int>((ref) => 0);
 
-class FlexiBottomNavigationBar extends StatelessWidget {
+class FlexiBottomNavigationBar extends ConsumerWidget {
   const FlexiBottomNavigationBar({super.key});
-  
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       height: .08.sh,
       color: FlexiColor.grey[300],
@@ -22,38 +22,27 @@ class FlexiBottomNavigationBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          tabButton('Devices', Icons.connected_tv_outlined, '/device/list', 0),
-          tabButton('Contents', Icons.interests, '/content/list', 1),
-          tabButton('Setting', Icons.settings, '/settings', 2)
+          tabButton(context, ref, 'Devices', Icons.connected_tv_outlined, '/device/list', 0),
+          tabButton(context, ref, 'Contents', Icons.interests, '/content/list', 1),
+          tabButton(context, ref, 'Setting', Icons.settings, '/settings', 2)
         ],
       ),
     );
   }
 
-  Consumer tabButton(String text, IconData icon, String routePath, int tabIndex) {
-    return Consumer(
-      builder: (context, ref, child) {
-        return InkWell(
-          onTap: () {
-            ref.watch(currentTabProvider.notifier).state = tabIndex;
-            context.go(routePath);
-          },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                color:  ref.watch(currentTabProvider) == tabIndex ? FlexiColor.primary : FlexiColor.grey[600],
-                size: .035.sh,
-              ),
-              Text(
-                text, 
-                style: FlexiFont.medium12.copyWith(color: ref.watch(currentTabProvider) == tabIndex ? FlexiColor.primary : FlexiColor.grey[600])
-              )
-            ],
-          ),
-        );
+  Widget tabButton(BuildContext context, WidgetRef ref, String text, IconData icon, String routePath, int index) {
+    return InkWell(
+      onTap: () {
+        ref.watch(currentTabProvider.notifier).state = index;
+        context.go(routePath);
       },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: .035.sh, color: ref.watch(currentTabProvider) == index ? FlexiColor.primary : FlexiColor.grey[600]),
+          Text(text, style: FlexiFont.medium12.copyWith(color: ref.watch(currentTabProvider) == index ? FlexiColor.primary : FlexiColor.grey[600]))
+        ],
+      ),
     );
   }
 

@@ -34,6 +34,8 @@ class AppInfoScreen extends StatelessWidget {
           Text('App version', style: FlexiFont.regular14),
           SizedBox(height: .01.sh),
           FlexiTextField(
+            width: .89.sw,
+              height: .06.sh,
             controller: TextEditingController(),
             textStyle: FlexiFont.regular14
           ),

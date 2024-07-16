@@ -95,6 +95,8 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
             Text('SSID', style: FlexiFont.regular14),
             SizedBox(height: .01.sh),
             FlexiTextField(
+              width: .89.sw,
+              height: .06.sh,
               controller: _ssidController,
               backgroundColor: Colors.white,
               textStyle: FlexiFont.regular16,
@@ -103,6 +105,8 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
             Text('Type', style: FlexiFont.regular14),
             SizedBox(height: .01.sh),
             FlexiTextField(
+              width: .89.sw,
+              height: .06.sh,
               controller: _typeController,
               backgroundColor: Colors.white,
               textStyle: FlexiFont.regular16,
@@ -111,6 +115,8 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
             Text('Passphrase', style: FlexiFont.regular14),
             SizedBox(height: .01.sh),
             FlexiTextField(
+              width: .89.sw,
+              height: .06.sh,
               controller: _passphraseController,
               backgroundColor: Colors.white,
               textStyle: FlexiFont.regular16,
