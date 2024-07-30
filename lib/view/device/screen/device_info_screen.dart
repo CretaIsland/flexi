@@ -4,10 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../common/providers/socket_client_controller.dart';
-import '../../../component/text_field.dart';
 import '../../../feature/device/controller/device_info_controller.dart';
-import '../../../utils/ui/color.dart';
-import '../../../utils/ui/font.dart';
+import '../../../util/ui/colors.dart';
+import '../../../util/ui/fonts.dart';
+import '../../common/component/text_field.dart';
 import '../modal/bluetooth_list_modal.dart';
 
 
@@ -22,17 +22,18 @@ class DeviceInfoScreen extends ConsumerStatefulWidget {
 
 class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
 
-  late TextEditingController _nameController;
-  late TextEditingController _timezoneController;
-  late TextEditingController _ssidController;
-
-
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _timezoneController = TextEditingController();
+  final TextEditingController _networkController = TextEditingController();
+  
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: ref.watch(deviceInfoControllerProvider)!.deviceName);
-    _timezoneController = TextEditingController(text: ref.watch(deviceInfoControllerProvider)!.timeZone);
-    _ssidController = TextEditingController(text: ref.watch(deviceInfoControllerProvider)!.registeredSSID);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _nameController.text = ref.watch(deviceInfoControllerProvider).deviceName;
+      _timezoneController.text = ref.watch(deviceInfoControllerProvider).timeZone;
+      _networkController.text = ref.watch(deviceInfoControllerProvider).registeredSSID;
+    });
   }
 
   @override
@@ -40,43 +41,40 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
     super.dispose();
     _nameController.dispose();
     _timezoneController.dispose();
-    _ssidController.dispose();
+    _networkController.dispose();
   }
 
 
   @override
   Widget build(BuildContext context) {
-
-    var deviceInfoController = ref.watch(deviceInfoControllerProvider.notifier);
-    var deviceInfo = ref.watch(deviceInfoControllerProvider);
-
+    var device = ref.watch(deviceInfoControllerProvider);
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: () => context.go('/device/list'),
-                  icon: Icon(Icons.arrow_back_ios, color: FlexiColor.primary, size: .03.sh),
+                  onPressed: () => context.go('/device/list'), 
+                  icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary)
                 ),
                 Text('Device Detail', style: FlexiFont.semiBold20),
                 TextButton(
                   onPressed: () async {
-                    deviceInfoController.setName(_nameController.text);
                     Map<String, dynamic> data = {
                       "command": "playerSetting",
-                      "deviceId": deviceInfo!.deviceId,
-                      "deviceName": deviceInfo.deviceName,
-                      "name": deviceInfo.deviceName,
-                      "volume": deviceInfo.volume
+                      "deviceId": device.deviceId,
+                      "deviceName": _nameController.text,
+                      "name": device.deviceName,
+                      "volume": device.volume
                     };
-                    bool connect = await ref.watch(socketClientControllerProvider.notifier).connect(deviceInfo.ip);
+                    var connect = await ref.watch(socketClientControllerProvider.notifier).connect(device.ip);
                     if(connect) ref.watch(socketClientControllerProvider.notifier).sendData(data);
                   },
-                  child: Text('OK', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary)),
+                  child: Text('OK', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))
                 )
               ],
             ),
@@ -109,14 +107,14 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Bluetooth', style: FlexiFont.regular14),
+                    Text('Speaker', style: FlexiFont.regular14),
                     SizedBox(height: .01.sh),
                     InkWell(
                       onTap: () => showModalBottomSheet(
+                        backgroundColor: Colors.transparent,
                         context: widget.rootContext,
                         isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) => const BluetoothModal(),
+                        builder: (context) => const BluetoothListModal()
                       ),
                       child: Container(
                         width: .43.sw,
@@ -128,13 +126,11 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            deviceInfo!.bluetoothBonded ? 
-                              Icon(Icons.bluetooth, color: FlexiColor.primary, size: .045.sh) :
+                            device.bluetoothBonded ? Icon(Icons.bluetooth, color: FlexiColor.primary, size: .045.sh) :
                               Icon(Icons.bluetooth_disabled, color: FlexiColor.secondary, size: .045.sh),
-                            deviceInfo.bluetoothBonded ?
-                              Text(deviceInfo.bluetooth, style: FlexiFont.semiBold14.copyWith(color: FlexiColor.primary)) :
+                            device.bluetoothBonded ? Text(device.bluetooth, style: FlexiFont.semiBold14.copyWith(color: FlexiColor.primary)) :
                               Text('Bluetooth Off', style: FlexiFont.semiBold14.copyWith(color: FlexiColor.secondary))
-                          ]
+                          ],
                         ),
                       ),
                     )
@@ -174,7 +170,7 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                     width: .6.sw,
                     height: .02.sh,
                     child: Slider(
-                      value: deviceInfo.volume * 1.0,
+                      value: device.volume * 1.0,
                       max: 100.0,
                       activeColor: FlexiColor.primary,
                       thumbColor: Colors.white,
@@ -197,7 +193,7 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
               width: .89.sw,
               height: .06.sh,
               readOnly: true,
-              controller: TextEditingController(text: deviceInfo.timeZone),
+              controller: TextEditingController(text: device.timeZone),
               backgroundColor: Colors.white,
               textStyle: FlexiFont.regular16
             ),
@@ -208,7 +204,7 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
               width: .89.sw,
               height: .06.sh,
               readOnly: true,
-              controller: TextEditingController(text: deviceInfo.registeredSSID),
+              controller: TextEditingController(text: device.registeredSSID),
               backgroundColor: Colors.white,
               textStyle: FlexiFont.regular16
             )

@@ -4,11 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../component/text_button.dart';
-import '../../../component/text_field.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
-import '../../../utils/ui/color.dart';
-import '../../../utils/ui/font.dart';
+import '../../../util/ui/colors.dart';
+import '../../../util/ui/fonts.dart';
+import '../../common/component/text_field.dart';
 import '../component/content_preview.dart';
 
 
@@ -22,23 +21,23 @@ class ContentInfoScreen extends ConsumerStatefulWidget {
 
 class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
 
-  late TextEditingController _nameController;
-  late TextEditingController _widthController;
-  late TextEditingController _heightController;
-  late TextEditingController _xController;
-  late TextEditingController _yController;
-
-  final screenLockProvider = StateProvider<bool>((ref) => false);
-
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _widthController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
+  final TextEditingController _xController = TextEditingController();
+  final TextEditingController _yController = TextEditingController();
+  bool _screenLock = false;
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController();
-    _widthController = TextEditingController();
-    _heightController = TextEditingController();
-    _xController = TextEditingController();
-    _yController = TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _nameController.text = ref.watch(contentInfoControllerProvider).contentName;
+      _widthController.text = ref.watch(contentInfoControllerProvider).width.toString();
+      _heightController.text = ref.watch(contentInfoControllerProvider).height.toString();
+      _xController.text = ref.watch(contentInfoControllerProvider).x.toString();
+      _yController.text = ref.watch(contentInfoControllerProvider).y.toString();
+    });
   }
 
   @override
@@ -54,170 +53,136 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var content = ref.watch(contentInfoControllerProvider);
+    var contentInfoController = ref.watch(contentInfoControllerProvider.notifier);
 
-    final contentInfo = ref.watch(contentInfoControllerProvider);
-    final contentInfoController = ref.watch(contentInfoControllerProvider.notifier);
-
-    _nameController.text = contentInfo.contentName;
-    _widthController.text = contentInfo.width.toString();
-    _heightController.text = contentInfo.height.toString();
-    _xController.text = contentInfo.x.toString();
-    _yController.text = contentInfo.y.toString();
-
-
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw, bottom: .02.sh),
-            child: Column(
+    return Padding(
+      padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        contentInfoController.saveChange();
-                        context.go('/content/list');
-                      }, 
-                      icon: Icon(Icons.arrow_back_ios, color: FlexiColor.primary, size: .03.sh)
-                    ),
-                    Text('Content Detail', style: FlexiFont.semiBold20),
-                    SizedBox(width: .06.sh)
-                  ],
+                IconButton(
+                  onPressed: () {
+                    contentInfoController.save().then((value) => context.go('/content/list'));
+                  }, 
+                  icon: Icon(Icons.arrow_back_ios, color: FlexiColor.primary, size: .03.sh)
                 ),
-                SizedBox(height: .03.sh),
-                ContentPreview(
-                  previewWidth: .89.sw,
-                  previewHeight: .04.sh,
-                  contentInfo: contentInfo
-                ),
-                SizedBox(height: .02.sh),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    editButton('Edit Text', Icons.title, '/content/editText'),
-                    editButton('Edit Background', Icons.photo_outlined, '/content/editBackground')
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Divider(color: FlexiColor.grey[400]),
-          Padding(
-            padding: EdgeInsets.only(left: .055.sw, top: .015.sh, right: .055.sw, bottom: .015.sh),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Name', style: FlexiFont.regular14),
-                SizedBox(height: .01.sh),
-                FlexiTextField(
-                  width: .89.sw, 
-                  height: .06.sh,
-                  controller: _nameController,
-                  onChanged: (value) => contentInfoController.setName(_nameController.text),
-                ),
-                SizedBox(height: .03.sh),
-                Text('Resolution', style: FlexiFont.regular14),
-                SizedBox(height: .01.sh),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(width: .055.sw),
-                    Text('width', style: FlexiFont.regular14),
-                    FlexiTextField(
-                      width: .25.sw, 
-                      height: .045.sh,
-                      controller: _widthController,
-                      onChanged: (value) => contentInfoController.setWidth(int.parse(_widthController.text)),
-                    ),
-                    Text('height', style: FlexiFont.regular14),
-                    FlexiTextField(
-                      width: .25.sw, 
-                      height: .045.sh,
-                      controller: _heightController,
-                      onChanged: (value) => contentInfoController.setWidth(int.parse(_heightController.text)),
-                    )
-                  ],
-                ),
-                SizedBox(height: .03.sh),
-                Text('Location', style: FlexiFont.regular14),
-                SizedBox(height: .01.sh),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(width: .055.sw),
-                    Text('X', style: FlexiFont.regular14),
-                    FlexiTextField(
-                      width: .25.sw, 
-                      height: .045.sh,
-                      controller: _xController,
-                      onChanged: (value) => contentInfoController.setX(int.parse(_xController.text)),
-                    ),
-                    Text('Y', style: FlexiFont.regular14),
-                    FlexiTextField(
-                      width: .25.sw, 
-                      height: .045.sh,
-                      controller: _yController,
-                      onChanged: (value) => contentInfoController.setY(int.parse(_yController.text)),
-                    )
-                  ],
+                Text('Content Detail', style: FlexiFont.semiBold20),
+                TextButton(
+                  onPressed: () => contentInfoController.save().then((value) {
+                    context.go('/content/send');
+                  }),
+                  child: Text('Send', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))
                 )
               ],
             ),
-          ),
-          Divider(color: FlexiColor.grey[400]),
-          Padding(
-            padding: EdgeInsets.only(left: .055.sw, top: .015.sh, right: .055.sw, bottom: .015.sh),
-            child: Column(
+            SizedBox(height: .03.sh),
+            ContentPreview(.89.sw, .04.sh, content),
+            SizedBox(height: .02.sh),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Reverse', style: FlexiFont.regular14),
-                    AdvancedSwitch(
-                      width: .1.sw,
-                      height: .025.sh,
-                      initialValue: contentInfo.isReverse,
-                      activeColor: FlexiColor.primary,
-                      onChanged: (value) => contentInfoController.setReverse(!contentInfo.isReverse),
-                    )
-                  ],
+                editButton('Edit Text', Icons.title, '/content/editText'),
+                editButton('Edit Background', Icons.photo_outlined, '/content/editBackground')
+              ],
+            ),
+            SizedBox(height: .035.sh),
+            Text('Name', style: FlexiFont.regular14),
+            SizedBox(height: .01.sh),
+            FlexiTextField(
+              width: .89.sw, 
+              height: .06.sh,
+              controller: _nameController,
+              onChanged: (value) => contentInfoController.setName(_nameController.text),
+            ),
+            SizedBox(height: .03.sh),
+            Text('Resolution', style: FlexiFont.regular14),
+            SizedBox(height: .01.sh),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(width: .055.sw),
+                Text('width', style: FlexiFont.regular14),
+                FlexiTextField(
+                  width: .25.sw, 
+                  height: .045.sh,
+                  controller: _widthController,
+                  onChanged: (value) => contentInfoController.setWidth(int.parse(_widthController.text)),
                 ),
-                SizedBox(height: .02.sh),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Lock', style: FlexiFont.regular14),
-                    AdvancedSwitch(
-                      width: .1.sw,
-                      height: .025.sh,
-                      initialValue: ref.watch(screenLockProvider),
-                      activeColor: FlexiColor.primary,
-                      onChanged: (value) => ref.watch(screenLockProvider.notifier).state = value,
-                    )
-                  ],
+                Text('height', style: FlexiFont.regular14),
+                FlexiTextField(
+                  width: .25.sw, 
+                  height: .045.sh,
+                  controller: _heightController,
+                  onChanged: (value) => contentInfoController.setHeight(int.parse(_heightController.text)),
+                )
+              ],
+            ),
+            SizedBox(height: .03.sh),
+            Text('Location', style: FlexiFont.regular14),
+            SizedBox(height: .01.sh),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(width: .055.sw),
+                Text('X', style: FlexiFont.regular14),
+                FlexiTextField(
+                  width: .25.sw, 
+                  height: .045.sh,
+                  controller: _xController,
+                  onChanged: (value) => contentInfoController.setX(int.parse(_xController.text)),
                 ),
-                SizedBox(height: .05.sh),
-                FlexiTextButton(
-                  width: .89.sw, 
-                  height: .06.sh, 
-                  text: 'Send',
-                  backgroundColor: FlexiColor.primary,
-                  onPressed: () {
-                    contentInfoController.saveChange();
-                    context.go('/content/send');
-                  },
+                Text('Y', style: FlexiFont.regular14),
+                FlexiTextField(
+                  width: .25.sw, 
+                  height: .045.sh,
+                  controller: _yController,
+                  onChanged: (value) => contentInfoController.setY(int.parse(_yController.text)),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
+            SizedBox(height: .035.sh),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Reverse', style: FlexiFont.regular14),
+                AdvancedSwitch(
+                  width: .1.sw,
+                  height: .025.sh,
+                  initialValue: content.isReverse,
+                  activeColor: FlexiColor.primary,
+                  onChanged: (value) => contentInfoController.setReverse(value),
+                )
+              ],
+            ),
+            SizedBox(height: .03.sh),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Lock', style: FlexiFont.regular14),
+                AdvancedSwitch(
+                  width: .1.sw,
+                  height: .025.sh,
+                  initialValue: _screenLock,
+                  activeColor: FlexiColor.primary,
+                  onChanged: (value) => setState(() {
+                    _screenLock = value;
+                  }),
+                )
+              ],
+            ),
+            SizedBox(height: .05.sh)
+          ],
+        ),
+      )
     );
   }
 
-  Widget editButton(String label, IconData icon, String routePath) {
+  Widget editButton(String text, IconData icon, String routePath) {
     return InkWell(
       onTap: () => context.go(routePath),
       child: Container(
@@ -242,7 +207,7 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
               ),
             ),
             SizedBox(height: .01.sh),
-            Text(label, style: FlexiFont.semiBold16.copyWith(color: FlexiColor.primary)),
+            Text(text, style: FlexiFont.semiBold16.copyWith(color: FlexiColor.primary)),
           ],
         ),
       ),

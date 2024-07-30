@@ -3,16 +3,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../feature/content/model/content_info.dart';
-import '../../../utils/flexi_utils.dart';
+import '../../../feature/content/model/content_model.dart';
+import '../../../util/utils.dart';
 
 
 
 class ContentPreview extends ConsumerStatefulWidget {
-  const ContentPreview({super.key, required this.previewWidth, required this.previewHeight, required this.contentInfo});
-  final double previewWidth;
-  final double previewHeight;
-  final ContentInfo contentInfo;
+  const ContentPreview(this.width, this.height, this.content, {super.key,});
+  final double width;
+  final double height;
+  final ContentModel content;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ContentPreviewState();
@@ -20,89 +20,134 @@ class ContentPreview extends ConsumerStatefulWidget {
 
 class _ContentPreviewState extends ConsumerState<ContentPreview> {
 
-  final _contentScrollEnd = StateProvider((ref) => false);
-  late ScrollController _contentController;
-  late ScrollController _textController;
+  late ScrollController _contentScroller;
+  late ScrollController _textScroller;
+  late double _aspectRatio;
+  late double _responsiveHeight;
+  late double _responsiveWidth;
+  late double _textScaler;
 
-  late double aspectRatio;
-  late double responsiveHeight;
-  late double responsiveWidth;
-  late double textScaler;
-
-
-  void _handleContentScroll() {
-    if(_contentController.position.atEdge && _contentController.position.pixels != 0 && _textController.position.pixels != 0) {
-      ref.watch(_contentScrollEnd.notifier).state = true;
-    }
-  }
-  void _handleTextScroll() {
-    if(_textController.position.pixels == 0) {
-      ref.watch(_contentScrollEnd.notifier).state = false;
-    }
-  }
+  bool _contentScrollEnd = false;
+  bool _isTextOverflow = false;
 
   @override
   void initState() {
     super.initState();
-    aspectRatio =  widget.contentInfo.width / widget.contentInfo.height;
-    responsiveHeight = widget.previewHeight;
-    responsiveWidth = responsiveHeight * aspectRatio;
-    if(responsiveHeight > widget.contentInfo.height) {
-      textScaler = responsiveHeight / widget.contentInfo.height;
+    _contentScroller = ScrollController();
+    _textScroller = ScrollController();
+
+    _aspectRatio =  widget.content.width / widget.content.height;
+    _responsiveHeight = widget.height;
+    _responsiveWidth = _responsiveHeight * _aspectRatio;
+    if(_responsiveHeight > widget.content.height) {
+      _textScaler = _responsiveHeight / widget.content.height;
     } else {
-      textScaler = widget.contentInfo.height / responsiveHeight;
+      _textScaler = widget.content.height / _responsiveHeight;
     } 
-    _contentController = ScrollController();
-    _textController = ScrollController();
-    _contentController.addListener(_handleContentScroll);
-    _textController.addListener(_handleTextScroll);
   }
 
   @override
   void dispose() {
     super.dispose();
-    _contentController.removeListener(_handleContentScroll);
-    _textController.removeListener(_handleTextScroll);
-    _contentController.dispose();
-    _textController.dispose();
+    _contentScroller.removeListener(_handleContentScroll);
+    _textScroller.removeListener(_handleTextScroll);
+    _contentScroller.dispose();
+    _textScroller.dispose();
+  }
+
+  void _handleContentScroll() {
+    if(_contentScroller.position.atEdge && _contentScroller.position.pixels != 0 && _textScroller.position.pixels == 0) {
+      setState(() {
+        _contentScrollEnd = true;
+      });
+    }
+  }
+
+  void _handleTextScroll() {
+    print(_textScroller.position.pixels);
+    if(_textScroller.position.pixels == 0) {
+      setState(() {
+        _contentScrollEnd = false;
+      });
+    }
   }
 
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: widget.previewWidth,
-      height: widget.previewHeight,
+      width: widget.width,
+      height: widget.height,
       child: SingleChildScrollView(
-        controller: _contentController,
-        physics: ref.watch(_contentScrollEnd) ? const NeverScrollableScrollPhysics() : null,
+        controller: _contentScroller,
         scrollDirection: Axis.horizontal,
+        physics: _contentScrollEnd ? const NeverScrollableScrollPhysics() : null,
         child: Container(
-          width: responsiveWidth,
-          height: responsiveHeight,
+          width: _responsiveWidth,
+          height: _responsiveHeight,
           decoration: BoxDecoration(
-            color: FlexiUtils.stringToColor(widget.contentInfo.backgroundColor),
-            image: widget.contentInfo.backgroundType != 'color' ? DecorationImage(
-              image: Image.memory(base64Decode(widget.contentInfo.fileThumbnail)).image,
+            color: FlexiUtils.stringToColor(widget.content.backgroundColor),
+            image: widget.content.backgroundType != 'color' && widget.content.fileThumbnail != null ? DecorationImage(
+              image: Image.memory(base64Decode(widget.content.fileThumbnail!)).image,
               fit: BoxFit.cover
             ) : null
           ),
-          child: SingleChildScrollView(
-            controller: _textController,
-            physics: ref.watch(_contentScrollEnd) ? null : const NeverScrollableScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            child: SizedBox(
-              height: responsiveHeight,
-              child: Text(
-                widget.contentInfo.text, 
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final TextSpan textSpan = TextSpan(
+                text: widget.content.text,
                 style: TextStyle(
-                  fontSize: textScaler * widget.contentInfo.textSize,
-                  fontWeight: widget.contentInfo.bold ? FontWeight.bold : FontWeight.normal,
-                  fontStyle: widget.contentInfo.italic ? FontStyle.italic : FontStyle.normal,
-                  color: FlexiUtils.stringToColor(widget.contentInfo.textColor)
-                )
-              )
-            ),
+                  fontSize: _textScaler * widget.content.textSize,
+                  color: FlexiUtils.stringToColor(widget.content.textColor),
+                  fontWeight: widget.content.bold ? FontWeight.bold : FontWeight.normal,
+                  fontStyle: widget.content.italic ? FontStyle.italic : FontStyle.normal
+                ),
+              );
+              final TextPainter textPainter = TextPainter(
+                text: textSpan,
+                maxLines: 1,
+                textDirection: TextDirection.ltr,
+              );
+              textPainter.layout(maxWidth: constraints.maxWidth - (_responsiveWidth / widget.content.width) * widget.content.x);
+
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                final bool didOverflow = textPainter.didExceedMaxLines;
+                if (didOverflow != _isTextOverflow) {
+                  setState(() {
+                    _isTextOverflow = didOverflow;
+                  });
+
+                  if (didOverflow) {
+                    _contentScroller.addListener(_handleContentScroll);
+                    _textScroller.addListener(_handleTextScroll);
+                  }
+                }
+              });
+
+              return Padding(
+                padding: EdgeInsets.only(
+                  left: (_responsiveWidth / widget.content.width) * widget.content.x,
+                  top: (_responsiveHeight / widget.content.height) * widget.content.y
+                ),
+                child: SingleChildScrollView(
+                  controller: _textScroller,
+                  scrollDirection: Axis.horizontal,
+                  physics: _contentScrollEnd ? null : const NeverScrollableScrollPhysics(),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      widget.content.text, 
+                      style: TextStyle(
+                        fontSize: _textScaler * widget.content.textSize,
+                        color: FlexiUtils.stringToColor(widget.content.textColor),
+                        fontWeight: widget.content.bold ? FontWeight.bold : FontWeight.normal,
+                        fontStyle: widget.content.italic ? FontStyle.italic : FontStyle.normal
+                      ),
+                    ),
+                  )
+                ),
+              );
+            }
           )
         ),
       ),

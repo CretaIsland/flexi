@@ -1,38 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../component/text_button.dart';
-import '../../../utils/ui/color.dart';
-import '../../../utils/ui/font.dart';
+import '../../../util/ui/colors.dart';
+import '../../../util/ui/fonts.dart';
+import '../../common/component/text_button.dart';
 
 
 
-class DeviceRecoveryScreen extends ConsumerStatefulWidget {
+class DeviceRecoveryScreen extends StatefulWidget {
   const DeviceRecoveryScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _DeviceRecoveryScreenState();
+  State<DeviceRecoveryScreen> createState() => _DeviceRecoveryScreenState();
 }
 
-class _DeviceRecoveryScreenState extends ConsumerState<DeviceRecoveryScreen> {
-  
-  late TextEditingController _deviceIdController;
+class _DeviceRecoveryScreenState extends State<DeviceRecoveryScreen> {
 
-
-  @override
-  void initState() {
-    super.initState();
-    _deviceIdController = TextEditingController();
-  }
+  final TextEditingController _idController = TextEditingController();
 
   @override
   void dispose() {
     super.dispose();
-    _deviceIdController.dispose();
+    _idController.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +37,10 @@ class _DeviceRecoveryScreenState extends ConsumerState<DeviceRecoveryScreen> {
             children: [
               IconButton(
                 onPressed: () => context.go('/settings'), 
-                icon: Icon(Icons.arrow_back_ios, color: FlexiColor.primary, size: .03.sh)
+                icon: Icon(Icons.arrow_back_ios, size: .025.sh, color: FlexiColor.primary)
               ),
               Text('Device Recovery', style: FlexiFont.semiBold20),
-              SizedBox(width: .06.sh)
+              SizedBox(width: .05.sh)
             ],
           ),
           SizedBox(height: .03.sh),
@@ -59,13 +50,15 @@ class _DeviceRecoveryScreenState extends ConsumerState<DeviceRecoveryScreen> {
             width: .89.sw,
             height: .06.sh,
             child: TextField(
-              controller: _deviceIdController,
-              style: FlexiFont.regular16.copyWith(color: Colors.white),
+              controller: _idController,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.only(left: 12),
-                fillColor: Colors.white,
                 filled: true,
-                border: InputBorder.none,
+                fillColor: Colors.white,
+                suffixIcon: GestureDetector(
+                  onTap: () {},
+                  child: Icon(Icons.document_scanner_outlined, size: .025.sh, color: FlexiColor.primary),
+                ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(.01.sh),
                   borderSide: BorderSide(color: FlexiColor.grey[400]!)
@@ -73,27 +66,17 @@ class _DeviceRecoveryScreenState extends ConsumerState<DeviceRecoveryScreen> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(.01.sh),
                   borderSide: BorderSide(color: FlexiColor.grey[400]!)
-                ),
-                suffixIcon: InkWell(
-                  onTap: () {},
-                  child: Icon(
-                    Icons.document_scanner_outlined,
-                    color: FlexiColor.primary, 
-                    size: .025.sh
-                  ),
                 )
               ),
-            ),
+              style: FlexiFont.regular16,
+            )
           ),
           SizedBox(height: .02.sh),
           FlexiTextButton(
             width: .89.sw, 
-            height: .06.sh,
-            backgroundColor: FlexiColor.primary, 
+            height: .06.sh, 
             text: 'Recover',
-            onPressed: () {
-              // 기기 초기화
-            },
+            backgroundColor: FlexiColor.primary
           )
         ],
       ),

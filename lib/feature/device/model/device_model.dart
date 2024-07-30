@@ -1,13 +1,14 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'device_info.g.dart';
-part 'device_info.freezed.dart';
+part 'device_model.g.dart';
+part 'device_model.freezed.dart';
+
 
 
 @freezed
-class DeviceInfo with _$DeviceInfo {
+class DeviceModel with _$DeviceModel {
 
-  factory DeviceInfo({
+  factory DeviceModel({
     @Default('') String deviceId,
     @Default('') String deviceName,
     @Default('') String ip,
@@ -20,10 +21,10 @@ class DeviceInfo with _$DeviceInfo {
     @Default('')String bluetoothId,
     @Default(0) int volume,
     @Default('')String timeZone,
-  }) = _DeviceInfo;
+  }) = _DeviceModel;
 
-  DeviceInfo._();
+  DeviceModel._();
 
-  factory DeviceInfo.fromJson(Map<String, dynamic> map) => _$DeviceInfoFromJson(map);
+  factory DeviceModel.fromJson(Map<String, dynamic> map) => _$DeviceModelFromJson(map);
 
 }

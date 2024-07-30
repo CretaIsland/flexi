@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../component/text_button.dart';
 import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/controller/current_language_controller.dart';
-import '../../../utils/ui/color.dart';
+import '../../../util/ui/colors.dart';
+import '../../common/component/text_button.dart';
 import '../component/language_list_bar.dart';
 
 

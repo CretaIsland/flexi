@@ -5,17 +5,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../feature/content/controller/content_edit_controller.dart';
-import '../../../feature/content/model/content_info.dart';
-import '../../../utils/flexi_utils.dart';
-import '../../../utils/ui/color.dart';
+import '../../../feature/content/model/content_model.dart';
+import '../../../util/ui/colors.dart';
+import '../../../util/utils.dart';
 import '../screen/text_edit_screen.dart';
 import 'content_clipper.dart';
 
 
 
 class TextEditPreview extends ConsumerStatefulWidget {
-  const TextEditPreview({super.key, required this.contentInfo});
-  final ContentInfo contentInfo;
+  const TextEditPreview({super.key, required this.content});
+  final ContentModel content;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _TextEditPreviewState();
@@ -24,7 +24,7 @@ class TextEditPreview extends ConsumerStatefulWidget {
 class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
 
   late TextEditingController _textEditingController;
-  late ContentInfo contentInfo;
+  late ContentModel content;
   late double aspectRatio;
   late double responsiveWidth;
   late double responsiveHeight;
@@ -34,23 +34,23 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
   @override
   void initState() {
     super.initState();
-    contentInfo = widget.contentInfo;
-    _textEditingController = TextEditingController(text: contentInfo.text);
-    aspectRatio = contentInfo.width / contentInfo.height;
-    responsiveWidth = contentInfo.width <= 360 ? 1.sw : (1.sw / 360) * contentInfo.width;
+    content = widget.content;
+    _textEditingController = TextEditingController(text: content.text);
+    aspectRatio = content.width / content.height;
+    responsiveWidth = content.width <= 360 ? 1.sw : (1.sw / 360) * content.width;
     responsiveHeight = responsiveWidth / aspectRatio;
     textScaler = 0.0;
-    if(responsiveHeight > contentInfo.height) {
-      textScaler = responsiveHeight / contentInfo.height;
+    if(responsiveHeight > content.height) {
+      textScaler = responsiveHeight / content.height;
     } else {
-      textScaler = contentInfo.height / responsiveHeight;
+      textScaler = content.height / responsiveHeight;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    contentInfo = widget.contentInfo;
-    _textEditingController = TextEditingController(text: contentInfo.text);
+    content = widget.content;
+    _textEditingController = TextEditingController(text: content.text);
     return Container(
       width: 1.sw,
       height: .15.sh,
@@ -67,10 +67,10 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
                 width: responsiveWidth,
                 height: responsiveHeight,
                 decoration: BoxDecoration(
-                  color: FlexiUtils.stringToColor(contentInfo.backgroundColor),
-                  image: contentInfo.backgroundType != 'color' && contentInfo.fileThumbnail.isNotEmpty ?
+                  color: FlexiUtils.stringToColor(content.backgroundColor),
+                  image: content.backgroundType != 'color' && content.fileThumbnail != null ?
                     DecorationImage(
-                      image: Image.memory(base64Decode(contentInfo.fileThumbnail)).image,
+                      image: Image.memory(base64Decode(content.fileThumbnail!)).image,
                       fit: BoxFit.cover
                     ) : null
                 ),
@@ -92,11 +92,11 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
                   iconColor: FlexiColor.primary
                 ),
                 style: TextStyle(
-                  fontSize: textScaler * contentInfo.textSize,
-                  fontWeight: contentInfo.bold ? FontWeight.bold : FontWeight.normal,
-                  fontStyle: contentInfo.italic ? FontStyle.italic : FontStyle.normal,
-                  color: FlexiUtils.stringToColor(contentInfo.textColor),
-                  height: contentInfo.textSizeType == 's' ? 1.6 : contentInfo.textSizeType == 'm' ? 1.4 : 1.2
+                  fontSize: textScaler * content.textSize,
+                  fontWeight: content.bold ? FontWeight.bold : FontWeight.normal,
+                  fontStyle: content.italic ? FontStyle.italic : FontStyle.normal,
+                  color: FlexiUtils.stringToColor(content.textColor),
+                  height: content.textSizeType == 's' ? 1.6 : content.textSizeType == 'm' ? 1.4 : 1.2
                 ),
                 onEditingComplete: () => ref.watch(contentEditControllerProvider.notifier).setText(_textEditingController.text),
                 onTapOutside: (event) => ref.watch(contentEditControllerProvider.notifier).setText(_textEditingController.text),
@@ -109,34 +109,34 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
     );
   }
 
-  List<Widget> chunkContent(Widget content) {
+  List<Widget> chunkContent(Widget contentWidget) {
     List<Widget> chunks = [];
 
-    if(contentInfo.width <= 360) {
-      return [content];
+    if(content.width <= 360) {
+      return [contentWidget];
     }
 
-    for(int i = 0; i < contentInfo.width ~/ 360; i++) {
+    for(int i = 0; i < content.width ~/ 360; i++) {
       chunks.add(
         Positioned(
           left: i * -1.sw,
           top: i * responsiveHeight,
           child: ClipRect(
             clipper: ContentClipper(dx: (i * 1.sw), width: 1.sw, height: responsiveHeight),
-            child: content,
+            child: contentWidget,
           ),
         )
       );
     }
 
-    if(contentInfo.width % 360 != 0.0) {
+    if(content.width % 360 != 0.0) {
       chunks.add(
         Positioned(
           left: chunks.length * -1.sw,
           top: chunks.length * responsiveHeight,
           child: ClipRect(
             clipper: ContentClipper(dx: (chunks.length * 1.sw), width: responsiveWidth % 1.sw, height: responsiveHeight),
-            child: content,
+            child: contentWidget,
           ),
         )
       );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 
+
 class FlexiColor {
 
   static Color primary = const Color(0xff495DDD);
@@ -17,7 +18,6 @@ class FlexiColor {
       700: Color(0xff7F7F85),
     }
   );
-  static Color backgroundColor = const Color(0xffF2F2F6);
+  static Color backgroundColor = grey[200]!;
   
 }
-

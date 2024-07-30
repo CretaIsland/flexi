@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -10,15 +11,13 @@ part 'socket_client_controller.g.dart';
 
 
 
-@riverpod 
+@riverpod
 class SocketClientController extends _$SocketClientController {
 
   late IO.Socket _socket;
-  bool _isConnected = false;
-
-  bool isConnected() => _isConnected;
 
 
+  @override
   void build() {
     ref.onDispose(() {
       print('SocketClientController Dispose!!!');
@@ -27,62 +26,92 @@ class SocketClientController extends _$SocketClientController {
       _socket.dispose();
     });
     print('SocketClientController Build!!!');
+    _socket = IO.io('',
+    IO.OptionBuilder()
+      .setTransports(['websocket'])
+      .disableAutoConnect()
+      .setTimeout(10000)
+      .build()
+    );
   }
 
 
   Future<bool> connect(String ip) async {
-    try {
-      final completer = Completer<bool>();
-      _socket = IO.io(
-        'http://$ip:${NetworkConfig.socketIOPort}',
-        IO.OptionBuilder()
-          .setTransports(['websocket'])
-          .disableAutoConnect()
-          .build()
-      );
+    final completer = Completer<bool>();
 
-      _socket.onConnect((data) {
-        _isConnected = true;
-        completer.complete(_isConnected);
-        print('socket client connect');
+    try {
+      if(_socket.io.uri == 'http://$ip:${NetworkConfig.socketIOPort}' && _socket.connected) {
+        print('already connected');
+        completer.complete(true);
+      }
+      
+      _socket.io.uri = 'http://$ip:${NetworkConfig.socketIOPort}';
+
+      _socket.onConnect((event) {
+        if(!completer.isCompleted) {
+          completer.complete(true);
+        }
       });
-      _socket.onDisconnect((data) {
-        print('socket client disconnect');
+      _socket.onConnectTimeout((event) {
+        if(!completer.isCompleted) {
+          completer.complete(false);
+        }
       });
 
       _socket.connect();
-
-      // timeout 10초
-      Future.delayed(const Duration(seconds: 10), () {
-        completer.complete(_isConnected);
-      });
       return completer.future;
     } catch (error) {
-      print('error at SocketClientController.connect >>> $error');
+      print('Error at SocketClientController.connect >>> $error');
+      return false;
     }
-    return false;
   }
 
-  void sendData(Map<String, dynamic> data) {
+  Future<bool> disconnect() async {
+    print('socket disconnect');
+    final completer = Completer<bool>();
+    completer.future.timeout((const Duration(seconds: 15)), onTimeout: () => false);
+    if(_socket.connected) {
+      _socket.onDisconnect((event) {
+        completer.complete(true);
+      });
+      
+      _socket.disconnect();
+      return completer.future;
+    } else {
+      return false;
+    }
+  }
+
+  Future<void> sendData(Map<String, dynamic> data) async {
     _socket.emit('message', utf8.encode(jsonEncode(data)));
+    await Future.delayed(const Duration(seconds: 1));
   }
 
-  void sendFile(File file, String fileName, Map<String, dynamic> data) async {
+  Future<void> sendFile(File file, String fileName, Map<String, dynamic> data) async {
+    final Completer<void> completer = Completer<void>();
     _socket.emit('fileStart', utf8.encode(fileName));
+
     int total = await file.length();
     int count = 0;
-    var fileOpenRead = file.openRead();
-    fileOpenRead.listen(
-      (bytes) {
-        count += bytes.length;
-        _socket.emitWithBinary('file', bytes);
-        print('$count/$total');
-      },
-      onDone: () {
-        _socket.emit('fileDone');
-        _socket.emit('message', utf8.encode(jsonEncode(data)));
-      }
-    );
+    var openRead = file.openRead();
+
+    openRead.listen((bytes) {
+      count += bytes.length;
+      _socket.emitWithBinary('file', bytes);
+      print('$count/$total');
+    }, onDone: () async {
+      print('file done');
+      await Future.delayed(const Duration(seconds: 5));
+      print('fileDone!!!');
+      _socket.emit('fileDone');
+      String dataStr = jsonEncode(data);
+      print(data);
+      _socket.emit('message', utf8.encode(dataStr)); 
+      await Future.delayed(const Duration(seconds: 1));
+      completer.complete();
+    });
+
+    return completer.future;
   }
 
 }

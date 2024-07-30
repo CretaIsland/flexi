@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:translator/translator.dart';
 
-import '../model/content_info.dart';
+import '../model/content_model.dart';
 import 'content_info_controller.dart';
 
 part 'content_edit_controller.g.dart';
@@ -15,16 +16,23 @@ part 'content_edit_controller.g.dart';
 @riverpod 
 class ContentEditController extends _$ContentEditController {
 
+  late ContentModel _original;
+
   @override
-  ContentInfo build() {
+  ContentModel build() {
     ref.onDispose(() {
       print('ContentEditController Dispose!!!');
     });
     print('ContentEditController Build!!!');
+    _original = ref.read(contentInfoControllerProvider);
     return ref.read(contentInfoControllerProvider);
   }
 
+  void undo() {
+    state = _original;
+  }
 
+  // Edit Background
   void setBackgroundColor(Color color) {
     state = state.copyWith(
       backgroundType: 'color',
@@ -44,6 +52,7 @@ class ContentEditController extends _$ContentEditController {
     );
   }
 
+  // Edit Background
   void setText(String text) {
     state = state.copyWith(text: text);
   }
@@ -57,12 +66,12 @@ class ContentEditController extends _$ContentEditController {
   }
 
   void setTextSize(String size) {
-    if(size == 's') {
-      state = state.copyWith(textSize: state.height * .4, textSizeType: 's');
-    } else if(size == 'm') {
-      state = state.copyWith(textSize: state.height * .6, textSizeType: 'm');
-    } else if(size == 'l') {
-      state = state.copyWith(textSize: state.height * .8, textSizeType: 'l');
+    if(size == 'S') {
+      state = state.copyWith(textSize: (state.height * .4).floor(), textSizeType: 'S');
+    } else if(size == 'M') {
+      state = state.copyWith(textSize: (state.height * .6).floor(), textSizeType: 'M');
+    } else if(size == 'L') {
+      state = state.copyWith(textSize: (state.height * .8).floor(), textSizeType: 'L');
     }
   }
 

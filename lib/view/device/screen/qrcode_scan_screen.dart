@@ -6,7 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import '../../../feature/device/controller/device_register_controller.dart';
-import '../../../utils/ui/color.dart';
+import '../../../util/ui/colors.dart';
+import '../../../util/ui/fonts.dart';
 
 
 
@@ -22,7 +23,6 @@ class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
   Barcode? barcode;
   QRViewController? _qrcodeController;
 
-
   @override
   void initState() {
     super.initState();
@@ -34,6 +34,28 @@ class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
     _qrcodeController!.dispose();
   }
 
+  Map<String, String>? getWiFiCredentials(String code) {
+    Map<String, String> result = {};
+    try {
+      if(code.contains('WIFI')) {
+        List<String> parts = code.split(';');
+        for(var part in parts) {
+          List<String> value = part.split(':');
+          if(value.contains('S')) {
+            result['ssid'] = value.last;
+          } else if(value.contains('T')) {
+            result['security'] = value.last;
+          } else if(value.contains('P')) {
+            result['password'] = value.last;
+          }
+        }
+      }
+      return result;
+    } catch (error) {
+      print('error at qrcode scan >>> $error');
+    }
+    return null;
+  }
 
   void onQRViewCreated(QRViewController qrViewController) {
     _qrcodeController = qrViewController;
@@ -41,19 +63,22 @@ class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
       if(scanData.code != null) {
         _qrcodeController!.pauseCamera();
         // qrcode가 wifi qrcode인지 확인
-        if(await ref.watch(registerDataControllerProvider.notifier).scanQrcodeValue(scanData.code!)) {
+        var wifiCredential = getWiFiCredentials(scanData.code!);
+        if(wifiCredential != null) {
+          ref.watch(registerNetworkProvider.notifier).state = wifiCredential;
           context.go('/device/setWifi');
         } else {
           Fluttertoast.showToast(
             msg: 'Invalid QR Code.',
-            toastLength: Toast.LENGTH_LONG,
-            backgroundColor: Colors.white,
-            textColor: FlexiColor.secondary
+            backgroundColor: Colors.black.withOpacity(.8),
+            textColor: Colors.white,
+            fontSize: FlexiFont.regular20.fontSize
           ).whenComplete(() => _qrcodeController!.resumeCamera());
         }
       }
     });
   }
+
 
   Widget buildQrView(BuildContext context) {
     return QRView(
@@ -68,7 +93,6 @@ class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -91,5 +115,5 @@ class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
       ),
     );
   }
-
+  
 }

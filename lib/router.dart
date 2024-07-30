@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
-import 'feature/auth/controller/auth_service.dart';
+import 'view/common/screen/home_screen.dart';
 import 'view/content/screen/background_edit_screen.dart';
 import 'view/content/screen/content_info_screen.dart';
 import 'view/content/screen/content_list_screen.dart';
@@ -10,17 +9,18 @@ import 'view/content/screen/content_send_screen.dart';
 import 'view/content/screen/text_edit_screen.dart';
 import 'view/device/screen/device_info_screen.dart';
 import 'view/device/screen/device_list_screen.dart';
+import 'view/device/screen/device_register_screen.dart';
 import 'view/device/screen/qrcode_load_screen.dart';
 import 'view/device/screen/qrcode_scan_screen.dart';
 import 'view/device/screen/timezone_set_screen.dart';
 import 'view/device/screen/wifi_set_screen.dart';
-import 'view/home_screen.dart';
 import 'view/login_screen.dart';
 import 'view/setting/screen/account_info_screen.dart';
-import 'view/setting/screen/app_info_screen.dart';
-import 'view/setting/screen/app_option_screen.dart';
+import 'view/setting/screen/app_setting_screen.dart';
+import 'view/setting/screen/app_update_screen.dart';
 import 'view/setting/screen/device_recovery_screen.dart';
-import 'view/setting/screen/settings_screen.dart';
+import 'view/setting/screen/setting_menu_screen.dart';
+import 'view/splash_screen.dart';
 
 
 
@@ -33,21 +33,16 @@ GoRouter router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      redirect: (context, state) {
-        if(currentUser != null) {
-          return '/device/list';
-        }
-        return '/login';
-      },
+      pageBuilder: (context, state) => const NoTransitionPage(child: SplashScreen()),
     ),
     GoRoute(
       path: '/login',
       pageBuilder: (context, state) => const NoTransitionPage(child: LoginScreen()),
-     ),
+    ),
     ShellRoute(
       navigatorKey: shellNavKey,
       pageBuilder: (context, state, child) => NoTransitionPage(child: HomeScreen(child: child)),
-      routes: [
+      routes: [ 
         // ********** Device **********
         GoRoute(
           path: '/device/list',
@@ -59,13 +54,17 @@ GoRouter router = GoRouter(
         ),
         GoRoute(
           path: '/device/setTimezone',
-          pageBuilder: (context, state) => NoTransitionPage(child: TimezoneSetScreen()),
+          pageBuilder: (context, state) => const NoTransitionPage(child: TimezoneSetScreen()),
         ),
         GoRoute(
           path: '/device/setWifi',
-          pageBuilder: (context, state) => NoTransitionPage(child: WifiSetScreen(rootContext: context)),
+          pageBuilder: (context, state) => const NoTransitionPage(child: WifiSetScreen()),
         ),
-        // // ********** Content **********
+        GoRoute(
+          path: '/device/register',
+          pageBuilder: (context, state) => NoTransitionPage(child: DeviceRegisterScreen(rootContext: context)),
+        ),
+        // ********** Content **********
         GoRoute(
           path: '/content/list',
           pageBuilder: (context, state) => NoTransitionPage(child: ContentListScreen(rootContext: context)),
@@ -74,22 +73,22 @@ GoRouter router = GoRouter(
           path: '/content/info',
           pageBuilder: (context, state) => const NoTransitionPage(child: ContentInfoScreen()),
         ),
-        // // ********** Settings **********
+        // ********** Setting **********
         GoRoute(
           path: '/settings',
-          pageBuilder: (context, state) => const NoTransitionPage(child: SettingsScreen()),
+          pageBuilder: (context, state) => const NoTransitionPage(child: SettingMenuScreen()),
         ),
         GoRoute(
           path: '/settings/account',
           pageBuilder: (context, state) => const NoTransitionPage(child: AccountInfoScreen()),
         ),
         GoRoute(
-          path: '/settings/app/info',
-          pageBuilder: (context, state) => const NoTransitionPage(child: AppInfoScreen()),
+          path: '/settings/appSetting',
+          pageBuilder: (context, state) => const NoTransitionPage(child: AppSettingScreen()),
         ),
         GoRoute(
-          path: '/settings/app/option',
-          pageBuilder: (context, state) => const NoTransitionPage(child: AppOptionScreen()),
+          path: '/settings/appUpdate',
+          pageBuilder: (context, state) => const NoTransitionPage(child: AppUpdateScreen()),
         ),
         GoRoute(
           path: '/settings/deviceRecovery',
@@ -97,13 +96,13 @@ GoRouter router = GoRouter(
         ),
       ]
     ),
-    // ********** QR Code **********
+    // ********** Qrcode **********
     GoRoute(
-      path: '/qrcode/scan',
+      path: '/device/scanQrcode',
       pageBuilder: (context, state) => const NoTransitionPage(child: QrcodeScanScreen()),
     ),
     GoRoute(
-      path: '/qrcode/load',
+      path: '/device/loadQrcode',
       pageBuilder: (context, state) => const NoTransitionPage(child: QrcodeLoadScreen()),
     ),
     // ********** Edit Content **********
@@ -118,7 +117,7 @@ GoRouter router = GoRouter(
     // ********** Send Content **********
     GoRoute(
       path: '/content/send',
-      pageBuilder: (context, state) => const NoTransitionPage(child: ContentSendScreen()),
+      pageBuilder: (context, state) => NoTransitionPage(child: ContentSendScreen(rootContext: context)),
     ),
   ]
 );

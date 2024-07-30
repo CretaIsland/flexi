@@ -7,10 +7,10 @@ import 'package:go_router/go_router.dart';
 import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../feature/content/controller/current_language_controller.dart';
-import '../../../feature/content/model/content_info.dart';
-import '../../../utils/flexi_utils.dart';
-import '../../../utils/ui/color.dart';
-import '../../../utils/ui/font.dart';
+import '../../../feature/content/model/content_model.dart';
+import '../../../util/ui/colors.dart';
+import '../../../util/ui/fonts.dart';
+import '../../../util/utils.dart';
 import '../component/language_list_bar.dart';
 import '../component/text_edit_preview.dart';
 import '../modal/text_translate_modal.dart';
@@ -41,12 +41,11 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final contentInfoController = ref.watch(contentInfoControllerProvider.notifier);
     final textEditController = ref.watch(contentEditControllerProvider.notifier);
     final sttController = ref.watch(sTTControllerProvider.notifier);
 
-    ContentInfo backgroundInfo = ref.read(contentEditControllerProvider);
-    ContentInfo textInfo = ref.watch(contentEditControllerProvider);
+    ContentModel backgroundInfo = ref.read(contentEditControllerProvider);
+    ContentModel textInfo = ref.watch(contentEditControllerProvider);
 
 
     return Scaffold(
@@ -67,17 +66,17 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                     IconButton(
                       onPressed: () {
                         ref.watch(currentInputLanguagesControllerProvider.notifier).saveChange();
+                        ref.watch(contentInfoControllerProvider.notifier).setContent(ref.watch(contentEditControllerProvider));
                         context.go('/content/info');
                       }, 
-                      icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: .03.sh),
+                      icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: Colors.white)
                     ),
                     TextButton(
                       onPressed: () {
                         ref.watch(currentInputLanguagesControllerProvider.notifier).saveChange();
-                        contentInfoController.change(textInfo);
-                        context.go('/content/info');
-                      }, 
-                      child: Text('Apply', style: FlexiFont.regular16.copyWith(color: Colors.white))
+                        ref.watch(contentEditControllerProvider.notifier).undo();
+                      },
+                      child: Text('Reset', style: FlexiFont.regular16.copyWith(color: Colors.white))
                     )
                   ],
                 ),
@@ -106,11 +105,11 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                   children: [
                     Row(
                       children: [
-                        fontSizeButton('Small', 's', FlexiFont.regular9),
+                        fontSizeButton('Small', 'S', FlexiFont.regular9),
                         SizedBox(width: .02.sw),
-                        fontSizeButton('Medium', 'm', FlexiFont.regular11),
+                        fontSizeButton('Medium', 'M', FlexiFont.regular11),
                         SizedBox(width: .02.sw),
-                        fontSizeButton('Large', 'l', FlexiFont.regular13)
+                        fontSizeButton('Large', 'L', FlexiFont.regular13)
                       ],
                     ),
                     Row(
@@ -154,7 +153,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
             ),
           ),
           // preview
-          TextEditPreview(contentInfo: ref.watch(contentEditControllerProvider)),
+          TextEditPreview(content: ref.watch(contentEditControllerProvider)),
           Expanded(
             child: Container(
               width: 1.sw,
@@ -243,11 +242,20 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                   GestureDetector(
                     onLongPressStart: (details) {
                       if(ref.watch(selectInputLanguageProvider)['localeId'] == null || ref.watch(selectInputLanguageProvider)['localeId']!.isEmpty) {
-                        Fluttertoast.showToast(msg: 'select language');
+                        Fluttertoast.showToast(
+                          msg: 'select language',
+                          backgroundColor: Colors.black.withOpacity(.8),
+                          textColor: Colors.white,
+                          fontSize: FlexiFont.regular20.fontSize
+                        );
                       } else {
                         ref.watch(isSpeakingProvider.notifier).state = true;
                         textEditController.setLanguage(ref.watch(selectInputLanguageProvider)['localeId']!.replaceAll("_", "-"));
-                        sttController.startRecord(ref.watch(selectInputLanguageProvider)['localeId']!, (value) { if(value.isNotEmpty) textEditController.setText(value);});
+                        print(ref.watch(selectInputLanguageProvider)['localeId']!);
+                        sttController.startRecord(ref.watch(selectInputLanguageProvider)['localeId']!, (value) { 
+                          print(value);
+                          if(value.isNotEmpty) textEditController.setText(value);
+                        });
                       }
                     },
                     onLongPressEnd: (details) {
@@ -273,21 +281,21 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
 
   // font size button
   Widget fontSizeButton(String label, String value, TextStyle labelStyle) {
-    final textEditController = ref.watch(contentEditControllerProvider.notifier);
-    final textInfo = ref.watch(contentEditControllerProvider);
-
     return InkWell(
-      onTap: () => textEditController.setTextSize(value),
+      onTap: () => ref.watch(contentEditControllerProvider.notifier).setTextSize(value),
       child: Container(
         width: .2.sw,
         height: .03.sh,
         decoration: BoxDecoration(
-          color: Colors.white,
-          border: textInfo.textSizeType == value ? Border.all(color: FlexiColor.primary, width: 2) : null, 
+          color: ref.watch(contentEditControllerProvider).textSizeType == value ? FlexiColor.primary : Colors.white,
           borderRadius: BorderRadius.circular(.005.sh)
         ),
         child: Center(
-          child: Text(label, style: textInfo.textSizeType == value ? labelStyle.copyWith(color: FlexiColor.primary) : labelStyle)
+          child: Text(
+            label, 
+            style: ref.watch(contentEditControllerProvider).textSizeType == value 
+              ? labelStyle.copyWith(color: Colors.white, fontWeight: FontWeight.w500) : labelStyle
+            )
         ),
       ),
     );

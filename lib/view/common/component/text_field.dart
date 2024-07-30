@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../utils/ui/color.dart';
+import '../../../util/ui/colors.dart';
 
 
 
 class FlexiTextField extends StatelessWidget {
-  const FlexiTextField({super.key, required this.width, required this.height, this.controller, this.readOnly = false, this.textStyle, this.hintText, this.backgroundColor = Colors.white, this.onChanged});
+  const FlexiTextField({super.key, required this.width, required this.height, this.controller, this.hintText, this.backgroundColor = Colors.white, this.textStyle, this.readOnly = false,this.onChanged});
   final double width;
   final double height;
   final TextEditingController? controller;
-  final bool readOnly;
-  final TextStyle? textStyle;
   final String? hintText;
-  final Color backgroundColor;
+  final Color? backgroundColor;
+  final TextStyle? textStyle;
+  final bool readOnly;
   final void Function(String value)? onChanged;
 
   @override
@@ -23,15 +23,12 @@ class FlexiTextField extends StatelessWidget {
       height: height,
       child: TextField(
         controller: controller,
-        readOnly: readOnly,
-        style: textStyle,
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(left: 12),
           hintText: hintText,
           hintStyle: textStyle,
+          contentPadding: const EdgeInsets.only(left: 12),
           filled: true,
           fillColor: backgroundColor,
-          border: InputBorder.none,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(.01.sh),
             borderSide: BorderSide(color: FlexiColor.grey[400]!)
@@ -40,8 +37,11 @@ class FlexiTextField extends StatelessWidget {
             borderRadius: BorderRadius.circular(.01.sh),
             borderSide: BorderSide(color: FlexiColor.grey[400]!)
           )
-        )
-      )
+        ),
+        style: textStyle,
+        readOnly: readOnly,
+        onChanged: onChanged
+      ),
     );
   }
 

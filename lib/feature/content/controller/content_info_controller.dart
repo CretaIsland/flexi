@@ -1,11 +1,10 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../model/content_info.dart';
+import '../model/content_model.dart';
 import '../repository/content_repository.dart';
 
 part 'content_info_controller.g.dart';
@@ -19,30 +18,21 @@ class ContentInfoController extends _$ContentInfoController {
 
 
   @override
-  ContentInfo build() {
+  ContentModel build() {
     ref.onDispose(() {
-      print('ContentInfoController dispose');
+      print('ContentInfoController Dispose!!!');
     });
-    print('ContentInfoController build');
+    print('ContentInfoController Build!!!');
     _contentRepository = ContentRepository();
-    return ContentInfo(contentId: '');
+    return ContentModel(contentId: '');
   }
 
-
-  void setContent(ContentInfo content) {
-    state = content;
+  Future<void> save() async {
+    await _contentRepository.update(state);
   }
 
-  void change(ContentInfo updateContent) {
-    state = updateContent;
-  }
-
-  Future<void> saveChange() async {
-    try {
-      state = (await _contentRepository.update(state.contentId, state))!;
-    } catch (error) {
-      print('error at ContentInfoController.saveChange >>> $error');
-    }
+  void setContent(ContentModel targetContent) {
+    state = targetContent;
   }
 
   void setName(String name) {

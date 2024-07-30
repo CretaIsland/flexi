@@ -4,8 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/controller/current_language_controller.dart';
-import '../../../utils/ui/color.dart';
-import '../../../utils/ui/font.dart';
+import '../../../util/ui/colors.dart';
+import '../../../util/ui/fonts.dart';
+
 
 
 final List<Map<String, String>> languages = [

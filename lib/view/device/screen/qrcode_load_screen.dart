@@ -1,13 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
 
-import '../../../common/providers/local_gallery_controller.dart';
+import '../../../common/providers/local_storage_controller.dart';
 import '../../../feature/device/controller/device_register_controller.dart';
-import '../../../utils/ui/color.dart';
-import '../../../utils/ui/font.dart';
+import '../../../util/ui/colors.dart';
+import '../../../util/ui/fonts.dart';
 
 
 
@@ -20,10 +23,33 @@ class QrcodeLoadScreen extends ConsumerStatefulWidget {
 
 class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
 
-  final selectFileIndex = StateProvider<int>((ref) => -1);  
+  int _selectFileIndex = -1;
+
+  Future<bool> getWiFiCredentials(File image) async {
+    try {
+      List<String> wifiEncryptionTypes = ['', 'OPEN', 'WPA', 'WEP'];
+      var barcodeScanner = BarcodeScanner(formats: [BarcodeFormat.qrCode]);
+      var result = await barcodeScanner.processImage(InputImage.fromFile(image));
+      for(var data in result) {
+        if(data.type == BarcodeType.wifi) {
+          var wifiInfo = data.value as BarcodeWifi;
+          ref.watch(registerNetworkProvider.notifier).state = {
+            'ssid': wifiInfo.ssid ?? '',
+            'security': wifiInfo.encryptionType == null ? wifiEncryptionTypes[0] : wifiEncryptionTypes[wifiInfo.encryptionType!],
+            'password': wifiInfo.password ?? ''
+          };
+          return true;
+        }
+      }
+    } catch (error) {
+      print('error at DeviceRegisterController.setWifiCredentialFromImage >>> $error');
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
+    var localFiles = ref.watch(localStorageControllerProvider);
     return Scaffold(
       backgroundColor: FlexiColor.backgroundColor,
       body: Column(
@@ -41,23 +67,23 @@ class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
                 Text('Load QRCode Image', style: FlexiFont.semiBold20),
                 TextButton(
                   onPressed: () async {
-                    if(ref.watch(selectFileIndex) != -1) {
-                      var selectedFile = await ref.watch(localGalleryControllerProvider)[ref.watch(selectFileIndex)].file;
-                      if(selectedFile != null) {
-                        if(await ref.watch(registerDataControllerProvider.notifier).scanQrcodeImage(selectedFile)) {
+                    if(_selectFileIndex != -1) {
+                      var file = await localFiles[_selectFileIndex].loadFile();
+                      if(file != null) {
+                        if(await getWiFiCredentials(file)) {
                           context.go('/device/setWifi');
                         } else {
                           Fluttertoast.showToast(
                             msg: 'Invalid QR Code.',
-                            toastLength: Toast.LENGTH_LONG,
-                            backgroundColor: Colors.white,
-                            textColor: FlexiColor.secondary
+                            backgroundColor: Colors.black.withOpacity(.8),
+                            textColor: Colors.white,
+                            fontSize: FlexiFont.regular20.fontSize
                           );
                         }
                       }
                     }
-                  }, 
-                child: Text('Load', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary)),
+                  },
+                  child: Text('Load', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))
                 )
               ],
             ),
@@ -65,7 +91,7 @@ class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
           Expanded(
             child: NotificationListener<ScrollNotification>(
               onNotification: (notification) {
-                if(notification is ScrollEndNotification && notification.metrics.pixels == notification.metrics.maxScrollExtent) ref.watch(localGalleryControllerProvider.notifier).nextLoad();
+                if(notification is ScrollEndNotification && notification.metrics.pixels == notification.metrics.maxScrollExtent) ref.watch(localStorageControllerProvider.notifier).nextLoad();
                 return true;
               },
               child: GridView.builder(
@@ -73,36 +99,34 @@ class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3
                 ), 
-                itemCount: ref.watch(localGalleryControllerProvider).length,
+                itemCount: localFiles.length,
                 itemBuilder: (context, index) {
                   return InkWell(
-                    onTap: () => ref.watch(selectFileIndex.notifier).state = index,
+                    onTap: () => setState(() {
+                      _selectFileIndex = index;
+                    }),
                     child: FutureBuilder(
-                      future: ref.watch(localGalleryControllerProvider)[index].thumbnailData,
+                      future: localFiles[index].thumbnailData,
                       builder: (context, snapshot) {
-                        if(snapshot.hasData && snapshot.data != null) {
-                          return Consumer(
-                            builder: (context, ref, child) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    width: 1.0,
-                                    color: ref.watch(selectFileIndex) == index ? FlexiColor.primary : FlexiColor.grey[600]!
-                                  )
-                                ),
-                                child: Image.memory(snapshot.data!, fit: BoxFit.cover),
-                              );
-                            },
+                        if(snapshot.connectionState == ConnectionState.done) {
+                          if(snapshot.data == null) {
+                            return const SizedBox.shrink();
+                          }
+                          return Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: _selectFileIndex == index ? FlexiColor.primary : FlexiColor.grey[600]!)
+                            ),
+                            child: Image.memory(snapshot.data!, fit: BoxFit.cover),
                           );
                         } else {
-                          return const SizedBox.shrink();
+                          return Center(child: CircularProgressIndicator(color: FlexiColor.primary));
                         }
                       },
                     ),
                   );
                 },
               ),
-            )
+            ),
           )
         ],
       ),

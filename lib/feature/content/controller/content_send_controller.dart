@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../common/constants/config.dart';
-import '../model/device_model.dart';
+import '../../device/model/device_model.dart';
 
-part 'device_list_controller.g.dart';
+part 'content_send_controller.g.dart';
 
 
 
@@ -17,18 +18,19 @@ class ConnectedDeviceController extends _$ConnectedDeviceController {
 
   late RawDatagramSocket _socket;
 
+
   @override
   List<DeviceModel> build() {
     ref.onDispose(() {
-      print('ConnectedDeviceController Dispose!!!');
+      print('ConnectedDevicesController Dispose!!!');
       _socket.close();
     });
-    print('ConnectedDeviceController Build!!!');
-    initialize();
+    print('ConnectedDevicesController Build!!!');
+    startScan();
     return List.empty();
   }
 
-  void initialize() async {
+  void startScan() async {
     _socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, NetworkConfig.udpBroadcastPort);
 
     _socket.listen((event) {
@@ -40,20 +42,17 @@ class ConnectedDeviceController extends _$ConnectedDeviceController {
 
       if(data['deviceName'] == 'null') data['deviceName'] = data['deviceId'];
       DeviceModel newDevice = DeviceModel.fromJson(data);
+      print(data);
       if(state.contains(newDevice)) return;
 
-      var index = state.indexWhere((device) => device.deviceId == newDevice.deviceId);
-      if(index != -1) {
-        state[index] = newDevice;
-        state= [...state];
+      var isExist = state.indexWhere((device) => device.deviceId == newDevice.deviceId);
+      if(isExist != -1) {
+        state[isExist] = newDevice;
+        state = [...state];
       } else {
         state = [...state, newDevice];
       }
     });
   }
-
-  void refresh() {
-    state = List.empty();
-  }
-
+  
 }

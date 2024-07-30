@@ -4,29 +4,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../feature/content/model/content_info.dart';
-import '../../../utils/flexi_utils.dart';
+import '../../../feature/content/model/content_model.dart';
+import '../../../util/utils.dart';
 import 'content_clipper.dart';
 
 
 
-class BackgroundEditPreview extends ConsumerWidget {
-  const BackgroundEditPreview({super.key, required this.contentInfo});
-  final ContentInfo contentInfo;
+class BackgroundEditPreview extends ConsumerStatefulWidget {
+  const BackgroundEditPreview({super.key, required this.content});
+  final ContentModel content;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    
-    double aspectRatio = contentInfo.width / contentInfo.height;
-    double responsiveWidth = contentInfo.width <= 360 ? 1.sw : (1.sw / 360) * contentInfo.width;
-    double responsiveHeight = responsiveWidth / aspectRatio;
-    double textScaler = 0.0;
-    if(responsiveHeight > contentInfo.height) {
-      textScaler = responsiveHeight / contentInfo.height;
-    } else {
-      textScaler = contentInfo.height / responsiveHeight;
-    }
+  ConsumerState<ConsumerStatefulWidget> createState() => _BackgroundEditPreviewState();
+}
 
+class _BackgroundEditPreviewState extends ConsumerState<BackgroundEditPreview> {
+
+  late double _aspectRatio;
+  late double _responsiveHeight;
+  late double _responsiveWidth;
+  late double _textScaler;
+
+  @override
+  void initState() {
+    super.initState();
+    _aspectRatio = widget.content.width / widget.content.height;
+    _responsiveWidth = widget.content.width <= 360 ? 1.sw : (1.sw / 360) * widget.content.width;
+    _responsiveHeight = _responsiveWidth / _aspectRatio;
+    _textScaler = 0.0;
+    if(_responsiveHeight > widget.content.height) {
+      _textScaler = _responsiveHeight / widget.content.height;
+    } else {
+      _textScaler = widget.content.height / _responsiveHeight;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: 1.sw,
       height: .2.sh,
@@ -36,31 +50,31 @@ class BackgroundEditPreview extends ConsumerWidget {
           children: [
             SizedBox(
               width: 1.sw,
-              height: (responsiveHeight + .005.sh) * (contentInfo.width / 360).ceil(),
+              height: (_responsiveHeight + .005.sh) * (widget.content.width / 360).ceil(),
             ),
             ...chunkContent(
-              width: responsiveWidth,
-              height: responsiveHeight,
+              width: _responsiveWidth,
+              height: _responsiveHeight,
               content: Container(
-                width: responsiveWidth,
-                height: responsiveHeight,
+                width: _responsiveWidth,
+                height: _responsiveHeight,
                 decoration: BoxDecoration(
-                  color: FlexiUtils.stringToColor(contentInfo.backgroundColor),
-                  image: contentInfo.backgroundType != 'color' && contentInfo.fileThumbnail.isNotEmpty ?
+                  color: FlexiUtils.stringToColor(widget.content.backgroundColor),
+                  image: widget.content.backgroundType != 'color' && widget.content.fileThumbnail != null ?
                     DecorationImage(
-                      image: Image.memory(base64Decode(contentInfo.fileThumbnail)).image,
+                      image: Image.memory(base64Decode(widget.content.fileThumbnail!)).image,
                       fit: BoxFit.cover
                     ) : null
                 ),
                 child: Padding(
-                  padding: EdgeInsets.only(left: contentInfo.x * 1.0, top: contentInfo.y * 1.0),
+                  padding: EdgeInsets.only(left: widget.content.x * 1.0, top: widget.content.y * 1.0),
                   child: Text(
-                    contentInfo.text,
+                    widget.content.text,
                     style: TextStyle(
-                      fontSize: contentInfo.textSize * textScaler,
-                      fontWeight: contentInfo.bold ? FontWeight.bold : FontWeight.normal,
-                      fontStyle: contentInfo.italic ? FontStyle.italic : FontStyle.normal,
-                      color: FlexiUtils.stringToColor(contentInfo.textColor)
+                      fontSize: widget.content.textSize * _textScaler,
+                      fontWeight: widget.content.bold ? FontWeight.bold : FontWeight.normal,
+                      fontStyle: widget.content.italic ? FontStyle.italic : FontStyle.normal,
+                      color: FlexiUtils.stringToColor(widget.content.textColor)
                     ),
                   ),
                 )
@@ -75,11 +89,9 @@ class BackgroundEditPreview extends ConsumerWidget {
   List<Widget> chunkContent({required double width, required double height, required Widget content}) {
     List<Widget> chunks = [];
 
-    if(contentInfo.width <= 360) {
-      return [content];
-    }
-
-    for(int i = 0; i < contentInfo.width ~/ 360; i++) {
+    if(widget.content.width <= 360) return [content];
+    
+    for(int i = 0; i < widget.content.width ~/ 360; i++) {
       chunks.add(
         Positioned(
           left: i * -1.sw,
@@ -92,7 +104,7 @@ class BackgroundEditPreview extends ConsumerWidget {
       );
     }
 
-    if(contentInfo.width % 360 != 0.0) {
+    if(widget.content.width % 360 != 0.0) {
       chunks.add(
         Positioned(
           left: chunks.length * -1.sw,

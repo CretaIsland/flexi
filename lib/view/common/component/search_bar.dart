@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../utils/ui/color.dart';
-import '../utils/ui/font.dart';
+import '../../../util/ui/colors.dart';
+import '../../../util/ui/fonts.dart';
 
 
 
@@ -19,12 +19,11 @@ class FlexiSearchBar extends StatelessWidget {
       child: TextField(
         style: FlexiFont.regular16,
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(left: 12),
           hintText: hintText,
           hintStyle: FlexiFont.regular16.copyWith(color: FlexiColor.grey[700]),
+          contentPadding: const EdgeInsets.only(left: 12),
           filled: true,
           fillColor: FlexiColor.grey[400],
-          border: InputBorder.none,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(.025.sh),
             borderSide: BorderSide.none

@@ -3,17 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../component/text_field.dart';
 import '../../../feature/device/controller/device_register_controller.dart';
-import '../../../utils/ui/color.dart';
-import '../../../utils/ui/font.dart';
-import '../modal/device_setup_modal.dart';
+import '../../../util/ui/colors.dart';
+import '../../../util/ui/fonts.dart';
+import '../../common/component/text_field.dart';
 
 
 
 class WifiSetScreen extends ConsumerStatefulWidget {
-  const WifiSetScreen({super.key, required this.rootContext});
-  final BuildContext rootContext;
+  const WifiSetScreen({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _WifiSetScreenState();
@@ -21,37 +19,22 @@ class WifiSetScreen extends ConsumerStatefulWidget {
 
 class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
 
-
-  late TextEditingController _ssidController;
-  late TextEditingController _typeController;
-  late TextEditingController _passphraseController;
+  final TextEditingController _ssidController = TextEditingController();
+  final TextEditingController _typeController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    // _ssidController = TextEditingController(text: ref.watch(registerDataControllerProvider)['ssid']);
-    // _typeController = TextEditingController(text: ref.watch(registerDataControllerProvider)['security']);
-    // _passphraseController = TextEditingController(text: ref.watch(registerDataControllerProvider)['password']);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _ssidController.text = ref.watch(registerNetworkProvider)['ssid']!;
+      _typeController.text = ref.watch(registerNetworkProvider)['security']!;
+      _passwordController.text = ref.watch(registerNetworkProvider)['password']!;
+    });
   }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _ssidController.dispose();
-    _typeController.dispose();
-    _passphraseController.dispose();
-  }
-
 
   @override
   Widget build(BuildContext context) {
-
-    Map<String, String> wifiCredential = ref.watch(registerDataControllerProvider);
-    _ssidController = TextEditingController(text: wifiCredential['ssid']);
-    _typeController = TextEditingController(text: wifiCredential['security']);
-    _passphraseController = TextEditingController(text: wifiCredential['password']);
-
-    
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
       child: SingleChildScrollView(
@@ -63,23 +46,12 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
               children: [
                 IconButton(
                   onPressed: () => context.go('/device/setTimezone'),
-                  icon: Icon(Icons.arrow_back_ios, color: FlexiColor.primary, size: .03.sh),
+                  icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary),
                 ),
-                Text('Wifi Setup', style: FlexiFont.semiBold20),
+                Text('WiFi Setup', style: FlexiFont.semiBold20),
                 TextButton(
-                  onPressed: () {
-                    ref.watch(registerDataControllerProvider.notifier).setWifiCredential(
-                      _ssidController.text,
-                      _typeController.text,
-                      _passphraseController.text      
-                    );
-                    showModalBottomSheet(
-                      context: widget.rootContext,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => const DeviceSetupModal(),
-                    );    
-                  },
-                  child: Text('OK', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary)),
+                  onPressed: () => context.go('/device/register'), 
+                  child: Text('OK', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))
                 )
               ],
             ),
@@ -87,8 +59,8 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                qrcodeButton('Scan \nQR-CODE', Icons.qr_code, '/qrcode/scan'),
-                qrcodeButton('Load from \nImage', Icons.add_photo_alternate_outlined, '/qrcode/load')
+                qrcodeButton('Scan \nQR-CODE', Icons.qr_code, '/device/scanQrcode'),
+                qrcodeButton('Load from \nImage', Icons.add_photo_alternate_outlined, '/device/loadQrcode')
               ],
             ),
             SizedBox(height: .03.sh),
@@ -117,7 +89,7 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
             FlexiTextField(
               width: .89.sw,
               height: .06.sh,
-              controller: _passphraseController,
+              controller: _passwordController,
               backgroundColor: Colors.white,
               textStyle: FlexiFont.regular16,
             )
@@ -129,7 +101,7 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
 
   Widget qrcodeButton(String text, IconData icon, String routePath) {
     return InkWell(
-      onTap: () => context.go(routePath),
+      onTap:() => context.go(routePath),
       child: Container(
         width: .43.sw,
         height: .25.sh,
@@ -157,8 +129,8 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
             Text(text, style: FlexiFont.semiBold16.copyWith(color: FlexiColor.primary))
           ],
         ),
-      ),
+      )
     );
   }
-
+  
 }

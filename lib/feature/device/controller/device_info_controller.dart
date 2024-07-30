@@ -1,7 +1,7 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../model/device_info.dart';
+import '../model/device_model.dart';
 
 part 'device_info_controller.g.dart';
 
@@ -10,36 +10,37 @@ part 'device_info_controller.g.dart';
 @riverpod 
 class DeviceInfoController extends _$DeviceInfoController {
 
-  DeviceInfo? build() {
+  @override
+  DeviceModel build() {
     ref.onDispose(() {
       print('DeviceInfoController Dispose!!!');
     });
     print('DeviceInfoController Build!!!');
-    return null;
+    return DeviceModel();
   }
 
-  void setDevice(DeviceInfo device) {
+  void setDevice(DeviceModel device) {
     state = device;
   }
 
   void setName(String name) {
-    state = state!.copyWith(deviceName: name);
+    state = state.copyWith(deviceName: name);
   }
 
   void setVolume(int volume) {
-    state = state!.copyWith(volume: volume);
+    state = state.copyWith(volume: volume);
   }
 
   void registerBluetooth(String deviceName, String remoteId) {
-    state = state!.copyWith(
+    state = state.copyWith(
       bluetoothBonded: true,
       bluetooth: deviceName,
       bluetoothId: remoteId
     );
   }
 
-  void unregisterBluetooth(String deviceName, String remoteId) {
-    state = state!.copyWith(
+  void unregisterBluetooth() {
+    state = state.copyWith(
       bluetoothBonded: false,
       bluetooth: '',
       bluetoothId: ''
