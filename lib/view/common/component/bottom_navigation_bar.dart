@@ -24,7 +24,7 @@ class FlexiBottomNavigationBar extends ConsumerWidget {
         children: [
           tabButton(context, ref, 'Devices', Icons.connected_tv_outlined, '/device/list', 0),
           tabButton(context, ref, 'Contents', Icons.interests, '/content/list', 1),
-          tabButton(context, ref, 'Setting', Icons.settings, '/settings', 2)
+          tabButton(context, ref, 'Setting', Icons.settings, '/setting', 2)
         ],
       ),
     );

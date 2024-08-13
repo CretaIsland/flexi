@@ -14,7 +14,7 @@ import 'package:wifi_iot/wifi_iot.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 
 import '../../../common/constants/config.dart';
-import '../../setting/controller/user_controller.dart';
+import '../../setting/controller/auth_controller.dart';
 import '../model/device_model.dart';
 
 part 'device_register_controller.g.dart';
@@ -54,7 +54,7 @@ Future<Stream<List<String>>> accessibleDeviceHotspots(AccessibleDeviceHotspotsRe
     if(await WiFiScan.instance.canStartScan(askPermissions: true) == CanStartScan.yes) {
       await WiFiScan.instance.startScan();
       return WiFiScan.instance.onScannedResultsAvailable.map((event) {
-        return event.where((element) => element.ssid.isNotEmpty && element.ssid.contains(ref.watch(loginUser)!.enterprise)).map((e) {
+        return event.where((element) => element.ssid.isNotEmpty && element.ssid.contains(ref.watch(authControllerProvider)!.enterprise)).map((e) {
           return e.ssid;
         }).toList();
       });
@@ -78,18 +78,19 @@ class AccessibleDeviceBluetoothController extends _$AccessibleDeviceBluetoothCon
     });
     print('AccessibleDeviceBluetoothController Build!!!');
     _centeralManager = CentralManager();
-    _centeralManager.startDiscovery();
-    _centeralManager.discovered.listen((event) {
-      if(event.advertisement.name != null && event.advertisement.name!.contains(ref.watch(loginUser)!.enterprise)) {
-        final peripheral = event.peripheral;
-        final index = state.indexWhere((i) => i.peripheral == peripheral);
-        if (index < 0) {
-          state = [...state, event];
-        } else {
-          state.remove(event);
-          state = [...state];
+    _centeralManager.startDiscovery().then((value) {
+      _centeralManager.discovered.listen((event) {
+        if(event.advertisement.name != null && event.advertisement.name!.contains(ref.watch(authControllerProvider)!.enterprise)) {
+          final peripheral = event.peripheral;
+          final index = state.indexWhere((i) => i.peripheral == peripheral);
+          if (index < 0) {
+            state = [...state, event];
+          } else {
+            state.remove(event);
+            state = [...state];
+          }
         }
-      }
+      });
     });
     return List.empty();
   }
@@ -184,7 +185,6 @@ class RegisterDeviceIPController extends _$RegisterDeviceIPController {
     final wifiBroadcast = await info.getWifiBroadcast();
     print(wifiBroadcast);
     if(wifiBroadcast != null) {
-      print('sendData');
       print(wifiBroadcast);
       _socket.send(sendData, InternetAddress(wifiBroadcast), 4546);
     }
@@ -209,14 +209,10 @@ class BleCentralControll extends _$BleCentralControll {
 
    Future<void> sendData(Peripheral peripheral, Map<String, String> data) async {
     await _centeralManager.connect(peripheral);
-    print('connect');
     await discoverGATT(peripheral);
-    print('discoverGATT');
     if(_canWirteCharacteristic != null) {
-      print('discoverGATT is not null');
       await write(peripheral, utf8.encode(jsonEncode(data)), _canWirteCharacteristic!);
     }
-    print('disconnect'); 
     await disconnect(peripheral);
   }
 
@@ -247,10 +243,8 @@ class BleCentralControll extends _$BleCentralControll {
         value: fragmentedValue,
         type: type,
       );
-
       start = end;
     }
-    print('write end');
   }
 
   Future<void> disconnect(Peripheral peripheral) async {

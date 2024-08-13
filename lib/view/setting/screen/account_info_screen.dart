@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../feature/setting/controller/user_controller.dart';
+import '../../../feature/setting/controller/auth_controller.dart';
 import '../../../util/ui/colors.dart';
 import '../../../util/ui/fonts.dart';
+import '../../common/component/bottom_navigation_bar.dart';
 import '../../common/component/text_button.dart';
 import '../../common/component/text_field.dart';
 
@@ -28,9 +29,9 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _emailController.text = ref.watch(loginUser)!.email;
-      _nicknameController.text = ref.watch(loginUser)!.nickname;
-      _enterpriseController.text = ref.watch(loginUser)!.enterprise;
+      _emailController.text = ref.watch(authControllerProvider)!.email;
+      _nicknameController.text = ref.watch(authControllerProvider)!.nickname;
+      _enterpriseController.text = ref.watch(authControllerProvider)!.enterprise;
     });
   }
 
@@ -54,7 +55,7 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                onPressed: () => context.go('/settings'), 
+                onPressed: () => context.go('/setting'), 
                 icon: Icon(Icons.arrow_back_ios, size: .025.sh, color: FlexiColor.primary)
               ),
               Text('Account Detail', style: FlexiFont.semiBold20),
@@ -99,8 +100,8 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
             backgroundColor: Colors.white,
             textColor: FlexiColor.secondary,
             onPressed: () {
-              UserController().logout();
-              ref.invalidate(loginUser);
+              ref.watch(authControllerProvider.notifier).logout();
+              ref.invalidate(currentTabProvider);
               context.go('/login');
             }
           )

@@ -75,23 +75,23 @@ GoRouter router = GoRouter(
         ),
         // ********** Setting **********
         GoRoute(
-          path: '/settings',
+          path: '/setting',
           pageBuilder: (context, state) => const NoTransitionPage(child: SettingMenuScreen()),
         ),
         GoRoute(
-          path: '/settings/account',
+          path: '/setting/account',
           pageBuilder: (context, state) => const NoTransitionPage(child: AccountInfoScreen()),
         ),
         GoRoute(
-          path: '/settings/appSetting',
+          path: '/setting/appSetting',
           pageBuilder: (context, state) => const NoTransitionPage(child: AppSettingScreen()),
         ),
         GoRoute(
-          path: '/settings/appUpdate',
+          path: '/setting/appUpdate',
           pageBuilder: (context, state) => const NoTransitionPage(child: AppUpdateScreen()),
         ),
         GoRoute(
-          path: '/settings/deviceRecovery',
+          path: '/setting/deviceRecovery',
           pageBuilder: (context, state) => const NoTransitionPage(child: DeviceRecoveryScreen()),
         ),
       ]

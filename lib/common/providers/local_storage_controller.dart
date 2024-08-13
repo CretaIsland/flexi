@@ -10,8 +10,7 @@ class LocalStorageController extends _$LocalStorageController {
 
   int _pageIndex = 0;
   final int _pageCount = 30;
-  late PermissionState _permission;
-
+  late PermissionState _permissionState;
 
   @override
   List<AssetEntity> build() {
@@ -25,26 +24,26 @@ class LocalStorageController extends _$LocalStorageController {
 
   Future<void> initialize() async {
     try {
-      _permission = await PhotoManager.requestPermissionExtend();
-      if(_permission.isAuth) {
+      _permissionState = await PhotoManager.requestPermissionExtend();
+      if(_permissionState.isAuth) {
         var files = await PhotoManager.getAssetListPaged(page: _pageIndex, pageCount: _pageCount);
-        _pageIndex = 1;
         state = files;
-      }
-    } catch (error) {
-      print('error at LocalStorageController.initialize >>> $error');
-    }
-  }
-
-  Future<void> nextLoad() async {
-    try {
-      if(_permission.isAuth) {
-        var nextFiles = await PhotoManager.getAssetListPaged(page: _pageIndex, pageCount: _pageCount);
-        state = [...state, ...nextFiles];
         _pageIndex++;
       }
     } catch (error) {
-      print('error at LocalStorageController.nextLoad >>> $error');
+      print('Error at LocalStorageController.initialize >>> $error');
+    }
+  }
+
+  Future<void> loadNext() async {
+    try {
+      if(_permissionState.isAuth) {
+        var files = await PhotoManager.getAssetListPaged(page: _pageIndex, pageCount: _pageCount);
+        state = [...state, ...files];
+        _pageIndex++;
+      }
+    } catch (error) {
+      print('Error at LocalStorageController.loadNext >>> $error');
     }
   }
 

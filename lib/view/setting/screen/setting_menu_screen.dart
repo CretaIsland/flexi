@@ -19,13 +19,13 @@ class SettingMenuScreen extends StatelessWidget {
         children: [
           Text('Setting', style: FlexiFont.semiBold30),
           SizedBox(height: .05.sh),
-          menuButton(context, 'Account', '/settings/account'),
+          menuButton(context, 'Account', '/setting/account'),
           SizedBox(height: .03.sh),
-          menuButton(context, 'App Setting', '/settings/appSetting'),
+          menuButton(context, 'App Setting', '/setting/appSetting'),
           SizedBox(height: .03.sh),
-          menuButton(context, 'App Update', '/settings/appUpdate'),
+          menuButton(context, 'App Update', '/setting/appUpdate'),
           SizedBox(height: .03.sh),
-          menuButton(context, 'Device Recovery', '/settings/deviceRecovery'),
+          menuButton(context, 'Device Recovery', '/setting/deviceRecovery'),
         ]
       ),
     );

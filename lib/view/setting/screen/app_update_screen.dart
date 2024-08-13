@@ -37,7 +37,7 @@ class _AppUpdateScreenState extends State<AppUpdateScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                onPressed: () => context.go('/settings'), 
+                onPressed: () => context.go('/setting'), 
                 icon: Icon(Icons.arrow_back_ios, size: .025.sh, color: FlexiColor.primary)
               ),
               Text('App Update', style: FlexiFont.semiBold20),

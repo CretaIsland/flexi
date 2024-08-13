@@ -91,7 +91,7 @@ class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
           Expanded(
             child: NotificationListener<ScrollNotification>(
               onNotification: (notification) {
-                if(notification is ScrollEndNotification && notification.metrics.pixels == notification.metrics.maxScrollExtent) ref.watch(localStorageControllerProvider.notifier).nextLoad();
+                if(notification is ScrollEndNotification && notification.metrics.pixels == notification.metrics.maxScrollExtent) ref.watch(localStorageControllerProvider.notifier).loadNext();
                 return true;
               },
               child: GridView.builder(

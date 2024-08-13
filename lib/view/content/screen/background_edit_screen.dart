@@ -161,7 +161,7 @@ class _BackgroundEditScreenState extends ConsumerState<BackgroundEditScreen> {
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         if(notification is ScrollEndNotification && notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-          ref.watch(localStorageControllerProvider.notifier).nextLoad();
+          ref.watch(localStorageControllerProvider.notifier).loadNext();
         }
         return true;
       },

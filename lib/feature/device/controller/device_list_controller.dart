@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -10,7 +11,7 @@ part 'device_list_controller.g.dart';
 
 
 
-final selectDevicesProvider = StateProvider<List<DeviceModel>>((ref) => List.empty());
+final selectDevicesProvider = StateProvider((ref) => List.empty());
 
 @riverpod
 class ConnectedDeviceController extends _$ConnectedDeviceController {
@@ -45,14 +46,14 @@ class ConnectedDeviceController extends _$ConnectedDeviceController {
       var index = state.indexWhere((device) => device.deviceId == newDevice.deviceId);
       if(index != -1) {
         state[index] = newDevice;
-        state= [...state];
+        state = [...state];
       } else {
         state = [...state, newDevice];
       }
     });
   }
 
-  void refresh() {
+  void refresh() async {
     state = List.empty();
   }
 

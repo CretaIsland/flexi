@@ -23,7 +23,7 @@ class AppSettingScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                onPressed: () => context.go('/settings'), 
+                onPressed: () => context.go('/setting'), 
                 icon: Icon(Icons.arrow_back_ios, size: .025.sh, color: FlexiColor.primary)
               ),
               Text('App Setting', style: FlexiFont.semiBold20),

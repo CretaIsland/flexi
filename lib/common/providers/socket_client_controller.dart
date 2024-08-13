@@ -16,7 +16,6 @@ class SocketClientController extends _$SocketClientController {
 
   late IO.Socket _socket;
 
-
   @override
   void build() {
     ref.onDispose(() {
@@ -26,8 +25,7 @@ class SocketClientController extends _$SocketClientController {
       _socket.dispose();
     });
     print('SocketClientController Build!!!');
-    _socket = IO.io('',
-    IO.OptionBuilder()
+    _socket = IO.io('', IO.OptionBuilder()
       .setTransports(['websocket'])
       .disableAutoConnect()
       .setTimeout(10000)
@@ -35,16 +33,12 @@ class SocketClientController extends _$SocketClientController {
     );
   }
 
-
   Future<bool> connect(String ip) async {
     final completer = Completer<bool>();
-
     try {
-      if(_socket.io.uri == 'http://$ip:${NetworkConfig.socketIOPort}' && _socket.connected) {
-        print('already connected');
-        completer.complete(true);
-      }
-      
+      // already connected
+      if(_socket.io.uri == 'http://$ip:${NetworkConfig.socketIOPort}' && _socket.connected) completer.complete(true);
+
       _socket.io.uri = 'http://$ip:${NetworkConfig.socketIOPort}';
 
       _socket.onConnect((event) {
@@ -52,6 +46,7 @@ class SocketClientController extends _$SocketClientController {
           completer.complete(true);
         }
       });
+
       _socket.onConnectTimeout((event) {
         if(!completer.isCompleted) {
           completer.complete(false);
@@ -67,51 +62,52 @@ class SocketClientController extends _$SocketClientController {
   }
 
   Future<bool> disconnect() async {
-    print('socket disconnect');
     final completer = Completer<bool>();
-    completer.future.timeout((const Duration(seconds: 15)), onTimeout: () => false);
-    if(_socket.connected) {
+    completer.future.timeout((const Duration(seconds: 10)), onTimeout: () => false);
+    try {
+      // already disconnect
+      if(!_socket.connected) completer.complete(true);
+
       _socket.onDisconnect((event) {
-        completer.complete(true);
+        if(!completer.isCompleted) {
+          completer.complete(true);
+        }
       });
-      
+
       _socket.disconnect();
       return completer.future;
-    } else {
+    } catch (error) {
+      print('Error at SocketClientController.disconnect >>> $error');
       return false;
     }
   }
 
   Future<void> sendData(Map<String, dynamic> data) async {
     _socket.emit('message', utf8.encode(jsonEncode(data)));
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 500));
   }
 
-  Future<void> sendFile(File file, String fileName, Map<String, dynamic> data) async {
-    final Completer<void> completer = Completer<void>();
-    _socket.emit('fileStart', utf8.encode(fileName));
-
-    int total = await file.length();
-    int count = 0;
-    var openRead = file.openRead();
-
-    openRead.listen((bytes) {
-      count += bytes.length;
-      _socket.emitWithBinary('file', bytes);
-      print('$count/$total');
-    }, onDone: () async {
-      print('file done');
-      await Future.delayed(const Duration(seconds: 5));
-      print('fileDone!!!');
-      _socket.emit('fileDone');
-      String dataStr = jsonEncode(data);
-      print(data);
-      _socket.emit('message', utf8.encode(dataStr)); 
+  Future<void> sendFile(File file, String fileName) async {
+    final completer = Completer<void>();
+    try {
+      _socket.emit('fileStart', utf8.encode(fileName));
       await Future.delayed(const Duration(seconds: 1));
-      completer.complete();
-    });
+      int total = await file.length();
+      int count = 0;
+      
+      file.openRead().listen((bytes) {
+        count += bytes.length;
+        _socket.emitWithBinary('file', bytes);
+        print('$count/$total');
+      }, onDone: () {
+        _socket.emit('fileDone');
+        completer.complete();
+      });
 
-    return completer.future;
+      return completer.future;
+    } catch (error) {
+      print('Error at SocketClientController.sendFile >>> $error');
+    }
   }
 
 }
