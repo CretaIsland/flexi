@@ -5,11 +5,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-import '../../../common/providers/local_storage_controller.dart';
+import '../../../core/providers/local_storage_controller.dart';
 import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
-import '../../../util/ui/colors.dart';
-import '../../../util/ui/fonts.dart';
+import '../../../util/design/colors.dart';
+import '../../../util/design/fonts.dart';
 import '../../../util/utils.dart';
 import '../component/background_edit_preview.dart';
 

@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/controller/current_language_controller.dart';
-import '../../../util/ui/colors.dart';
-import '../../../util/ui/fonts.dart';
+import '../../../util/design/colors.dart';
+import '../../../util/design/fonts.dart';
 
 
 

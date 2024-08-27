@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../common/providers/socket_client_controller.dart';
+import '../../../core/providers/socket_client_controller.dart';
 import '../../../feature/device/controller/device_info_controller.dart';
-import '../../../util/ui/colors.dart';
-import '../../../util/ui/fonts.dart';
-import '../../common/component/text_field.dart';
+import '../../../util/design/colors.dart';
+import '../../../util/design/fonts.dart';
+import '../../../component/text_field.dart';
 import '../modal/bluetooth_list_modal.dart';
 
 

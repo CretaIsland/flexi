@@ -5,9 +5,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../feature/content/controller/content_send_controller.dart';
-import '../../../util/ui/colors.dart';
-import '../../../util/ui/fonts.dart';
-import '../../common/component/search_bar.dart';
+import '../../../util/design/colors.dart';
+import '../../../util/design/fonts.dart';
+import '../../../component/search_bar.dart';
 import '../modal/content_send_modal.dart';
 
 

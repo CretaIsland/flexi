@@ -5,9 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../feature/device/controller/device_register_controller.dart';
-import '../../../util/ui/colors.dart';
-import '../../../util/ui/fonts.dart';
-import '../../common/component/search_bar.dart';
+import '../../../util/design/colors.dart';
+import '../../../util/design/fonts.dart';
+import '../../../component/search_bar.dart';
 
 
 

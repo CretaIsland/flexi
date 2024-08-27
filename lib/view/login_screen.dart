@@ -5,9 +5,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
 import '../feature/setting/controller/auth_controller.dart';
-import '../util/ui/colors.dart';
-import '../util/ui/fonts.dart';
-import 'common/component/text_button.dart';
+import '../util/design/colors.dart';
+import '../util/design/fonts.dart';
+import '../component/text_button.dart';
 
 
 

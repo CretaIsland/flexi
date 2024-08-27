@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'view/common/screen/home_screen.dart';
+import 'view/home_screen.dart';
 import 'view/content/screen/background_edit_screen.dart';
 import 'view/content/screen/content_info_screen.dart';
 import 'view/content/screen/content_list_screen.dart';

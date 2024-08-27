@@ -8,9 +8,9 @@ import 'package:go_router/go_router.dart';
 import '../../../feature/device/controller/device_info_controller.dart';
 import '../../../feature/device/controller/device_list_controller.dart';
 import '../../../feature/setting/controller/app_setting_controller.dart';
-import '../../../util/ui/colors.dart';
-import '../../../util/ui/fonts.dart';
-import '../../common/component/search_bar.dart';
+import '../../../util/design/colors.dart';
+import '../../../util/design/fonts.dart';
+import '../../../component/search_bar.dart';
 import '../modal/device_reset_modal.dart';
 
 

@@ -13,7 +13,7 @@ import 'package:timezone/data/latest.dart';
 import 'package:wifi_iot/wifi_iot.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 
-import '../../../common/constants/config.dart';
+import '../../../core/constants/config.dart';
 import '../../setting/controller/auth_controller.dart';
 import '../model/device_model.dart';
 

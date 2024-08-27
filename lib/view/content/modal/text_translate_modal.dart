@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/controller/current_language_controller.dart';
-import '../../../util/ui/colors.dart';
-import '../../common/component/text_button.dart';
+import '../../../util/design/colors.dart';
+import '../../../component/text_button.dart';
 import '../component/language_list_bar.dart';
 
 

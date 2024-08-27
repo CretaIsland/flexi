@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../util/ui/colors.dart';
-import '../../../util/ui/fonts.dart';
+import '../../../util/design/colors.dart';
+import '../../../util/design/fonts.dart';
 
 
 

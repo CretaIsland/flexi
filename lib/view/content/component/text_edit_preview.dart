@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/model/content_model.dart';
-import '../../../util/ui/colors.dart';
+import '../../../util/design/colors.dart';
 import '../../../util/utils.dart';
 import '../screen/text_edit_screen.dart';
 import 'content_clipper.dart';

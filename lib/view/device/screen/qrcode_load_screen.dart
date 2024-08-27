@@ -7,10 +7,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
 
-import '../../../common/providers/local_storage_controller.dart';
+import '../../../core/providers/local_storage_controller.dart';
 import '../../../feature/device/controller/device_register_controller.dart';
-import '../../../util/ui/colors.dart';
-import '../../../util/ui/fonts.dart';
+import '../../../util/design/colors.dart';
+import '../../../util/design/fonts.dart';
 
 
 

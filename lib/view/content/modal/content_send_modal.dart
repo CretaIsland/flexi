@@ -6,13 +6,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../common/providers/socket_client_controller.dart';
+import '../../../core/providers/socket_client_controller.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../feature/content/controller/content_send_controller.dart';
-import '../../../util/ui/colors.dart';
-import '../../../util/ui/fonts.dart';
-import '../../common/component/text_button.dart';
-import '../../common/screen/progress_screen.dart';
+import '../../../util/design/colors.dart';
+import '../../../util/design/fonts.dart';
+import '../../../component/text_button.dart';
+import '../../../component/progress_screen.dart';
 
 
 

@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../common/constants/firebase_options.dart';
+import '../../../core/constants/firebase_options.dart';
 import '../../../util/utils.dart';
 import '../model/user_model.dart';
 import '../repository/setting_repository.dart';
