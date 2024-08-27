@@ -14,7 +14,7 @@ import 'package:wifi_iot/wifi_iot.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 
 import '../../../core/constants/config.dart';
-import '../../setting/controller/auth_controller.dart';
+import '../../setting/controller/user_controller.dart';
 import '../model/device_model.dart';
 
 part 'device_register_controller.g.dart';
@@ -54,7 +54,7 @@ Future<Stream<List<String>>> accessibleDeviceHotspots(AccessibleDeviceHotspotsRe
     if(await WiFiScan.instance.canStartScan(askPermissions: true) == CanStartScan.yes) {
       await WiFiScan.instance.startScan();
       return WiFiScan.instance.onScannedResultsAvailable.map((event) {
-        return event.where((element) => element.ssid.isNotEmpty && element.ssid.contains(ref.watch(authControllerProvider)!.enterprise)).map((e) {
+        return event.where((element) => element.ssid.isNotEmpty && element.ssid.contains(ref.watch(userControllerProvider)!.enterprise)).map((e) {
           return e.ssid;
         }).toList();
       });
@@ -80,7 +80,7 @@ class AccessibleDeviceBluetoothController extends _$AccessibleDeviceBluetoothCon
     _centeralManager = CentralManager();
     _centeralManager.startDiscovery().then((value) {
       _centeralManager.discovered.listen((event) {
-        if(event.advertisement.name != null && event.advertisement.name!.contains(ref.watch(authControllerProvider)!.enterprise)) {
+        if(event.advertisement.name != null && event.advertisement.name!.contains(ref.watch(userControllerProvider)!.enterprise)) {
           final peripheral = event.peripheral;
           final index = state.indexWhere((i) => i.peripheral == peripheral);
           if (index < 0) {

@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../feature/setting/controller/auth_controller.dart';
-import '../../../util/design/colors.dart';
 import '../../../component/bottom_navigation_bar.dart';
 import '../../../component/text_button.dart';
 import '../../../component/text_field.dart';
+import '../../../feature/setting/controller/user_controller.dart';
+import '../../../util/design/colors.dart';
 
 
 
@@ -20,28 +20,27 @@ class AccountInfoScreen extends ConsumerStatefulWidget {
 
 class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
 
-  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nicknameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _enterpriseController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _emailController.text = ref.watch(authControllerProvider)!.email;
-      _nicknameController.text = ref.watch(authControllerProvider)!.nickname;
-      _enterpriseController.text = ref.watch(authControllerProvider)!.enterprise;
+      _nicknameController.text = ref.watch(userControllerProvider)!.nickname;
+      _emailController.text = ref.watch(userControllerProvider)!.email;
+      _enterpriseController.text = ref.watch(userControllerProvider)!.enterprise;
     });
   }
 
   @override
   void dispose() {
     super.dispose();
-    _emailController.dispose();
     _nicknameController.dispose();
+    _emailController.dispose();
     _enterpriseController.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -55,11 +54,11 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
             children: [
               IconButton(
                 onPressed: () => context.go('/setting'), 
-                icon: Icon(Icons.arrow_back_ios, size: .025.sh, color: FlexiColor.primary)
+                icon: Icon(Icons.arrow_back_ios_rounded, color: FlexiColor.primary, size: .025.sh)
               ),
               Text('Account Detail', style: Theme.of(context).textTheme.displaySmall),
               SizedBox(width: .05.sh)
-            ],
+            ]
           ),
           SizedBox(height: .03.sh),
           Text('User Name', style: Theme.of(context).textTheme.bodySmall),
@@ -95,8 +94,8 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
             text: 'Logout',
             backgroundColor: Colors.white,
             textColor: FlexiColor.secondary,
-            onPressed: () {
-              ref.watch(authControllerProvider.notifier).logout();
+            onPressed: () async {
+              await ref.watch(userControllerProvider.notifier).logout();
               ref.invalidate(currentTabProvider);
               context.go('/login');
             }
@@ -105,5 +104,4 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
       )
     );
   }
-
 }

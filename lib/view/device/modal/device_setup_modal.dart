@@ -7,7 +7,7 @@ import 'package:wifi_iot/wifi_iot.dart';
 
 import '../../../core/controller/socket_client_controller.dart';
 import '../../../feature/device/controller/device_register_controller.dart';
-import '../../../feature/setting/controller/app_setting_controller.dart';
+import '../../../feature/setting/controller/setting_controller.dart';
 import '../../../util/design/colors.dart';
 import '../../../component/text_button.dart';
 import '../../../component/progress_overlay.dart';
@@ -46,7 +46,7 @@ class DeviceSetupModal extends ConsumerWidget {
               var successTask = 0;
               OverlayEntry loadingScreen = OverlayEntry(builder: (context) => const ProgressOverlay());
 
-              if(ref.watch(appSettingControllerProvider)['registerOption'] == 'Hotspot') {
+              if(ref.watch(settingControllerProvider)['registerOption'] == 'Hotspot') {
                 ref.watch(totalTaskProvider.notifier).state = ref.read(selectDeviceHotspotsProvider).length;
                 Navigator.of(context).overlay!.insert(loadingScreen);
 

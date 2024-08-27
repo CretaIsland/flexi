@@ -24,14 +24,14 @@ class SettingMenuScreen extends StatelessWidget {
           SizedBox(height: .03.sh),
           menuButton(context, 'App Update', '/setting/appUpdate'),
           SizedBox(height: .03.sh),
-          menuButton(context, 'Device Recovery', '/setting/deviceRecovery'),
-        ]
-      ),
+          menuButton(context, 'Device Recovery', '/setting/deviceRecovery')
+        ],
+      )
     );
   }
 
   Widget menuButton(BuildContext context, String text, String routePath) {
-    return InkWell(
+    return GestureDetector(
       onTap: () => context.go(routePath),
       child: Container(
         width: .89.sw,
@@ -44,12 +44,11 @@ class SettingMenuScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(text, style: Theme.of(context).textTheme.bodySmall),
-            Icon(Icons.arrow_forward_ios, size: .03.sh, color: FlexiColor.grey[400])
+            Text(text, style: Theme.of(context).textTheme.bodyMedium),
+            Icon(Icons.arrow_forward_ios_rounded, size: .03.sh, color: FlexiColor.grey[600])
           ]
-        ),
-      ),
+        )
+      )
     );
   }
-
 }

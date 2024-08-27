@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../feature/device/controller/device_info_controller.dart';
 import '../../../feature/device/controller/device_list_controller.dart';
-import '../../../feature/setting/controller/app_setting_controller.dart';
+import '../../../feature/setting/controller/setting_controller.dart';
 import '../../../util/design/colors.dart';
 import '../../../component/search_bar.dart';
 import '../modal/device_reset_modal.dart';
@@ -61,7 +61,7 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
                         builder: (context) => const DeviceResetModal(),
                       );
                     } else {
-                      if(Platform.isIOS && ref.watch(appSettingControllerProvider)['registerOption'] == 'Hotspot') {
+                      if(Platform.isIOS && ref.watch(settingControllerProvider)['registerOption'] == 'Hotspot') {
 
                       }
                       context.go('/device/setTimezone');

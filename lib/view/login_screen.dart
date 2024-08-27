@@ -4,9 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
-import '../feature/setting/controller/auth_controller.dart';
-import '../util/design/colors.dart';
 import '../component/text_button.dart';
+import '../feature/setting/controller/user_controller.dart';
+import '../util/design/colors.dart';
 
 
 
@@ -19,14 +19,13 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
 
+  final OutlineInputBorder loginFieldBorder = OutlineInputBorder(
+    borderSide: const BorderSide(color: Colors.white),
+    borderRadius: BorderRadius.circular(.01.sh)
+  );
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _hidePassword = true;
-
-  final OutlineInputBorder _loginformBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(.01.sh),
-    borderSide: const BorderSide(color: Colors.white)
-  );
 
   @override
   void dispose() {
@@ -47,56 +46,50 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               SizedBox(
                 width: 1.sw,
                 height: .45.sh,
-                child: Image.asset(
-                  'assets/image/login_illustration.png',
-                )
+                child: Image.asset('assets/image/login_illustration.png')
               ),
               SizedBox(height: .03.sh),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Login',style: Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.white)),
+                  Text('Login', style: Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.white)),
                   SizedBox(height: .005.sh),
                   Text('Hi there! Nice to see you', style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white)),
                   SizedBox(height: .025.sh),
-                  // email text field
                   SizedBox(
                     width: .82.sw,
                     height: .06.sh,
                     child: TextField(
                       controller: _emailController,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white, decorationThickness: 0),
                       decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(left: .025.sw),
                         hintText: 'Email',
                         hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),
-                        contentPadding: const EdgeInsets.only(left: 12),
-                        enabledBorder: _loginformBorder,
-                        focusedBorder: _loginformBorder
-                      ),
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white)
+                        enabledBorder: loginFieldBorder,
+                        focusedBorder: loginFieldBorder
+                      )
                     )
                   ),
                   SizedBox(height: .02.sh),
-                  // password text field
                   SizedBox(
                     width: .82.sw,
                     height: .06.sh,
                     child: TextField(
                       controller: _passwordController,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white, decorationThickness: 0),
+                      obscureText: _hidePassword,
                       decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(left: .025.sw),
                         hintText: 'Password',
                         hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),
-                        contentPadding: const EdgeInsets.only(left: 12),
+                        enabledBorder: loginFieldBorder,
+                        focusedBorder: loginFieldBorder,
                         suffixIcon: GestureDetector(
-                          onTap: () => setState(() {
-                            _hidePassword = !_hidePassword;
-                          }),
-                          child: Icon(_hidePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined, size: .025.sh, color: Colors.white),
-                        ),
-                        enabledBorder: _loginformBorder,
-                        focusedBorder: _loginformBorder
-                      ),
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),
-                      obscureText: _hidePassword
+                          onTap: () => setState(() => _hidePassword = !_hidePassword),
+                          child: Icon(_hidePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined, size: .025.sh, color: Colors.white)
+                        )
+                      )
                     )
                   ),
                   SizedBox(height: .025.sh),
@@ -105,38 +98,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     height: .06.sh, 
                     text: 'Login',
                     backgroundColor: FlexiColor.secondary,
-                    onPressed: () {
-                      print('button');
-                      ref.watch(authControllerProvider.notifier).loginByEmail(_emailController.text, _passwordController.text).then((value) {
-                        if(value) {
-                          context.go('/device/list');
-                        } else {
-                          Fluttertoast.showToast(
-                            msg: 'login fail',
-                            backgroundColor: Colors.black.withOpacity(.8),
-                            textColor: Colors.white,
-                            fontSize: .02375.sh
-                          );
-                        }
-                      });
+                    onPressed: () async {
+                      if(await ref.watch(userControllerProvider.notifier).loginByEmail(_emailController.text, _passwordController.text)) {
+                        context.go('/device/list');
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: 'Incorrect email or password',
+                          backgroundColor: Colors.black.withOpacity(.8),
+                          textColor: Colors.white,
+                          fontSize: .02375.sh
+                        );
+                      }
                     }
                   ),
                   SizedBox(height: .035.sh),
                   GestureDetector(
-                    onTap: () {
-                      ref.watch(authControllerProvider.notifier).loginByGoogle().then((value) {
-                        if(value) {
-                          context.go('/device/list');
-                        } else {
-                          Fluttertoast.showToast(
-                            msg: 'login fail',
-                            backgroundColor: Colors.black.withOpacity(.8),
-                            textColor: Colors.white,
-                            fontSize: .02375.sh
-                          );
-                        }
-                      });
-                    },
                     child: Container(
                       width: .82.sw,
                       height: .06.sh,
@@ -152,11 +128,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           Text('Login by Google', style: Theme.of(context).textTheme.labelLarge)
                         ]
                       )
-                    )
+                    ),
+                    onTap: () async {
+                      if(await ref.watch(userControllerProvider.notifier).loginByGoogle()) {
+                        context.go('/device/list');
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: 'Fail google login',
+                          backgroundColor: Colors.black.withOpacity(.8),
+                          textColor: Colors.white,
+                          fontSize: .02375.sh
+                        );
+                      }
+                    }
                   )
                 ]
               )
-            ]  
+            ]
           )
         )
       )
