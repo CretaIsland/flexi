@@ -1,13 +1,13 @@
+import 'package:flexi/feature/device/controller/device_register_controller.dart';
+import 'package:flexi/feature/setting/controller/setting_controller.dart';
+import 'package:flexi/view/device/modal/device_setup_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../feature/device/controller/device_register_controller.dart';
-import '../../../feature/setting/controller/setting_controller.dart';
-import '../../../util/design/colors.dart';
 import '../../../component/search_bar.dart';
-import '../modal/device_setup_modal.dart';
+import '../../../util/design/colors.dart';
 
 
 
@@ -25,6 +25,7 @@ class _DeviceRegisterScreenState extends ConsumerState<DeviceRegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(registerDataControllerProvider);
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
       child: SingleChildScrollView(
@@ -34,152 +35,152 @@ class _DeviceRegisterScreenState extends ConsumerState<DeviceRegisterScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: () => context.go('/device/setWifi'),
-                  icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary),
+                  onPressed: () => context.go('/device/setWifi'), 
+                  icon: Icon(Icons.arrow_back_ios_rounded, size: .025.sh, color: FlexiColor.primary)
                 ),
                 Text('Select Device', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
-                  onPressed: () async {
-                    showModalBottomSheet(
-                      backgroundColor: Colors.transparent,
-                      context: widget.rootContext,
-                      builder: (context) => const DeviceSetupModal()
-                    );
-                  },
+                  onPressed: () => showModalBottomSheet(
+                    backgroundColor: Colors.transparent,
+                    context: widget.rootContext,
+                    builder: (context) => const DeviceSetupModal()
+                  ),
                   child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
-              ],
+              ]
             ),
             SizedBox(height: .03.sh),
             FlexiSearchBar(
               hintText: 'Search your device',
-              onChanged: (value) => setState(() {
-                _searchText = value;
-              })
+              onChanged: (value) => setState(() => _searchText = value),
             ),
-            SizedBox(height: .02.sh),
+            SizedBox(height: .03.sh),
             Container(
               width: .89.sw,
-              height: .7.sh,
+              height: .65.sh,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(.015.sh)
               ),
-              child: ref.watch(settingControllerProvider)['registerOption'] == 'Hotspot' ? accessibleDeviceHotspots() : accessibleDeviceBluetooths(),
+              child: ref.watch(settingControllerProvider)['registerType'] == 'Hotspot' ? 
+                hotspotListView() : 
+                bluetoothListView()
             )
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget accessibleDeviceHotspots() {
-    var selectDevices = ref.watch(selectDeviceHotspotsProvider);
-    return ref.watch(accessibleDeviceHotspotsProvider).when(
-      data: (stream) {
-        return StreamBuilder(
-          stream: stream, 
-          builder: (context, snapshot) {
-            var hotspots = snapshot.data ?? List.empty();
-            if(hotspots.isEmpty) {
-              return Center(
-                child: CircularProgressIndicator(color: FlexiColor.primary),
-              );
-            }
-            return ListView.builder(
-              padding: EdgeInsets.zero,
-              itemCount: hotspots.length,
-              itemBuilder: (context, index) => hotspots[index].contains(_searchText) ? GestureDetector(
-                onTap: () {
-                  if(selectDevices.contains(hotspots[index])) {
-                    selectDevices.remove(hotspots[index]);
-                    ref.watch(selectDeviceHotspotsProvider.notifier).state = [...selectDevices];
-                  } else {
-                    ref.watch(selectDeviceHotspotsProvider.notifier).state = [...selectDevices, hotspots[index]];
-                  }
-                },
-                child: Container(
-                  padding: EdgeInsets.all(.02.sh),
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: FlexiColor.grey[400]!))),
-                  child: Row(
-                    children: [
-                      selectDevices.contains(snapshot.data![index]) ?
-                        Icon(Icons.check_circle, size: .025.sh, color: FlexiColor.primary) :
-                        Icon(Icons.check_circle_outline, size: .025.sh, color: FlexiColor.grey[600]),
-                      const SizedBox(width: 12),
-                      Icon(Icons.wifi, color: Colors.black, size: .025.sh),
-                      const SizedBox(width: 8),
-                      SizedBox(
-                        width: .6.sw,
-                        child: Text(
-                          hotspots[index], 
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        )
-                      )
-                    ],
-                  ),
-                ),
-              ) : const SizedBox.shrink(),
-            );
-          },
-        );
-      },
-      error: (error, stackTrace) => Center(
-        child: Text('error during scan hotspot', style: Theme.of(context).textTheme.bodySmall),
-      ), 
-      loading: () => Center(
-        child: CircularProgressIndicator(color: FlexiColor.primary),
+        )
       )
     );
   }
 
-  Widget accessibleDeviceBluetooths() {
-    var selectDevices = ref.watch(selectDeviceBluetoothsProvider);
-    var devices = ref.watch(accessibleDeviceBluetoothControllerProvider);
-    if(devices.isEmpty) {
-      return Center(
-        child: CircularProgressIndicator(color: FlexiColor.primary),
-      );
-    }
-    return ListView.builder(
+  Widget hotspotListView() {
+    var selectHotspots = ref.watch(selectHotspotsProvider);
+    return ref.watch(accessibleDeviceHotspotsProvider).when(
+      data: (stream) => StreamBuilder(
+        stream: stream, 
+        builder: (context, snapshot) {
+          var hotspots = snapshot.data ?? List.empty();
+          return hotspots.isEmpty ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: .03.sh,
+                height: .03.sh,
+                child: CircularProgressIndicator(
+                  color: FlexiColor.grey[600],
+                  strokeWidth: 2.5
+                )
+              ),
+              SizedBox(height: .01.sh),
+              Text('Scanning for nearby device(s)', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600]))
+            ]
+          ) : ListView.builder(
+            padding: EdgeInsets.zero,
+            itemCount: hotspots.length,
+            itemBuilder: (context, index) => GestureDetector(
+              onTap: () {
+                if(selectHotspots.contains(hotspots[index])) {
+                  selectHotspots.remove(hotspots[index]);
+                  ref.watch(selectHotspotsProvider.notifier).state = [...selectHotspots];
+                } else {  
+                  ref.watch(selectHotspotsProvider.notifier).state = [...selectHotspots, hotspots[index]];
+                }
+              },
+              child: Container(
+                padding: EdgeInsets.all(.02.sh),
+                decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(color: FlexiColor.grey[400]!))
+                ),
+                child: Row(
+                  children: [
+                    selectHotspots.contains(hotspots[index]) ? 
+                      Icon(Icons.check_circle_rounded, size: .025.sh, color: FlexiColor.primary) :
+                      Icon(Icons.check_circle_outline_rounded, size: .025.sh, color: FlexiColor.grey[600]),
+                    SizedBox(width: .025.sw),
+                    Icon(Icons.wifi_rounded, size: .025.sh, color: FlexiColor.primary),
+                    SizedBox(width: .025.sw),
+                    Text(hotspots[index], style: Theme.of(context).textTheme.bodyMedium)
+                  ]
+                )
+              )
+            ),
+          );
+        }
+      ),
+      error: (error, stackTrace) => Center(
+        child: Text('Error during scan WiFi', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600]))
+      ), 
+      loading: () => const SizedBox.shrink()
+    );
+  }
+
+  Widget bluetoothListView() {
+    var selectBluetooths = ref.watch(selectBluetoothsProvider);
+    var bluetooths = ref.watch(accessibleDeviceBluetoothsProvider);
+    return bluetooths.isEmpty ? Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: .03.sh,
+          height: .03.sh,
+          child: CircularProgressIndicator(
+            color: FlexiColor.grey[600],
+            strokeWidth: 2.5
+          )
+        ),
+        SizedBox(height: .01.sh),
+        Text('Scanning for nearby device(s)', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600]))
+      ]
+    ) : ListView.builder(
       padding: EdgeInsets.zero,
-      itemCount: devices.length,
-      itemBuilder: (context, index) => devices[index].advertisement.name!.contains(_searchText) ? GestureDetector(
+      itemCount: bluetooths.length,
+      itemBuilder: (context, index) => bluetooths[index].advertisement.name!.contains(_searchText) ? GestureDetector(
         onTap: () {
-          if(selectDevices.contains(devices[index])) {
-            selectDevices.remove(devices[index]);
-            ref.watch(selectDeviceBluetoothsProvider.notifier).state = [...selectDevices];
-          } else {
-            ref.watch(selectDeviceBluetoothsProvider.notifier).state = [...selectDevices, devices[index]];
+          if(selectBluetooths.contains(bluetooths[index])) {
+            selectBluetooths.remove(bluetooths[index]);
+            ref.watch(selectBluetoothsProvider.notifier).state = [...selectBluetooths];
+          } else {  
+            ref.watch(selectBluetoothsProvider.notifier).state = [...selectBluetooths, bluetooths[index]];
           }
         },
         child: Container(
           padding: EdgeInsets.all(.02.sh),
-          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: FlexiColor.grey[400]!))),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: FlexiColor.grey[400]!))
+          ),
           child: Row(
             children: [
-              selectDevices.contains(devices[index]) ?
-                Icon(Icons.check_circle, size: .025.sh, color: FlexiColor.primary) :
-                Icon(Icons.check_circle_outline, size: .025.sh, color: FlexiColor.grey[600]),
-              const SizedBox(width: 12),
-              Icon(Icons.bluetooth, color: Colors.black, size: .025.sh),
-              const SizedBox(width: 8),
-              SizedBox(
-                width: .6.sw,
-                child: Text(
-                  devices[index].advertisement.name!, 
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                )
-              )
-            ],
-          ),
-        ),
-      ) : const SizedBox.shrink(),
+              selectBluetooths.contains(bluetooths[index]) ? 
+                Icon(Icons.check_circle_rounded, size: .025.sh, color: FlexiColor.primary) :
+                Icon(Icons.check_circle_outline_rounded, size: .025.sh, color: FlexiColor.grey[600]),
+              SizedBox(width: .025.sw),
+              Icon(Icons.bluetooth_rounded, size: .025.sh, color: FlexiColor.primary),
+              SizedBox(width: .025.sw),
+              Text(bluetooths[index].advertisement.name!, style: Theme.of(context).textTheme.bodyMedium)
+            ]
+          )
+        )
+      ) : const SizedBox.shrink()
     );
   }
-  
+
 }

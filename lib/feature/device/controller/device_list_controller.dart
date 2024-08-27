@@ -11,7 +11,7 @@ part 'device_list_controller.g.dart';
 
 
 
-final selectDevicesProvider = StateProvider((ref) => List.empty());
+final selectDevicesProvider = StateProvider<List<DeviceModel>>((ref) => List.empty());
 
 @riverpod
 class ConnectedDeviceController extends _$ConnectedDeviceController {
@@ -21,17 +21,16 @@ class ConnectedDeviceController extends _$ConnectedDeviceController {
   @override
   List<DeviceModel> build() {
     ref.onDispose(() {
-      print('ConnectedDeviceController Dispose!!!');
+      print('ConnectedDeviceController Dispose');
       _socket.close();
     });
-    print('ConnectedDeviceController Build!!!');
+    print('ConnectedDeviceController Build');
     initialize();
     return List.empty();
   }
 
   void initialize() async {
     _socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, NetworkConfig.udpBroadcastPort);
-
     _socket.listen((event) {
       Datagram? d = _socket.receive();
       if(d == null) return;
@@ -53,7 +52,7 @@ class ConnectedDeviceController extends _$ConnectedDeviceController {
     });
   }
 
-  void refresh() async {
+  void refresh() {
     state = List.empty();
   }
 

@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-import '../../../core/controller/local_storage_controller.dart';
+import '../../../core/controller/gallery_controller.dart';
 import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../util/design/colors.dart';
@@ -154,12 +154,12 @@ class _BackgroundEditScreenState extends ConsumerState<BackgroundEditScreen> {
   }
 
   Widget galleryContent() {
-    final localStorageFiles = ref.watch(localStorageControllerProvider);     
+    final localStorageFiles = ref.watch(galleryControllerProvider);     
 
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         if(notification is ScrollEndNotification && notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-          ref.watch(localStorageControllerProvider.notifier).loadNext();
+          ref.watch(galleryControllerProvider.notifier).loadNext();
         }
         return true;
       },

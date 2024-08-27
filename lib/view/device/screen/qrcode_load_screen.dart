@@ -7,7 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
 
-import '../../../core/controller/local_storage_controller.dart';
+import '../../../core/controller/gallery_controller.dart';
 import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../util/design/colors.dart';
 
@@ -32,11 +32,11 @@ class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
       for(var data in result) {
         if(data.type == BarcodeType.wifi) {
           var wifiInfo = data.value as BarcodeWifi;
-          ref.watch(registerNetworkProvider.notifier).state = {
-            'ssid': wifiInfo.ssid ?? '',
-            'security': wifiInfo.encryptionType == null ? wifiEncryptionTypes[0] : wifiEncryptionTypes[wifiInfo.encryptionType!],
-            'password': wifiInfo.password ?? ''
-          };
+          ref.watch(registerDataControllerProvider.notifier).setNetwork(
+            wifiInfo.ssid ?? '', 
+            wifiInfo.encryptionType == null ? wifiEncryptionTypes[0] : wifiEncryptionTypes[wifiInfo.encryptionType!], 
+            wifiInfo.password ?? ''
+          );
           return true;
         }
       }
@@ -48,7 +48,8 @@ class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var localFiles = ref.watch(localStorageControllerProvider);
+    ref.watch(registerDataControllerProvider);
+    var localFiles = ref.watch(galleryControllerProvider);
     return Scaffold(
       backgroundColor: FlexiColor.backgroundColor,
       body: Column(
@@ -90,7 +91,7 @@ class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
           Expanded(
             child: NotificationListener<ScrollNotification>(
               onNotification: (notification) {
-                if(notification is ScrollEndNotification && notification.metrics.pixels == notification.metrics.maxScrollExtent) ref.watch(localStorageControllerProvider.notifier).loadNext();
+                if(notification is ScrollEndNotification && notification.metrics.pixels == notification.metrics.maxScrollExtent) ref.watch(galleryControllerProvider.notifier).loadNext();
                 return true;
               },
               child: GridView.builder(

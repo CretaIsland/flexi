@@ -54,7 +54,7 @@ Stream<bool> bluetoothState(BluetoothStateRef ref) {
   try {
     return FlutterBluePlus.adapterState.map((event) => event == BluetoothAdapterState.on);
   } catch (error) {
-    print('error at bluetoothState >>> $error');
+    print('Error at BluetoothStateProvider >>> $error');
   }
   return const Stream.empty();
 }
@@ -70,13 +70,16 @@ Future<List<Map<String, String>>> bondedBluetooths(BondedBluetoothsRef ref) asyn
       };
     }).toList();
   } catch (error) {
-    print('error at bondedBluetooths >>> $error');
+    print('error at BondedBluetoothsProvider >>> $error');
   }
   return List.empty();
 }
 
 @riverpod
 Future<Stream<List<Map<String, String>>>> accessibleBluetooths(AccessibleBluetoothsRef ref) async {
+  ref.onDispose(() {
+    FlutterBluePlus.stopScan();
+  });
   try {
     await FlutterBluePlus.startScan();
     return FlutterBluePlus.onScanResults.map((results) {
@@ -88,7 +91,7 @@ Future<Stream<List<Map<String, String>>>> accessibleBluetooths(AccessibleBluetoo
       }).toList();
     });
   } catch (error) {
-    print('error at accessibilityBluetooths >>> $error');
+    print('error at AccessibilityBluetoothsProvider >>> $error');
   }
   return const Stream.empty();
 }

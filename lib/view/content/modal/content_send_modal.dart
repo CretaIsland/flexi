@@ -69,7 +69,7 @@ class ContentSendModal extends ConsumerWidget {
                       data.remove('textSizeType');
                       data.remove('filePath');
                       data.remove('fileThumbnail');
-                      await ref.watch(socketClientControllerProvider.notifier).sendFile(contentFile, content.fileName);
+                      await ref.watch(socketClientControllerProvider.notifier).sendFile(content.fileName, contentFile);
                       await ref.watch(socketClientControllerProvider.notifier).sendData(data);
                       successTask += 1;
                     }

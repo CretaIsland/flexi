@@ -58,7 +58,7 @@ GoRouter router = GoRouter(
         ),
         GoRoute(
           path: '/device/setWifi',
-          pageBuilder: (context, state) => const NoTransitionPage(child: WifiSetScreen()),
+          pageBuilder: (context, state) => NoTransitionPage(child: WifiSetScreen(rootContext: context)),
         ),
         GoRoute(
           path: '/device/register',
@@ -98,11 +98,11 @@ GoRouter router = GoRouter(
     ),
     // ********** Qrcode **********
     GoRoute(
-      path: '/device/scanQrcode',
+      path: '/qrcode/scan',
       pageBuilder: (context, state) => const NoTransitionPage(child: QrcodeScanScreen()),
     ),
     GoRoute(
-      path: '/device/loadQrcode',
+      path: '/qrcode/load',
       pageBuilder: (context, state) => const NoTransitionPage(child: QrcodeLoadScreen()),
     ),
     // ********** Edit Content **********

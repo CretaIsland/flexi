@@ -1,16 +1,21 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../feature/device/controller/device_register_controller.dart';
-import '../../../util/design/colors.dart';
 import '../../../component/text_field.dart';
+import '../../../feature/device/controller/device_register_controller.dart';
+import '../../../feature/setting/controller/setting_controller.dart';
+import '../../../util/design/colors.dart';
+import '../modal/device_setup_modal.dart';
 
 
 
 class WifiSetScreen extends ConsumerStatefulWidget {
-  const WifiSetScreen({super.key});
+  const WifiSetScreen({super.key, required this.rootContext});
+  final BuildContext rootContext;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _WifiSetScreenState();
@@ -26,14 +31,23 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _ssidController.text = ref.watch(registerNetworkProvider)['ssid']!;
-      _typeController.text = ref.watch(registerNetworkProvider)['security']!;
-      _passwordController.text = ref.watch(registerNetworkProvider)['password']!;
+      _ssidController.text = ref.watch(registerDataControllerProvider)['ssid']!;
+      _typeController.text = ref.watch(registerDataControllerProvider)['security']!;
+      _passwordController.text = ref.watch(registerDataControllerProvider)['password']!;
     });
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _ssidController.dispose();
+    _typeController.dispose();
+    _passwordController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print(ref.watch(registerDataControllerProvider));
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
       child: SingleChildScrollView(
@@ -44,57 +58,68 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: () => context.go('/device/setTimezone'),
-                  icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary),
+                  onPressed: () => context.go('/device/setTimezone'), 
+                  icon: Icon(Icons.arrow_back_ios_rounded, size: .025.sh, color: FlexiColor.primary)
                 ),
-                Text('WiFi Setup', style: Theme.of(context).textTheme.displaySmall),
+                Text('Set Device Timezone', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
-                  onPressed: () => context.go('/device/register'), 
+                  onPressed: () {
+                    ref.watch(registerDataControllerProvider.notifier).setNetwork(_ssidController.text, _typeController.text, _passwordController.text);
+                    if(ref.watch(settingControllerProvider)['registerType'] == 'Hotspot' && Platform.isIOS) {
+                      showModalBottomSheet(
+                        backgroundColor: Colors.transparent,
+                        context: context, 
+                        builder: (context) => const DeviceSetupModal()
+                      );
+                    } else {
+                      context.go('/device/register');
+                    }
+                  },
                   child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
-              ],
+              ]
             ),
-            SizedBox(height: .02.sh),
+            SizedBox(height: .03.sh),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                qrcodeButton('Scan \nQR-CODE', Icons.qr_code, '/device/scanQrcode'),
-                qrcodeButton('Load from \nImage', Icons.add_photo_alternate_outlined, '/device/loadQrcode')
-              ],
+                qrcodeButton('Scan \nQR-CODE', Icons.qr_code, '/qrcode/scan'),
+                qrcodeButton('Load from \nImage', Icons.add_photo_alternate_outlined, '/qrcode/load')
+              ]
             ),
             SizedBox(height: .03.sh),
             Text('SSID', style: Theme.of(context).textTheme.bodySmall),
             SizedBox(height: .01.sh),
             FlexiTextField(
-              width: .89.sw,
+              width: .89.sw, 
               height: .06.sh,
               controller: _ssidController
             ),
-            SizedBox(height: .025.sh),
+            SizedBox(height: .015.sh),
             Text('Type', style: Theme.of(context).textTheme.bodySmall),
             SizedBox(height: .01.sh),
             FlexiTextField(
-              width: .89.sw,
+              width: .89.sw, 
               height: .06.sh,
               controller: _typeController
             ),
-            SizedBox(height: .025.sh),
+            SizedBox(height: .015.sh),
             Text('Passphrase', style: Theme.of(context).textTheme.bodySmall),
             SizedBox(height: .01.sh),
             FlexiTextField(
-              width: .89.sw,
+              width: .89.sw, 
               height: .06.sh,
               controller: _passwordController
             )
-          ],
-        ),
-      ),
+          ]
+        )
+      )
     );
   }
 
   Widget qrcodeButton(String text, IconData icon, String routePath) {
-    return InkWell(
-      onTap:() => context.go(routePath),
+    return GestureDetector(
+      onTap: () => context.go(routePath),
       child: Container(
         width: .43.sw,
         height: .25.sh,
@@ -105,7 +130,7 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Center(
               child: Container(
@@ -115,15 +140,14 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
                   color: FlexiColor.primary.withOpacity(.1),
                   borderRadius: BorderRadius.circular(.05.sh)
                 ),
-                child: Icon(icon, color: FlexiColor.primary, size: .05.sh)
-              ),
+                child: Icon(icon, size: .05.sh, color: FlexiColor.primary)
+              )
             ),
             SizedBox(height: .025.sh),
             Text(text, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.primary))
-          ],
-        ),
+          ]
+        )
       )
     );
   }
-  
 }

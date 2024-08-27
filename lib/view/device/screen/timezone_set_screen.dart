@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_native_timezone_updated_gradle/flutter_native_timezone.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../component/search_bar.dart';
 import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../component/search_bar.dart';
 
 
 
@@ -25,16 +24,16 @@ class _TimezoneSetScreenState extends ConsumerState<TimezoneSetScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      ref.watch(selectTimezoneProvider.notifier).state = await FlutterNativeTimezone.getLocalTimezone();
-      print(ref.watch(selectTimezoneProvider));
-      int index = ref.watch(timezonesProvider).indexWhere((element) => element['locationName'] == ref.watch(selectTimezoneProvider));
-      print(index);
-      print(ref.watch(timezonesProvider)[index]);
-      _scrollController.jumpTo(index * 61);
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) async {
+    //   if(ref.watch(registerDataControllerProvider)['timeZone']!.isEmpty) {
+    //     initializeTimeZones();
+    //     setLocalLocation(getLocation(""));
+    //     ref.watch(registerDataControllerProvider.notifier).setTimezone(await FlutterNativeTimezone.getLocalTimezone());
+    //   }
+    //   var index = ref.watch(timezonesProvider).indexWhere((timezone) => timezone['name'] == ref.watch(registerDataControllerProvider)['timeZone']);
+    //   _scrollController.jumpTo(index * .0865.sh);
+    // });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -48,37 +47,35 @@ class _TimezoneSetScreenState extends ConsumerState<TimezoneSetScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: () => context.go('/device/list'),
-                  icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary),
+                  onPressed: () => context.go('/device/list'), 
+                  icon: Icon(Icons.arrow_back_ios_rounded, size: .025.sh, color: FlexiColor.primary)
                 ),
                 Text('Set Device Timezone', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
                   onPressed: () => context.go('/device/setWifi'), 
                   child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
-              ],
+              ]
             ),
             SizedBox(height: .03.sh),
             FlexiSearchBar(
-              hintText: 'Search your timezone',
-              onChanged: (value) => setState(() {
-                _searchText = value;
-              })
+              hintText: 'Search your timezone', 
+              onChanged: (value) => setState(() => _searchText = value)
             ),
             SizedBox(height: .02.sh),
             Container(
               width: .89.sw,
-              height: .7.sh,
+              height: .68.sh,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(.015.sh)
               ),
               child: ListView.builder(
-                controller: _scrollController,
                 padding: EdgeInsets.zero,
+                controller: _scrollController,
                 itemCount: timezones.length,
-                itemBuilder: (context, index) => timezones[index]['name']!.contains(_searchText) ? GestureDetector(
-                  onTap: () => ref.watch(selectTimezoneProvider.notifier).state = timezones[index]['locationName']!,
+                itemBuilder: (context, index) => timezones[index]['label']!.contains(_searchText) ? GestureDetector(
+                  onTap: () => ref.watch(registerDataControllerProvider.notifier).setTimezone(timezones[index]['name']!),
                   child: Container(
                     padding: EdgeInsets.all(.02.sh),
                     decoration: BoxDecoration(
@@ -90,28 +87,25 @@ class _TimezoneSetScreenState extends ConsumerState<TimezoneSetScreen> {
                         SizedBox(
                           width: .65.sw,
                           child: Text(
-                            timezones[index]['name']!, 
-                            style: ref.watch(selectTimezoneProvider) == timezones[index]['locationName'] ? 
-                              Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary) : 
-                              Theme.of(context).textTheme.bodyMedium,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
+                            timezones[index]['label']!,
+                            style: ref.watch(registerDataControllerProvider)['timeZone'] == timezones[index]['name'] ?
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary) :
+                              Theme.of(context).textTheme.bodyMedium
                           )
                         ),
                         Visibility(
-                          visible: ref.watch(selectTimezoneProvider) == timezones[index]['locationName'],
-                          child: Icon(Icons.check, color: FlexiColor.primary, size: .025.sh),
+                          visible: ref.watch(registerDataControllerProvider)['timeZone'] == timezones[index]['name'],
+                          child: Icon(Icons.check_rounded, size: .025.sh, color: FlexiColor.primary)
                         )
-                      ],
-                    ),
-                  ),
+                      ]
+                    )
+                  )
                 ) : const SizedBox.shrink()
-              ),
+              )
             )
-          ],
-        ),
-      ),
+          ]
+        )
+      )
     );
   }
-  
 }

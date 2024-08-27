@@ -20,66 +20,68 @@ class QrcodeScanScreen extends ConsumerStatefulWidget {
 class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
 
   Barcode? barcode;
-  QRViewController? _qrcodeController;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  QRViewController? _qrViewController;
 
   @override
   void dispose() {
     super.dispose();
-    _qrcodeController!.dispose();
+    _qrViewController?.dispose();
   }
 
-  Map<String, String>? getWiFiCredentials(String code) {
-    Map<String, String> result = {};
+  Future<bool> getWiFiCredential(String code) async {
+    Map<String, String> credential = {};
     try {
       if(code.contains('WIFI')) {
         List<String> parts = code.split(';');
         for(var part in parts) {
           List<String> value = part.split(':');
           if(value.contains('S')) {
-            result['ssid'] = value.last;
+            credential['ssid'] = value.last;
           } else if(value.contains('T')) {
-            result['security'] = value.last;
+            credential['security'] = value.last;
           } else if(value.contains('P')) {
-            result['password'] = value.last;
+            credential['password'] = value.last;
           }
         }
+        ref.watch(registerDataControllerProvider.notifier).setNetwork(
+          credential['ssid'] ?? '', 
+          credential['security'] ?? '', 
+          credential['password'] ?? ''
+        );
+
+        return true;
       }
-      return result;
     } catch (error) {
-      print('error at qrcode scan >>> $error');
-    }
-    return null;
+      print('Error at QrcodeScanScreen.getWiFiCredential >>> $error');
+    } 
+    return false;
   }
 
-  void onQRViewCreated(QRViewController qrViewController) {
-    _qrcodeController = qrViewController;
-    _qrcodeController!.scannedDataStream.listen((scanData) async {
-      if(scanData.code != null) {
-        _qrcodeController!.pauseCamera();
-        // qrcode가 wifi qrcode인지 확인
-        var wifiCredential = getWiFiCredentials(scanData.code!);
-        if(wifiCredential != null) {
-          ref.watch(registerNetworkProvider.notifier).state = wifiCredential;
-          context.go('/device/setWifi');
-        } else {
-          Fluttertoast.showToast(
-            msg: 'Invalid QR Code.',
-            backgroundColor: Colors.black.withOpacity(.8),
-            textColor: Colors.white,
-            fontSize: .02375.sh
-          ).whenComplete(() => _qrcodeController!.resumeCamera());
-        }
+  void onQRViewCreated(QRViewController controller) {
+    _qrViewController = controller;
+    _qrViewController!.scannedDataStream.listen((data) {
+      if(data.code != null) {
+        _qrViewController!.pauseCamera();
+        getWiFiCredential(data.code!).then((value) {
+          if(value) {
+            if(context.mounted) context.go('/device/setWifi');
+          } else {
+            if(context.mounted) {
+              Fluttertoast.showToast(
+                msg: 'Invalid QRCode',
+                backgroundColor: Colors.black.withOpacity(.8),
+                textColor: Colors.white,
+                fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize
+              ).whenComplete(() => _qrViewController!.resumeCamera());
+            }
+          }
+        });
       }
     });
   }
 
-
-  Widget buildQrView(BuildContext context) {
+  Widget buildQRView(BuildContext context) {
+    ref.watch(registerDataControllerProvider);
     return QRView(
       key: GlobalKey(), 
       onQRViewCreated: onQRViewCreated,
@@ -89,30 +91,26 @@ class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
         borderLength: 20,
         borderWidth: 5,
         cutOutSize: .8.sw
-      ),
+      )
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(registerDataControllerProvider);
     return Scaffold(
       body: Stack(
         children: [
-          buildQrView(context),
+          buildQRView(context),
           Padding(
-            padding: EdgeInsets.only(left: .055.sw, top: .03.sh),
+            padding: EdgeInsets.only(left: .055.sw, top: .04.sh),
             child: IconButton(
-              icon: Icon(Icons.arrow_back_ios, color: FlexiColor.primary),
-              iconSize: .03.sh,
-              onPressed: () {
-                _qrcodeController?.pauseCamera();
-                context.go('/device/setWifi');
-              },
-            ),
+              onPressed: () => context.go('/device/setWifi'), 
+              icon: Icon(Icons.arrow_back_ios_rounded, color: FlexiColor.primary, size: .03.sh)
+            )
           )
-        ],
-      ),
+        ]
+      )
     );
   }
-  
 }

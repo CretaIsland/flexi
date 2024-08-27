@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
-import 'package:flutter/foundation.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -21,31 +21,61 @@ part 'device_register_controller.g.dart';
 
 
 
-final selectTimezoneProvider = StateProvider<String>((ref) => '');
-final registerNetworkProvider = StateProvider<Map<String, String>>((ref) => {'ssid': '', 'security': '', 'password': ''});
-final selectDeviceHotspotsProvider = StateProvider<List<String>>((ref) => List.empty());
-final selectDeviceBluetoothsProvider = StateProvider<List<DiscoveredEventArgs>>((ref) => List.empty());
+final selectHotspotsProvider = StateProvider<List<String>>((ref) => List.empty());
+final selectBluetoothsProvider = StateProvider<List<DiscoveredEventArgs>>((ref) => List.empty());
+
+@riverpod
+class RegisterDataController extends _$RegisterDataController {
+
+  Map<String, String> build() {
+    ref.onDispose(() {
+      print('RegisterDataController Dispose');
+    });
+    print('RegisterDataController Build');
+    return {
+      'timeZone': '',
+      'ssid': '',
+      'security': '',
+      'password': ''
+    };
+  }
+
+  void setTimezone(String timeZone) {
+    state = {
+      'timeZone': timeZone,
+      'ssid': state['ssid']!,
+      'security': state['security']!,
+      'password': state['password']!
+    };
+  }
+
+  void setNetwork(String ssid, String security, String password) {
+    state = {
+      'timeZone': state['timeZone']!,
+      'ssid': ssid,
+      'security': security,
+      'password': password
+    };
+  }
+
+}
 
 @riverpod
 List<Map<String, String>> timezones(TimezonesRef ref) {
-  try {
-    initializeTimeZones();
-    RegExp alphabetsRegex = RegExp(r'[a-zA-Z]');
-    
-    return timeZoneDatabase.locations.values.toList().map((item) {
-      TimeZone itemTimezone = item.timeZone(DateTime.now().millisecondsSinceEpoch);
-      Duration duration = Duration(milliseconds: itemTimezone.offset);
-      String itemAbbreviation = alphabetsRegex.hasMatch(itemTimezone.abbreviation) ? itemTimezone.abbreviation : 'UTC';
-      String timezone = '${duration.inHours >= 0 ? '+' : ''}${duration.inHours.toString().padLeft(2, '0')}:${(duration.inMinutes.remainder(60)).toString().padLeft(2, '0')}';
-      return {
-        'name': '${item.name} ($itemAbbreviation $timezone)',
-        'locationName': item.name
-      };
-    }).toList();
-  } catch (error) {
-    print('error at timezones >>> $error');
-  }
-  return List.empty();
+  initializeTimeZones();
+  RegExp utcRegExp = RegExp(r'[a-zA-Z]');
+
+  return timeZoneDatabase.locations.values.map((item) {
+    TimeZone timezone = item.timeZone(DateTime.now().millisecondsSinceEpoch);
+    Duration duration = Duration(milliseconds: timezone.offset);
+    String abbreviation = utcRegExp.hasMatch(timezone.abbreviation) ? timezone.abbreviation : 'UTC';
+    String timeDifference = '${duration.inHours >= 0 ? '+' : ''}${duration.inHours.toString().padLeft(2, '0')}:${duration.inMinutes.remainder(60).toString().padLeft(2, '0')}';
+
+    return {
+      'label': '${item.name} ($abbreviation $timeDifference)',
+      'name': item.name
+    };
+  }).toList();
 }
 
 @riverpod
@@ -53,108 +83,117 @@ Future<Stream<List<String>>> accessibleDeviceHotspots(AccessibleDeviceHotspotsRe
   try {
     if(await WiFiScan.instance.canStartScan(askPermissions: true) == CanStartScan.yes) {
       await WiFiScan.instance.startScan();
-      return WiFiScan.instance.onScannedResultsAvailable.map((event) {
-        return event.where((element) => element.ssid.isNotEmpty && element.ssid.contains(ref.watch(userControllerProvider)!.enterprise)).map((e) {
+      return WiFiScan.instance.onScannedResultsAvailable.map((result) {
+        return result.where((element) => element.ssid.isNotEmpty && element.ssid.contains(ref.watch(userControllerProvider)!.enterprise)).map((e) {
           return e.ssid;
         }).toList();
       });
     }
   } catch (error) {
-    print('error at AccessibleHotspotsProvider >>> $error');
+    print('Error at AccessibleDeviceHotspotsProvider >>>$error');
   }
   return const Stream.empty();
 }
 
 @riverpod
-class AccessibleDeviceBluetoothController extends _$AccessibleDeviceBluetoothController {
+class AccessibleDeviceBluetooths extends _$AccessibleDeviceBluetooths {
 
-  late CentralManager _centeralManager;
+  late CentralManager _centralManager;
 
   @override
   List<DiscoveredEventArgs> build() {
     ref.onDispose(() {
-      print('AccessibleDeviceBluetoothController Dispose!!!');
-      _centeralManager.stopDiscovery();
+      print('dispose');
+      _centralManager.stopDiscovery();
     });
-    print('AccessibleDeviceBluetoothController Build!!!');
-    _centeralManager = CentralManager();
-    _centeralManager.startDiscovery().then((value) {
-      _centeralManager.discovered.listen((event) {
-        if(event.advertisement.name != null && event.advertisement.name!.contains(ref.watch(userControllerProvider)!.enterprise)) {
-          final peripheral = event.peripheral;
-          final index = state.indexWhere((i) => i.peripheral == peripheral);
-          if (index < 0) {
-            state = [...state, event];
-          } else {
-            state.remove(event);
+    _centralManager = CentralManager();
+    initialize();
+    return List.empty();
+  }
+
+  void initialize() async {
+    if(await Permission.locationAlways.request().isGranted) {
+      await _centralManager.startDiscovery();
+      _centralManager.discovered.listen((result) {
+        if(result.advertisement.name != null && result.advertisement.name!.contains('')) {
+          final peripheral = result.peripheral;
+          final index = state.indexWhere((element) => element.peripheral == peripheral);
+          if(index != -1) {
+            state.remove(result);
             state = [...state];
+          } else {
+            state = [...state, result];
           }
         }
       });
-    });
-    return List.empty();
+    }
   }
 
 }
 
 @riverpod
 class NetworkController extends _$NetworkController {
-  
-  @override
-  String build() {
+
+  void build() {
     ref.onDispose(() {
-      print('NetworkController Dispose!!!');
+      print('NetworkController Dispose');
     });
-    print('NetworkController Build!!!');
-    return '';
+    print('NetworkController Build');
   }
 
-  Future<void> getNetworkInfo() async {
+  Future<bool> wifiConnected() async {
     try {
-      if(await Permission.locationWhenInUse.request().isGranted) {
-        final info = NetworkInfo();
-        state = (await info.getWifiName()) ?? '';
-      }
+      var result = await Connectivity().checkConnectivity();
+      return result.contains(ConnectivityResult.wifi);
     } catch (error) {
-      print('error at NetworkController.getNetworkInfo >>> $error');
+      print('Error at NetworkController.wifiConnected >>> $error');
     }
+    return false;
   }
 
-  Future<bool> connect({required String ssid, String? passphrase, NetworkSecurity security = NetworkSecurity.WPA}) async {
+  Future<String?> getSsid() async {
     try {
       if(await Permission.location.request().isGranted) {
-        await WiFiForIoTPlugin.connect(ssid, password: passphrase, security: security, joinOnce: true, withInternet: true, timeoutInSeconds: 20);
-        await getNetworkInfo();
-        print(state);
-        if(state.replaceAll('"', '') == ssid) {
-          return true;
-        }
+        var ssid = await NetworkInfo().getWifiName();
+        if(ssid != null) return ssid.replaceAll('"', '');
       }
     } catch (error) {
-      print("error at NetworkController.connect >>> $error");
+      print('Error at NetworkController.getSsid >>> $error');
+    }
+    return null;
+  }
+
+  Future<bool> connect({required String ssid, String security = '', String? password}) async {
+    try {
+      if(await Permission.location.request().isGranted) {
+        var networkSecurity = security.contains('WPA') ? NetworkSecurity.WPA : security.contains('WEP') ? NetworkSecurity.WEP : NetworkSecurity.NONE;
+        await WiFiForIoTPlugin.connect(ssid, password: password, security: networkSecurity, joinOnce: true, withInternet: true, timeoutInSeconds: 15);
+        var connectedSsid = await getSsid();
+        if(connectedSsid != null && connectedSsid == ssid) return true;
+      }
+    } catch (error) {
+      print('Error at NetworkController.connect >>> $error');
     }
     return false;
   }
 
 }
 
-@riverpod
-class RegisterDeviceIPController extends _$RegisterDeviceIPController {
+@riverpod 
+class DeviceIPController extends _$DeviceIPController {
 
   late RawDatagramSocket _socket;
 
   @override
-  Future<DeviceModel?> build() async {
+  void build() async {
     ref.onDispose(() {
-      print('RegisterDeviceIPController Dispose!!!');
+      print('DeviceIPController Dispose');
       _socket.close();
     });
-    print('==================RegisterDeviceIPController Build!!!=========================');
-
-    return await initialize();
+    print('DeviceIPController Build');
   }
 
-  Future<DeviceModel?> initialize() async {
+  Future<DeviceModel?> getDeviceStatus() async {
     final completer = Completer<DeviceModel?>();
     _socket = await RawDatagramSocket.bind(InternetAddress.anyIPv4, NetworkConfig.udpBroadcastPort);
     _socket.broadcastEnabled = true;
@@ -165,90 +204,27 @@ class RegisterDeviceIPController extends _$RegisterDeviceIPController {
 
       Map<String, dynamic> data = jsonDecode(utf8.decode(d.data));
       if(data['command'] != 'playerStatus') return;
-      print(data);
+
+      _socket.close();
       completer.complete(DeviceModel.fromJson(data));
     });
 
-    sendData(jsonEncode({'command': 'test'}));
-
-    Future.delayed(const Duration(seconds: 20), () {
-      if(!completer.isCompleted) {
-        completer.complete(null);
+    sendData();
+    return completer.future.timeout(
+      const Duration(seconds: 15), 
+      onTimeout: () {
+        _socket.close();
+        return null;
       }
-    });
-    return completer.future;
+    );
   }
 
-  void sendData(String data) async {
-    List<int> sendData = utf8.encode(data);
+  void sendData() async {
     final info = NetworkInfo();
-    final wifiBroadcast = await info.getWifiBroadcast();
-    print(wifiBroadcast);
-    if(wifiBroadcast != null) {
-      print(wifiBroadcast);
-      _socket.send(sendData, InternetAddress(wifiBroadcast), 4546);
+    final broadcast = await info.getWifiBroadcast();
+    if(broadcast != null) {
+      _socket.send(utf8.encode(jsonEncode({'command': 'test'})), InternetAddress(broadcast), NetworkConfig.udpBroadcastPort);
     }
-  }
-
-}
-
-@riverpod 
-class BleCentralControll extends _$BleCentralControll {
-
-  late CentralManager _centeralManager;
-  GATTCharacteristic? _canWirteCharacteristic;
-  
-  @override
-  void build() {
-    ref.onDispose(() {
-      print('BleCentralControll Dispose!!!');
-    });
-    _centeralManager = CentralManager();
-    print('BleCentralControll Build!!!');
-  }
-
-   Future<void> sendData(Peripheral peripheral, Map<String, String> data) async {
-    await _centeralManager.connect(peripheral);
-    await discoverGATT(peripheral);
-    if(_canWirteCharacteristic != null) {
-      await write(peripheral, utf8.encode(jsonEncode(data)), _canWirteCharacteristic!);
-    }
-    await disconnect(peripheral);
-  }
-
-  Future<void> discoverGATT(Peripheral peripheral) async {
-    final services = await _centeralManager.discoverGATT(peripheral);
-    final lastService = services[services.length - 1];
-    for (int i = 0; i < lastService.characteristics.length; i++) {
-      final characteristic = lastService.characteristics[i];
-      if (characteristic.properties.contains(GATTCharacteristicProperty.write)) {
-        _canWirteCharacteristic = characteristic;
-      }
-    }
-  }
-
-  Future<void> write(Peripheral peripheral, Uint8List value, GATTCharacteristic characteristic) async {
-    const writeType = GATTCharacteristicWriteType.withResponse;
-    final fragmentSize = await _centeralManager.getMaximumWriteLength(peripheral, type: writeType);
-
-    var start = 0;
-    while (start < value.length) {
-      final end = start + fragmentSize;
-      final fragmentedValue =
-          end < value.length ? value.sublist(start, end) : value.sublist(start);
-      const type = writeType;
-      await _centeralManager.writeCharacteristic(
-        peripheral,
-        characteristic,
-        value: fragmentedValue,
-        type: type,
-      );
-      start = end;
-    }
-  }
-
-  Future<void> disconnect(Peripheral peripheral) async {
-    await _centeralManager.disconnect(peripheral);
   }
 
 }

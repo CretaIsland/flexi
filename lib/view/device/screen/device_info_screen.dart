@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/controller/socket_client_controller.dart';
@@ -22,16 +23,16 @@ class DeviceInfoScreen extends ConsumerStatefulWidget {
 class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
 
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _timezoneController = TextEditingController();
-  final TextEditingController _networkController = TextEditingController();
-  
+  final TextEditingController _timeZoneController = TextEditingController();
+  final TextEditingController _connectedWifiController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _nameController.text = ref.watch(deviceInfoControllerProvider).deviceName;
-      _timezoneController.text = ref.watch(deviceInfoControllerProvider).timeZone;
-      _networkController.text = ref.watch(deviceInfoControllerProvider).registeredSSID;
+      _timeZoneController.text = ref.watch(deviceInfoControllerProvider).timeZone;
+      _connectedWifiController.text = ref.watch(deviceInfoControllerProvider).registeredSSID;
     });
   }
 
@@ -39,10 +40,9 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
   void dispose() {
     super.dispose();
     _nameController.dispose();
-    _timezoneController.dispose();
-    _networkController.dispose();
+    _timeZoneController.dispose();
+    _connectedWifiController.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -58,26 +58,33 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
               children: [
                 IconButton(
                   onPressed: () => context.go('/device/list'), 
-                  icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary)
+                  icon: Icon(Icons.arrow_back_ios_rounded, size: .025.sh, color: FlexiColor.primary)
                 ),
                 Text('Device Detail', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
                   onPressed: () async {
-                    Map<String, dynamic> data = {
-                      "command": "playerSetting",
-                      "deviceId": device.deviceId,
-                      "deviceName": _nameController.text,
-                      "name": device.deviceName,
-                      "volume": device.volume
-                    };
-                    var connect = await ref.watch(socketClientControllerProvider.notifier).connect(device.ip);
-                    if(connect) ref.watch(socketClientControllerProvider.notifier).sendData(data);
+                    var connected = await ref.watch(socketClientControllerProvider.notifier).connect(device.ip);
+                    if(connected) {
+                      await ref.watch(socketClientControllerProvider.notifier).sendData({
+                        "command": "playerSetting",
+                        "deviceId": device.deviceId,
+                        "deviceName": _nameController.text,
+                        "name": _nameController.text,
+                        "volume": device.volume
+                      });
+                      Fluttertoast.showToast(
+                        msg: 'Send setting value',
+                        backgroundColor: Colors.black.withOpacity(.8),
+                        textColor: Colors.white,
+                        fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize
+                      );
+                    }
                   },
                   child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
-              ],
+              ]
             ),
-            SizedBox(height:  .03.sh),
+            SizedBox(height: .03.sh),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -96,23 +103,24 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.wifi, color: FlexiColor.primary, size: .045.sh),
-                          Text('Connected', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.primary))
-                        ],
-                      ),
+                          Icon(Icons.wifi_rounded, size: .045.sh, color: FlexiColor.primary),
+                          SizedBox(height: .015.sh),
+                          Text('Connected', style: Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.primary))
+                        ]
+                      )
                     )
-                  ],
+                  ]
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Speaker', style: Theme.of(context).textTheme.bodyMedium),
+                    Text('Speaker', style: Theme.of(context).textTheme.bodySmall),
                     SizedBox(height: .01.sh),
-                    InkWell(
+                    GestureDetector(
                       onTap: () => showModalBottomSheet(
                         backgroundColor: Colors.transparent,
-                        context: widget.rootContext,
                         isScrollControlled: true,
+                        context: widget.rootContext,
                         builder: (context) => const BluetoothListModal()
                       ),
                       child: Container(
@@ -125,23 +133,26 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            device.bluetoothBonded ? Icon(Icons.bluetooth, color: FlexiColor.primary, size: .045.sh) :
-                              Icon(Icons.bluetooth_disabled, color: FlexiColor.secondary, size: .045.sh),
-                            device.bluetoothBonded ? Text(device.bluetooth, style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.primary)) :
-                              Text('Bluetooth Off', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.secondary))
-                          ],
-                        ),
-                      ),
+                            device.bluetoothBonded ?
+                              Icon(Icons.bluetooth_rounded, size: .045.sh, color: FlexiColor.primary) :
+                              Icon(Icons.bluetooth_disabled_rounded, size: .045.sh, color: FlexiColor.secondary),
+                            SizedBox(height: .015.sh),
+                            device.bluetoothBonded ?
+                              Text(device.bluetooth, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.primary)) :
+                              Text('Bluetooth OFF', style: Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.secondary))
+                          ]
+                        )
+                      )
                     )
-                  ],
+                  ]
                 )
-              ],
+              ]
             ),
-            SizedBox(height: .015.sh),
+            SizedBox(height: .03.sh),
             Text('Device Name', style: Theme.of(context).textTheme.bodySmall),
             SizedBox(height: .01.sh),
             FlexiTextField(
-              width: .89.sw,
+              width: .89.sw, 
               height: .06.sh,
               controller: _nameController
             ),
@@ -157,11 +168,11 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                 borderRadius: BorderRadius.circular(.01.sh)
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.volume_mute_rounded, color: FlexiColor.primary, size: .03.sh),
+                    onPressed: () => ref.watch(deviceInfoControllerProvider.notifier).setVolume(0), 
+                    icon: Icon(Icons.volume_mute_rounded, size: .03.sh, color: FlexiColor.primary)
                   ),
                   SizedBox(
                     width: .6.sw,
@@ -170,41 +181,39 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                       value: device.volume * 1.0,
                       max: 100.0,
                       activeColor: FlexiColor.primary,
-                      thumbColor: Colors.white,
-                      onChanged: (value) {
-                        ref.watch(deviceInfoControllerProvider.notifier).setVolume(value.toInt());
-                      }
-                    ),
+                      thumbColor: FlexiColor.primary,
+                      onChanged: (value) => ref.watch(deviceInfoControllerProvider.notifier).setVolume(value.toInt())
+                    )
                   ),
                   IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.volume_up_rounded, color: FlexiColor.primary, size: .03.sh),
-                  ),
-                ]
-              ),
+                    onPressed: () => ref.watch(deviceInfoControllerProvider.notifier).setVolume(100), 
+                    icon: Icon(Icons.volume_up_rounded, size: .03.sh, color: FlexiColor.primary)
+                  )
+                ],
+              )
             ),
             SizedBox(height: .015.sh),
             Text('Device Timezone', style: Theme.of(context).textTheme.bodySmall),
             SizedBox(height: .01.sh),
             FlexiTextField(
-              width: .89.sw,
+              width: .89.sw, 
               height: .06.sh,
-              readOnly: true,
-              controller: TextEditingController(text: device.timeZone)
+              controller: _timeZoneController,
+              readOnly: true
             ),
             SizedBox(height: .015.sh),
-            Text('Network', style: Theme.of(context).textTheme.bodySmall),
+            Text('Connected Network', style: Theme.of(context).textTheme.bodySmall),
             SizedBox(height: .01.sh),
             FlexiTextField(
-              width: .89.sw,
+              width: .89.sw, 
               height: .06.sh,
-              readOnly: true,
-              controller: TextEditingController(text: device.registeredSSID)
-            )
-          ],
-        ),
-      ),
+              controller: _connectedWifiController,
+              readOnly: true
+            ),
+            SizedBox(height: .015.sh),
+          ]
+        )
+      )
     );
   }
-
 }
