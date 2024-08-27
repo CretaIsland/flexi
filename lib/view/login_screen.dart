@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 
 import '../feature/setting/controller/auth_controller.dart';
 import '../util/design/colors.dart';
-import '../util/design/fonts.dart';
 import '../component/text_button.dart';
 
 
@@ -24,7 +23,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _hidePassword = true;
 
-  final TextStyle _loginformStyle = FlexiFont.regular16.copyWith(color: Colors.white);
   final OutlineInputBorder _loginformBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(.01.sh),
     borderSide: const BorderSide(color: Colors.white)
@@ -57,9 +55,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Login',style: FlexiFont.semiBold24.copyWith(color: Colors.white)),
+                  Text('Login',style: Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.white)),
                   SizedBox(height: .005.sh),
-                  Text('Hi there! Nice to see you', style: FlexiFont.regular12.copyWith(color: Colors.white)),
+                  Text('Hi there! Nice to see you', style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white)),
                   SizedBox(height: .025.sh),
                   // email text field
                   SizedBox(
@@ -69,12 +67,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       controller: _emailController,
                       decoration: InputDecoration(
                         hintText: 'Email',
-                        hintStyle: _loginformStyle,
+                        hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),
                         contentPadding: const EdgeInsets.only(left: 12),
                         enabledBorder: _loginformBorder,
                         focusedBorder: _loginformBorder
                       ),
-                      style: _loginformStyle
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white)
                     )
                   ),
                   SizedBox(height: .02.sh),
@@ -86,7 +84,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       controller: _passwordController,
                       decoration: InputDecoration(
                         hintText: 'Password',
-                        hintStyle: _loginformStyle,
+                        hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),
                         contentPadding: const EdgeInsets.only(left: 12),
                         suffixIcon: GestureDetector(
                           onTap: () => setState(() {
@@ -97,7 +95,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         enabledBorder: _loginformBorder,
                         focusedBorder: _loginformBorder
                       ),
-                      style: _loginformStyle,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white),
                       obscureText: _hidePassword
                     )
                   ),
@@ -117,7 +115,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             msg: 'login fail',
                             backgroundColor: Colors.black.withOpacity(.8),
                             textColor: Colors.white,
-                            fontSize: FlexiFont.regular20.fontSize
+                            fontSize: .02375.sh
                           );
                         }
                       });
@@ -134,7 +132,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             msg: 'login fail',
                             backgroundColor: Colors.black.withOpacity(.8),
                             textColor: Colors.white,
-                            fontSize: FlexiFont.regular20.fontSize
+                            fontSize: .02375.sh
                           );
                         }
                       });
@@ -151,7 +149,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         children: [
                           Image.asset('assets/image/google_logo.png', height: .03.sh),
                           SizedBox(width: .05.sw),
-                          Text('Login by Google', style: FlexiFont.semiBold16)
+                          Text('Login by Google', style: Theme.of(context).textTheme.labelLarge)
                         ]
                       )
                     )

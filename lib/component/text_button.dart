@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../util/design/fonts.dart';
-
 
 
 class FlexiTextButton extends StatelessWidget {
@@ -20,14 +18,13 @@ class FlexiTextButton extends StatelessWidget {
       width: width,
       height: height,
       child: TextButton(
-        onPressed: onPressed,
         style: ButtonStyle(
           backgroundColor: WidgetStateProperty.all(backgroundColor),
           shape: WidgetStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(.01.sh)))
         ),
-        child: Text(text, style: FlexiFont.semiBold16.copyWith(color: textColor)),
+        onPressed: onPressed,
+        child: Text(text, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: textColor))
       ),
     );
   }
-
 }

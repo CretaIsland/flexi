@@ -7,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/model/content_model.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/utils.dart';
 import '../screen/text_edit_screen.dart';
 import 'content_clipper.dart';
 
@@ -67,7 +66,7 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
                 width: responsiveWidth,
                 height: responsiveHeight,
                 decoration: BoxDecoration(
-                  color: FlexiUtils.stringToColor(content.backgroundColor),
+                  color: FlexiColor.stringToColor(content.backgroundColor),
                   image: content.backgroundType != 'color' && content.fileThumbnail != null ?
                     DecorationImage(
                       image: Image.memory(base64Decode(content.fileThumbnail!)).image,
@@ -95,7 +94,7 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
                   fontSize: textScaler * content.textSize,
                   fontWeight: content.bold ? FontWeight.bold : FontWeight.normal,
                   fontStyle: content.italic ? FontStyle.italic : FontStyle.normal,
-                  color: FlexiUtils.stringToColor(content.textColor),
+                  color: FlexiColor.stringToColor(content.textColor),
                   height: content.textSizeType == 's' ? 1.6 : content.textSizeType == 'm' ? 1.4 : 1.2
                 ),
                 onEditingComplete: () => ref.watch(contentEditControllerProvider.notifier).setText(_textEditingController.text),

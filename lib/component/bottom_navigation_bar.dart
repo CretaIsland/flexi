@@ -4,11 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../util/design/colors.dart';
-import '../util/design/fonts.dart';
 
 
 
-final currentTabProvider = StateProvider<int>((ref) => 0);
+final currentTabProvider = StateProvider((ref) => 0);
 
 class FlexiBottomNavigationBar extends ConsumerWidget {
   const FlexiBottomNavigationBar({super.key});
@@ -16,34 +15,33 @@ class FlexiBottomNavigationBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      height: .08.sh,
+      height: .1.sh,
       color: FlexiColor.grey[300],
       padding: EdgeInsets.only(left: .1.sw, right: .1.sw),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          tabButton(context, ref, 'Devices', Icons.connected_tv_outlined, '/device/list', 0),
-          tabButton(context, ref, 'Contents', Icons.interests, '/content/list', 1),
-          tabButton(context, ref, 'Setting', Icons.settings, '/setting', 2)
-        ],
-      ),
+          tabButton(context, ref, 'Device', Icons.connected_tv_outlined, '/device/list', 0),
+          tabButton(context, ref, 'Content', Icons.interests, '/content/list', 1),
+          tabButton(context, ref, 'Setting', Icons.settings, '/setting', 2),
+        ]
+      )
     );
   }
 
-  Widget tabButton(BuildContext context, WidgetRef ref, String text, IconData icon, String routePath, int index) {
-    return InkWell(
+  Widget tabButton(BuildContext context, WidgetRef ref, String text, IconData icon, String routePath, int tabIndex) {
+    return GestureDetector(
       onTap: () {
-        ref.watch(currentTabProvider.notifier).state = index;
+        ref.watch(currentTabProvider.notifier).state = tabIndex;
         context.go(routePath);
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: .035.sh, color: ref.watch(currentTabProvider) == index ? FlexiColor.primary : FlexiColor.grey[600]),
-          Text(text, style: FlexiFont.medium12.copyWith(color: ref.watch(currentTabProvider) == index ? FlexiColor.primary : FlexiColor.grey[600]))
-        ],
-      ),
+          Icon(icon, size:.035.sh, color: ref.watch(currentTabProvider) == tabIndex ? FlexiColor.primary : FlexiColor.grey[600]),
+          Text(text, style: Theme.of(context).textTheme.labelMedium!.copyWith(color: ref.watch(currentTabProvider) == tabIndex ? FlexiColor.primary : FlexiColor.grey[600]))
+        ]
+      )
     );
   }
-
 }

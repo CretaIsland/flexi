@@ -9,8 +9,6 @@ import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../feature/content/controller/current_language_controller.dart';
 import '../../../feature/content/model/content_model.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
-import '../../../util/utils.dart';
 import '../component/language_list_bar.dart';
 import '../component/text_edit_preview.dart';
 import '../modal/text_translate_modal.dart';
@@ -49,7 +47,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
 
 
     return Scaffold(
-      backgroundColor: FlexiUtils.stringToColor(backgroundInfo.backgroundColor),
+      backgroundColor: FlexiColor.stringToColor(backgroundInfo.backgroundColor),
       body: Column(
         children: [
           Container(
@@ -76,7 +74,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                         ref.watch(currentInputLanguagesControllerProvider.notifier).saveChange();
                         ref.watch(contentEditControllerProvider.notifier).undo();
                       },
-                      child: Text('Reset', style: FlexiFont.regular16.copyWith(color: Colors.white))
+                      child: Text('Reset', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white))
                     )
                   ],
                 ),
@@ -105,11 +103,11 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                   children: [
                     Row(
                       children: [
-                        fontSizeButton('Small', 'S', FlexiFont.regular9),
+                        fontSizeButton('Small', 'S', Theme.of(context).textTheme.labelSmall!),
                         SizedBox(width: .02.sw),
-                        fontSizeButton('Medium', 'M', FlexiFont.regular11),
+                        fontSizeButton('Medium', 'M', Theme.of(context).textTheme.labelMedium!),
                         SizedBox(width: .02.sw),
-                        fontSizeButton('Large', 'L', FlexiFont.regular13)
+                        fontSizeButton('Large', 'L', Theme.of(context).textTheme.labelLarge!)
                       ],
                     ),
                     Row(
@@ -234,7 +232,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                         width: 1.sw,
                         height: .15.sh,
                         child: SingleChildScrollView(
-                          child: Text(ref.watch(isSpeakingProvider) ? 'Speak your text' : 'Press and hold the button to record', style: FlexiFont.regular20),
+                          child: Text(ref.watch(isSpeakingProvider) ? 'Speak your text' : 'Press and hold the button to record', style: Theme.of(context).textTheme.bodyLarge),
                         ),
                       )
                     ],
@@ -246,7 +244,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                           msg: 'select language',
                           backgroundColor: Colors.black.withOpacity(.8),
                           textColor: Colors.white,
-                          fontSize: FlexiFont.regular20.fontSize
+                          fontSize: .02375.sh
                         );
                       } else {
                         ref.watch(isSpeakingProvider.notifier).state = true;

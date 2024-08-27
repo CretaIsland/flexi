@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 import '../../../component/text_field.dart';
 import '../component/content_preview.dart';
 
@@ -71,12 +70,12 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
                   }, 
                   icon: Icon(Icons.arrow_back_ios, color: FlexiColor.primary, size: .03.sh)
                 ),
-                Text('Content Detail', style: FlexiFont.semiBold20),
+                Text('Content Detail', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
                   onPressed: () => contentInfoController.save().then((value) {
                     context.go('/content/send');
                   }),
-                  child: Text('Send', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))
+                  child: Text('Send', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
               ],
             ),
@@ -91,7 +90,7 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
               ],
             ),
             SizedBox(height: .035.sh),
-            Text('Name', style: FlexiFont.regular14),
+            Text('Name', style: Theme.of(context).textTheme.bodySmall),
             SizedBox(height: .01.sh),
             FlexiTextField(
               width: .89.sw, 
@@ -100,20 +99,20 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
               onChanged: (value) => contentInfoController.setName(_nameController.text),
             ),
             SizedBox(height: .03.sh),
-            Text('Resolution', style: FlexiFont.regular14),
+            Text('Resolution', style: Theme.of(context).textTheme.bodySmall),
             SizedBox(height: .01.sh),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(width: .055.sw),
-                Text('width', style: FlexiFont.regular14),
+                Text('width', style: Theme.of(context).textTheme.bodySmall),
                 FlexiTextField(
                   width: .25.sw, 
                   height: .045.sh,
                   controller: _widthController,
                   onChanged: (value) => contentInfoController.setWidth(int.parse(_widthController.text)),
                 ),
-                Text('height', style: FlexiFont.regular14),
+                Text('height', style: Theme.of(context).textTheme.bodySmall),
                 FlexiTextField(
                   width: .25.sw, 
                   height: .045.sh,
@@ -123,20 +122,20 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
               ],
             ),
             SizedBox(height: .03.sh),
-            Text('Location', style: FlexiFont.regular14),
+            Text('Location', style: Theme.of(context).textTheme.bodySmall),
             SizedBox(height: .01.sh),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(width: .055.sw),
-                Text('X', style: FlexiFont.regular14),
+                Text('X', style: Theme.of(context).textTheme.bodySmall),
                 FlexiTextField(
                   width: .25.sw, 
                   height: .045.sh,
                   controller: _xController,
                   onChanged: (value) => contentInfoController.setX(int.parse(_xController.text)),
                 ),
-                Text('Y', style: FlexiFont.regular14),
+                Text('Y', style: Theme.of(context).textTheme.bodySmall),
                 FlexiTextField(
                   width: .25.sw, 
                   height: .045.sh,
@@ -149,7 +148,7 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Reverse', style: FlexiFont.regular14),
+                Text('Reverse', style: Theme.of(context).textTheme.bodySmall),
                 AdvancedSwitch(
                   width: .1.sw,
                   height: .025.sh,
@@ -163,7 +162,7 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Lock', style: FlexiFont.regular14),
+                Text('Lock', style: Theme.of(context).textTheme.bodySmall),
                 AdvancedSwitch(
                   width: .1.sw,
                   height: .025.sh,
@@ -207,7 +206,7 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
               ),
             ),
             SizedBox(height: .01.sh),
-            Text(text, style: FlexiFont.semiBold16.copyWith(color: FlexiColor.primary)),
+            Text(text, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.primary)),
           ],
         ),
       ),

@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../feature/content/controller/content_list_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 import '../../../component/search_bar.dart';
 import '../component/content_preview.dart';
 import '../modal/content_delete_modal.dart';
@@ -47,7 +46,7 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Contents', style: FlexiFont.semiBold30),
+                Text('Contents', style: Theme.of(context).textTheme.displayLarge),
                 InkWell(
                   onTap: () {
                     if(_selectMode) {
@@ -90,7 +89,7 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text('Select All', style: FlexiFont.regular12),
+                  Text('Select All', style: Theme.of(context).textTheme.labelSmall),
                   SizedBox(width: .015.sw),
                   InkWell(
                     onTap: () => setState(() {
@@ -108,7 +107,7 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                 data: (data) {
                   if(data.isEmpty) {
                     return Center(
-                      child: Text('No content', style: FlexiFont.regular14),
+                      child: Text('No content', style: Theme.of(context).textTheme.bodySmall),
                     );
                   }
                   return ListView.builder(
@@ -149,7 +148,7 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(data[index].contentName, style: FlexiFont.regular14),
+                                Text(data[index].contentName, style: Theme.of(context).textTheme.bodySmall),
                                 Visibility(
                                   visible: _selectMode,
                                   child: ref.watch(selectContentsProvider).contains(data[index].contentId) || _selectAll ? 
@@ -166,7 +165,7 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                     ) : const SizedBox.shrink(),
                   );
                 }, 
-                error: (error, stackTrace) => Center(child: Text('error during get contents',style: FlexiFont.regular14)), 
+                error: (error, stackTrace) => Center(child: Text('error during get contents',style: Theme.of(context).textTheme.bodySmall)), 
                 loading: () => Center(child: CircularProgressIndicator(color: FlexiColor.primary))
               ),
             )

@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../feature/setting/controller/app_setting_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 import '../../../component/search_bar.dart';
 import '../modal/device_setup_modal.dart';
 
@@ -38,7 +37,7 @@ class _DeviceRegisterScreenState extends ConsumerState<DeviceRegisterScreen> {
                   onPressed: () => context.go('/device/setWifi'),
                   icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary),
                 ),
-                Text('Select Device', style: FlexiFont.semiBold20),
+                Text('Select Device', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
                   onPressed: () async {
                     showModalBottomSheet(
@@ -47,7 +46,7 @@ class _DeviceRegisterScreenState extends ConsumerState<DeviceRegisterScreen> {
                       builder: (context) => const DeviceSetupModal()
                     );
                   },
-                  child: Text('OK', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))
+                  child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
               ],
             ),
@@ -114,7 +113,7 @@ class _DeviceRegisterScreenState extends ConsumerState<DeviceRegisterScreen> {
                         width: .6.sw,
                         child: Text(
                           hotspots[index], 
-                          style: FlexiFont.regular16,
+                          style: Theme.of(context).textTheme.bodyMedium,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         )
@@ -128,7 +127,7 @@ class _DeviceRegisterScreenState extends ConsumerState<DeviceRegisterScreen> {
         );
       },
       error: (error, stackTrace) => Center(
-        child: Text('error during scan hotspot', style: FlexiFont.regular14),
+        child: Text('error during scan hotspot', style: Theme.of(context).textTheme.bodySmall),
       ), 
       loading: () => Center(
         child: CircularProgressIndicator(color: FlexiColor.primary),
@@ -171,7 +170,7 @@ class _DeviceRegisterScreenState extends ConsumerState<DeviceRegisterScreen> {
                 width: .6.sw,
                 child: Text(
                   devices[index].advertisement.name!, 
-                  style: FlexiFont.regular16,
+                  style: Theme.of(context).textTheme.bodyMedium,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 )

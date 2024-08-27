@@ -9,7 +9,6 @@ import '../../../feature/device/controller/device_info_controller.dart';
 import '../../../feature/device/controller/device_list_controller.dart';
 import '../../../feature/setting/controller/app_setting_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 import '../../../component/search_bar.dart';
 import '../modal/device_reset_modal.dart';
 
@@ -52,7 +51,7 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Device', style: FlexiFont.semiBold30),
+                Text('Device', style: Theme.of(context).textTheme.displayLarge),
                 InkWell(
                   onTap: () {
                     if(_selectMode) {
@@ -93,7 +92,7 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
               children: [
                 Row(
                   children: [
-                    Text('${devices.length} Devices', style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
+                    Text('${devices.length} Devices', style: Theme.of(context).textTheme.labelSmall!.copyWith(color: FlexiColor.grey[600])),
                     SizedBox(width: .02.sw),
                     InkWell(
                       onTap: () => ref.invalidate(connectedDeviceControllerProvider),
@@ -105,7 +104,7 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
                   visible: _selectMode,
                   child: Row(
                     children: [
-                      Text('Select All', style: FlexiFont.regular12),
+                      Text('Select All', style: Theme.of(context).textTheme.labelSmall),
                       SizedBox(width: .02.sw),
                       InkWell(
                         onTap: () {
@@ -135,7 +134,7 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
                   children: [
                     CircularProgressIndicator(color: FlexiColor.primary),
                     SizedBox(height: .01.sh),
-                    Text('Scanning for nearby devices', style: FlexiFont.regular14.copyWith(color: FlexiColor.grey[600])),
+                    Text('Scanning for nearby devices', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: FlexiColor.grey[600])),
                   ],
                 )) : ListView.builder(
                 padding: EdgeInsets.zero,
@@ -182,12 +181,12 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
                                 children: [
                                   Icon(Icons.link, color: FlexiColor.primary, size: .02.sh),
                                   SizedBox(width: .015.sw),
-                                  Text(devices[index].deviceName, style: FlexiFont.regular16)
+                                  Text(devices[index].deviceName, style: Theme.of(context).textTheme.bodyMedium)
                                 ]
                               ),
                               Padding(
                                 padding: EdgeInsets.only(left: .055.sw),
-                                child: Text(devices[index].deviceId, style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
+                                child: Text(devices[index].deviceId, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: FlexiColor.grey[600])),
                               )
                             ],
                           ),

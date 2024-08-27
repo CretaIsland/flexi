@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../util/design/colors.dart';
-import '../util/design/fonts.dart';
 
 
 
 class FlexiSearchBar extends StatelessWidget {
-  const FlexiSearchBar({super.key, this.hintText, this.onChanged});
+  const FlexiSearchBar({super.key, required this.hintText, required this.onChanged});
   final String? hintText;
   final void Function(String)? onChanged;
 
@@ -17,26 +16,25 @@ class FlexiSearchBar extends StatelessWidget {
       width: .89.sw,
       height: .045.sh,
       child: TextField(
-        style: FlexiFont.regular16,
+        style: Theme.of(context).textTheme.bodyMedium,
         decoration: InputDecoration(
+          contentPadding: EdgeInsets.only(left: .025.sw),
           hintText: hintText,
-          hintStyle: FlexiFont.regular16.copyWith(color: FlexiColor.grey[700]),
-          contentPadding: const EdgeInsets.only(left: 12),
+          hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.grey[700]),
           filled: true,
           fillColor: FlexiColor.grey[400],
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(.025.sh),
-            borderSide: BorderSide.none
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(.025.sh)
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(.025.sh),
-            borderSide: BorderSide.none
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(.025.sh)
           ),
-          prefixIcon: Icon(Icons.search_outlined, color: FlexiColor.grey[700], size: .025.sh)
+          prefixIcon: Icon(Icons.search_outlined, size: .025.sh, color: FlexiColor.grey[700])
         ),
         onChanged: onChanged
-      )  
+      )
     );
   }
-
 }

@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 import '../../../component/search_bar.dart';
 
 
@@ -52,10 +51,10 @@ class _TimezoneSetScreenState extends ConsumerState<TimezoneSetScreen> {
                   onPressed: () => context.go('/device/list'),
                   icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary),
                 ),
-                Text('Set Device Timezone', style: FlexiFont.semiBold20),
+                Text('Set Device Timezone', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
                   onPressed: () => context.go('/device/setWifi'), 
-                  child: Text('OK', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))
+                  child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
               ],
             ),
@@ -93,8 +92,8 @@ class _TimezoneSetScreenState extends ConsumerState<TimezoneSetScreen> {
                           child: Text(
                             timezones[index]['name']!, 
                             style: ref.watch(selectTimezoneProvider) == timezones[index]['locationName'] ? 
-                              FlexiFont.regular16.copyWith(color: FlexiColor.primary) : 
-                              FlexiFont.regular16,
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary) : 
+                              Theme.of(context).textTheme.bodyMedium,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
                           )

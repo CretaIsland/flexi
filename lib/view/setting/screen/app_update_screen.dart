@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 import '../../../component/text_button.dart';
 import '../../../component/text_field.dart';
 
@@ -40,18 +39,17 @@ class _AppUpdateScreenState extends State<AppUpdateScreen> {
                 onPressed: () => context.go('/setting'), 
                 icon: Icon(Icons.arrow_back_ios, size: .025.sh, color: FlexiColor.primary)
               ),
-              Text('App Update', style: FlexiFont.semiBold20),
+              Text('App Update', style: Theme.of(context).textTheme.displaySmall),
               SizedBox(width: .05.sh)
             ],
           ),
           SizedBox(height: .03.sh),
-          Text('App Version', style: FlexiFont.regular14),
+          Text('App Version', style: Theme.of(context).textTheme.bodySmall),
           SizedBox(height: .01.sh),
           FlexiTextField(
             width: .89.sw, 
             height: .06.sh,
             controller: _versionController,
-            textStyle: FlexiFont.regular16,
             readOnly: true
           ),
           SizedBox(height: .02.sh),

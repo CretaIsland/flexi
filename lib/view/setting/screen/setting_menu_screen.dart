@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 
 
 
@@ -17,7 +16,7 @@ class SettingMenuScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Setting', style: FlexiFont.semiBold30),
+          Text('Setting', style: Theme.of(context).textTheme.displayLarge),
           SizedBox(height: .05.sh),
           menuButton(context, 'Account', '/setting/account'),
           SizedBox(height: .03.sh),
@@ -45,7 +44,7 @@ class SettingMenuScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(text, style: FlexiFont.regular14),
+            Text(text, style: Theme.of(context).textTheme.bodySmall),
             Icon(Icons.arrow_forward_ios, size: .03.sh, color: FlexiColor.grey[400])
           ]
         ),

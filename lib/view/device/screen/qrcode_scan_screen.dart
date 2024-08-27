@@ -7,7 +7,6 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 
 
 
@@ -72,7 +71,7 @@ class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
             msg: 'Invalid QR Code.',
             backgroundColor: Colors.black.withOpacity(.8),
             textColor: Colors.white,
-            fontSize: FlexiFont.regular20.fontSize
+            fontSize: .02375.sh
           ).whenComplete(() => _qrcodeController!.resumeCamera());
         }
       }

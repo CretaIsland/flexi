@@ -6,13 +6,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/providers/socket_client_controller.dart';
+import '../../../core/controller/socket_client_controller.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../feature/content/controller/content_send_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 import '../../../component/text_button.dart';
-import '../../../component/progress_screen.dart';
+import '../../../component/progress_overlay.dart';
 
 
 
@@ -35,8 +34,8 @@ class ContentSendModal extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('Are you sure?', style: FlexiFont.semiBold24),
-          Text('This will send content \nto device.', style: FlexiFont.regular16),
+          Text('Are you sure?', style: Theme.of(context).textTheme.displayMedium),
+          Text('This will send content \nto device.', style: Theme.of(context).textTheme.bodyMedium),
           FlexiTextButton(
             width: .82.sw,
             height: .06.sh,
@@ -45,7 +44,7 @@ class ContentSendModal extends ConsumerWidget {
             onPressed: () async {
               var successTask = 0;
               ref.watch(totalTaskProvider.notifier).state = ref.watch(selectDevicesProvider).length;
-              OverlayEntry loadingScreen = OverlayEntry(builder: (context) => const ProgressScreen());
+              OverlayEntry loadingScreen = OverlayEntry(builder: (context) => const ProgressOverlay());
               Navigator.of(context).overlay!.insert(loadingScreen);
 
               for(var device in ref.read(selectDevicesProvider)) {
@@ -77,7 +76,7 @@ class ContentSendModal extends ConsumerWidget {
                   }
                 }
                 await ref.watch(socketClientControllerProvider.notifier).disconnect();
-                ref.watch(completedTaskProvider.notifier).state = ref.watch(completedTaskProvider) + 1;
+                ref.watch(completeTaskProvider.notifier).state = ref.watch(completeTaskProvider) + 1;
                 await Future.delayed(const Duration(seconds: 1));
               }
 
@@ -85,10 +84,10 @@ class ContentSendModal extends ConsumerWidget {
                 msg: 'Success $successTask devices (Fail ${ref.read(totalTaskProvider) - successTask} devices)',
                 backgroundColor: Colors.black.withOpacity(.8),
                 textColor: Colors.white,
-                fontSize: FlexiFont.regular20.fontSize
+                fontSize: .02375.sh
               ).whenComplete(() {
                 ref.invalidate(totalTaskProvider);
-                ref.invalidate(completedTaskProvider);
+                ref.invalidate(completeTaskProvider);
                 ref.invalidate(selectDevicesProvider);
                 
                 loadingScreen.remove();
@@ -101,7 +100,7 @@ class ContentSendModal extends ConsumerWidget {
             width: .82.sw,
             height: .06.sh,
             child: TextButton(
-              child: Text('Cancle', style: FlexiFont.regular16),
+              child: Text('Cancle', style: Theme.of(context).textTheme.bodyMedium),
               onPressed: () => context.pop(),
             ),
           )

@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'dart:convert';
+
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/constants/firebase_options.dart';
-import '../../../util/utils.dart';
 import '../model/user_model.dart';
 import '../repository/setting_repository.dart';
 
@@ -65,7 +67,7 @@ class AuthController extends _$AuthController {
       var accountData = await getAccountData(email);
       if(accountData == null) return false;
 
-      String encryptPassword = FlexiUtils.stringToSha1(password);
+      String encryptPassword = sha1.convert(utf8.encode(password)).toString();;
       if(encryptPassword == accountData['password']) {
         await _settingRepository.saveAccount(
           email, 

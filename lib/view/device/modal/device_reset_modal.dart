@@ -4,12 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/providers/socket_client_controller.dart';
+import '../../../core/controller/socket_client_controller.dart';
 import '../../../feature/device/controller/device_list_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 import '../../../component/text_button.dart';
-import '../../../component/progress_screen.dart';
+import '../../../component/progress_overlay.dart';
 
 
 
@@ -31,8 +30,8 @@ class DeviceResetModal extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('Are you sure?', style: FlexiFont.semiBold24),
-          Text('This will reset the wifi credentials \nof the device(s)', style: FlexiFont.regular16),
+          Text('Are you sure?', style: Theme.of(context).textTheme.displayMedium),
+          Text('This will reset the wifi credentials \nof the device(s)', style: Theme.of(context).textTheme.bodyMedium),
           FlexiTextButton(
             width: .82.sw,
             height: .06.sh,
@@ -41,7 +40,7 @@ class DeviceResetModal extends ConsumerWidget {
             onPressed: () async {
               var successTask = 0;
               ref.watch(totalTaskProvider.notifier).state = ref.watch(selectDevicesProvider).length;
-              OverlayEntry loadingScreen = OverlayEntry(builder: (context) => const ProgressScreen());
+              OverlayEntry loadingScreen = OverlayEntry(builder: (context) => const ProgressOverlay());
               Navigator.of(context).overlay!.insert(loadingScreen);
 
               for(var device in ref.read(selectDevicesProvider)) {
@@ -52,7 +51,7 @@ class DeviceResetModal extends ConsumerWidget {
                     'deviceId': device.deviceId
                   });
                   successTask += 1;
-                  ref.watch(completedTaskProvider.notifier).state = ref.watch(completedTaskProvider) + 1;
+                  ref.watch(completeTaskProvider.notifier).state = ref.watch(completeTaskProvider) + 1;
                   var disconnected = await ref.watch(socketClientControllerProvider.notifier).disconnect();
                   if(!disconnected) {
                     ref.invalidate(socketClientControllerProvider);
@@ -65,11 +64,11 @@ class DeviceResetModal extends ConsumerWidget {
                 msg: 'Success $successTask devices (Fail ${ref.read(totalTaskProvider) - successTask} devices)',
                 backgroundColor: Colors.black.withOpacity(.8),
                 textColor: Colors.white,
-                fontSize: FlexiFont.regular20.fontSize
+                fontSize: .02375.sh
               ).whenComplete(() {
                 ref.watch(connectedDeviceControllerProvider.notifier).refresh();
                 ref.invalidate(totalTaskProvider);
-                ref.invalidate(completedTaskProvider);
+                ref.invalidate(completeTaskProvider);
                 ref.invalidate(selectDevicesProvider);
                 
                 loadingScreen.remove();
@@ -81,7 +80,7 @@ class DeviceResetModal extends ConsumerWidget {
             width: .82.sw,
             height: .06.sh,
             child: TextButton(
-              child: Text('Cancle', style: FlexiFont.regular16),
+              child: Text('Cancle', style: Theme.of(context).textTheme.bodyMedium),
               onPressed: () => context.pop(),
             ),
           )

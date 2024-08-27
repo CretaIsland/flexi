@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../feature/content/controller/content_send_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 import '../../../component/search_bar.dart';
 import '../modal/content_send_modal.dart';
 
@@ -42,14 +41,14 @@ class _ContentSendScreenState extends ConsumerState<ContentSendScreen> {
                   onPressed: () => context.go('/content/info'),
                   icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary),
                 ),
-                Text('Send to device', style: FlexiFont.semiBold20),
+                Text('Send to device', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
                   onPressed: () => showModalBottomSheet(
                     backgroundColor: Colors.transparent,
                     context: context,
                     builder: (context) => const ContentSendModal()
                   ), 
-                  child: Text('Send', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))
+                  child: Text('Send', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
               ],
             ),
@@ -95,12 +94,12 @@ class _ContentSendScreenState extends ConsumerState<ContentSendScreen> {
                                 children: [
                                   Icon(Icons.link_rounded, color: FlexiColor.primary, size: .02.sh),
                                   SizedBox(width: .015.sh),
-                                  Text(devices[index].deviceName, style: FlexiFont.regular16,)
+                                  Text(devices[index].deviceName, style: Theme.of(context).textTheme.bodyMedium)
                                 ],
                               ),
                               Padding(
                                 padding: EdgeInsets.only(left: .03.sh),
-                                child: Text(devices[index].deviceId, style: FlexiFont.regular12.copyWith(color: FlexiColor.grey[600])),
+                                child: Text(devices[index].deviceId, style: Theme.of(context).textTheme.labelSmall!.copyWith(color: FlexiColor.grey[600])),
                               )
                             ],
                           ),

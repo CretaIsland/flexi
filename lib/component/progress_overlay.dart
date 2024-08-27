@@ -3,19 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../util/design/colors.dart';
-import '../util/design/fonts.dart';
 
 
 
-final totalTaskProvider = StateProvider<int>((ref) => 0);
-final completedTaskProvider = StateProvider<int>((ref) => 0);
+final totalTaskProvider = StateProvider((ref) => 0);
+final completeTaskProvider = StateProvider((ref) => 0);
 
-class ProgressScreen extends ConsumerWidget {
-  const ProgressScreen({super.key});
+class ProgressOverlay extends ConsumerWidget {
+  const ProgressOverlay({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var totalTask = ref.read(totalTaskProvider);
     return Scaffold(
       backgroundColor: FlexiColor.grey[200]!.withOpacity(.8),
       body: SizedBox(
@@ -37,22 +35,17 @@ class ProgressScreen extends ConsumerWidget {
             SizedBox(
               width: .5.sw,
               child: LinearProgressIndicator(
-                value: (1 / totalTask) * ref.watch(completedTaskProvider),
-                minHeight: .01.sh,
-                backgroundColor: FlexiColor.grey[400],
+                value: (1 / ref.read(totalTaskProvider)) * ref.watch(completeTaskProvider),
                 valueColor: AlwaysStoppedAnimation<Color>(FlexiColor.primary),
+                backgroundColor: FlexiColor.grey[400],
                 borderRadius: BorderRadius.circular(.01.sh)
-              ),
+              )
             ),
             SizedBox(height: .03.sh),
-            Text(
-              '${ref.watch(completedTaskProvider)}/$totalTask',
-              style: FlexiFont.semiBold14.copyWith(color: FlexiColor.primary)
-            )
-          ],
+            Text('${ref.watch(completeTaskProvider)}/${ref.read(totalTaskProvider)}', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: FlexiColor.primary))
+          ]
         ),
-      ),
+      )
     );
   }
-  
 }

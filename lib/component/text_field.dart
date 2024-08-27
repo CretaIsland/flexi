@@ -6,13 +6,11 @@ import '../util/design/colors.dart';
 
 
 class FlexiTextField extends StatelessWidget {
-  const FlexiTextField({super.key, required this.width, required this.height, this.controller, this.hintText, this.backgroundColor = Colors.white, this.textStyle, this.readOnly = false,this.onChanged});
+  const FlexiTextField({super.key, required this.width, required this.height, this.controller, this.hintText, this.readOnly = false, this.onChanged});
   final double width;
   final double height;
   final TextEditingController? controller;
   final String? hintText;
-  final Color? backgroundColor;
-  final TextStyle? textStyle;
   final bool readOnly;
   final void Function(String value)? onChanged;
 
@@ -23,26 +21,25 @@ class FlexiTextField extends StatelessWidget {
       height: height,
       child: TextField(
         controller: controller,
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(decorationThickness: 0),
+        readOnly: readOnly,
         decoration: InputDecoration(
+          contentPadding: EdgeInsets.only(left: .025.sw),
           hintText: hintText,
-          hintStyle: textStyle,
-          contentPadding: const EdgeInsets.only(left: 12),
+          hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.grey[700]),
           filled: true,
-          fillColor: backgroundColor,
+          fillColor: Colors.white,
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(.01.sh),
-            borderSide: BorderSide(color: FlexiColor.grey[400]!)
+            borderSide: BorderSide(color: FlexiColor.grey[400]!),
+            borderRadius: BorderRadius.circular(.01.sh)
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(.01.sh),
-            borderSide: BorderSide(color: FlexiColor.grey[400]!)
+            borderSide: BorderSide(color: FlexiColor.grey[400]!),
+            borderRadius: BorderRadius.circular(.01.sh)
           )
         ),
-        style: textStyle,
-        readOnly: readOnly,
         onChanged: onChanged
       ),
     );
   }
-
 }

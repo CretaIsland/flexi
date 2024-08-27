@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../feature/content/model/content_model.dart';
-import '../../../util/utils.dart';
+import '../../../util/design/colors.dart';
 import 'content_clipper.dart';
 
 
@@ -59,7 +59,7 @@ class _BackgroundEditPreviewState extends ConsumerState<BackgroundEditPreview> {
                 width: _responsiveWidth,
                 height: _responsiveHeight,
                 decoration: BoxDecoration(
-                  color: FlexiUtils.stringToColor(widget.content.backgroundColor),
+                  color: FlexiColor.stringToColor(widget.content.backgroundColor),
                   image: widget.content.backgroundType != 'color' && widget.content.fileThumbnail != null ?
                     DecorationImage(
                       image: Image.memory(base64Decode(widget.content.fileThumbnail!)).image,
@@ -74,7 +74,7 @@ class _BackgroundEditPreviewState extends ConsumerState<BackgroundEditPreview> {
                       fontSize: widget.content.textSize * _textScaler,
                       fontWeight: widget.content.bold ? FontWeight.bold : FontWeight.normal,
                       fontStyle: widget.content.italic ? FontStyle.italic : FontStyle.normal,
-                      color: FlexiUtils.stringToColor(widget.content.textColor)
+                      color: FlexiColor.stringToColor(widget.content.textColor)
                     ),
                   ),
                 )

@@ -1,15 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'router.dart';
+import 'util/design/fonts.dart';
 
 
 
 void main()  {
   runApp(const ProviderScope(child: FlexiApp()));
 }
-
 
 class FlexiApp extends StatelessWidget {
   const FlexiApp({super.key});
@@ -22,9 +24,11 @@ class FlexiApp extends StatelessWidget {
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
           routerConfig: router,
+          theme: ThemeData(
+            textTheme: Platform.isAndroid ? FlexiFont.android : FlexiFont.ios
+          )
         );
-      },
+      }
     );
   }
-
 }

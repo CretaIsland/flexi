@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../feature/setting/controller/auth_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 import '../../../component/bottom_navigation_bar.dart';
 import '../../../component/text_button.dart';
 import '../../../component/text_field.dart';
@@ -58,38 +57,35 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
                 onPressed: () => context.go('/setting'), 
                 icon: Icon(Icons.arrow_back_ios, size: .025.sh, color: FlexiColor.primary)
               ),
-              Text('Account Detail', style: FlexiFont.semiBold20),
+              Text('Account Detail', style: Theme.of(context).textTheme.displaySmall),
               SizedBox(width: .05.sh)
             ],
           ),
           SizedBox(height: .03.sh),
-          Text('User Name', style: FlexiFont.regular14),
+          Text('User Name', style: Theme.of(context).textTheme.bodySmall),
           SizedBox(height: .01.sh),
           FlexiTextField(
             width: .89.sw, 
             height: .06.sh,
             controller: _nicknameController,
-            textStyle: FlexiFont.regular16,
             readOnly: true
           ),
           SizedBox(height: .015.sh),
-          Text('Email', style: FlexiFont.regular14),
+          Text('Email', style: Theme.of(context).textTheme.bodySmall),
           SizedBox(height: .01.sh),
           FlexiTextField(
             width: .89.sw, 
             height: .06.sh,
             controller: _emailController,
-            textStyle: FlexiFont.regular16,
             readOnly: true
           ),
           SizedBox(height: .015.sh),
-          Text('Enterprise', style: FlexiFont.regular14),
+          Text('Enterprise', style: Theme.of(context).textTheme.bodySmall),
           SizedBox(height: .01.sh),
           FlexiTextField(
             width: .89.sw, 
             height: .06.sh,
             controller: _enterpriseController,
-            textStyle: FlexiFont.regular16,
             readOnly: true
           ),
           SizedBox(height: .35.sh),

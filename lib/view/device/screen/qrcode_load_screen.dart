@@ -7,10 +7,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
 
-import '../../../core/providers/local_storage_controller.dart';
+import '../../../core/controller/local_storage_controller.dart';
 import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 
 
 
@@ -64,7 +63,7 @@ class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
                   onPressed: () => context.go('/device/setWifi'),
                   icon: Icon(Icons.arrow_back_ios, color: FlexiColor.primary, size: .03.sh),
                 ),
-                Text('Load QRCode Image', style: FlexiFont.semiBold20),
+                Text('Load QRCode Image', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
                   onPressed: () async {
                     if(_selectFileIndex != -1) {
@@ -77,13 +76,13 @@ class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
                             msg: 'Invalid QR Code.',
                             backgroundColor: Colors.black.withOpacity(.8),
                             textColor: Colors.white,
-                            fontSize: FlexiFont.regular20.fontSize
+                            fontSize: Theme.of(context).textTheme.displaySmall!.fontSize
                           );
                         }
                       }
                     }
                   },
-                  child: Text('Load', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))
+                  child: Text('Load', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
               ],
             ),

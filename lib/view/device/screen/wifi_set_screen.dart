@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 import '../../../component/text_field.dart';
 
 
@@ -48,10 +47,10 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
                   onPressed: () => context.go('/device/setTimezone'),
                   icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary),
                 ),
-                Text('WiFi Setup', style: FlexiFont.semiBold20),
+                Text('WiFi Setup', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
                   onPressed: () => context.go('/device/register'), 
-                  child: Text('OK', style: FlexiFont.regular16.copyWith(color: FlexiColor.primary))
+                  child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
               ],
             ),
@@ -64,34 +63,28 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
               ],
             ),
             SizedBox(height: .03.sh),
-            Text('SSID', style: FlexiFont.regular14),
+            Text('SSID', style: Theme.of(context).textTheme.bodySmall),
             SizedBox(height: .01.sh),
             FlexiTextField(
               width: .89.sw,
               height: .06.sh,
-              controller: _ssidController,
-              backgroundColor: Colors.white,
-              textStyle: FlexiFont.regular16,
+              controller: _ssidController
             ),
             SizedBox(height: .025.sh),
-            Text('Type', style: FlexiFont.regular14),
+            Text('Type', style: Theme.of(context).textTheme.bodySmall),
             SizedBox(height: .01.sh),
             FlexiTextField(
               width: .89.sw,
               height: .06.sh,
-              controller: _typeController,
-              backgroundColor: Colors.white,
-              textStyle: FlexiFont.regular16,
+              controller: _typeController
             ),
             SizedBox(height: .025.sh),
-            Text('Passphrase', style: FlexiFont.regular14),
+            Text('Passphrase', style: Theme.of(context).textTheme.bodySmall),
             SizedBox(height: .01.sh),
             FlexiTextField(
               width: .89.sw,
               height: .06.sh,
-              controller: _passwordController,
-              backgroundColor: Colors.white,
-              textStyle: FlexiFont.regular16,
+              controller: _passwordController
             )
           ],
         ),
@@ -126,7 +119,7 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
               ),
             ),
             SizedBox(height: .025.sh),
-            Text(text, style: FlexiFont.semiBold16.copyWith(color: FlexiColor.primary))
+            Text(text, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.primary))
           ],
         ),
       )

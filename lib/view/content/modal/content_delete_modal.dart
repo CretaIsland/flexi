@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../feature/content/controller/content_list_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 import '../../../component/text_button.dart';
 
 
@@ -29,8 +28,8 @@ class ContentDeleteModal extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('Are you sure?', style: FlexiFont.semiBold24),
-          Text('This will delete \nlocally stored content.', style: FlexiFont.regular16),
+          Text('Are you sure?', style: Theme.of(context).textTheme.displayMedium),
+          Text('This will delete \nlocally stored content.', style: Theme.of(context).textTheme.bodyMedium),
           FlexiTextButton(
             width: .82.sw,
             height: .06.sh,
@@ -47,7 +46,7 @@ class ContentDeleteModal extends ConsumerWidget {
             width: .82.sw,
             height: .06.sh,
             child: TextButton(
-              child: Text('Cancle', style: FlexiFont.regular16),
+              child: Text('Cancle', style: Theme.of(context).textTheme.bodyMedium),
               onPressed: () => context.pop(),
             ),
           )

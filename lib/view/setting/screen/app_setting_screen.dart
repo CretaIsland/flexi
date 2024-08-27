@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../feature/setting/controller/app_setting_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 
 
 
@@ -26,12 +25,12 @@ class AppSettingScreen extends ConsumerWidget {
                 onPressed: () => context.go('/setting'), 
                 icon: Icon(Icons.arrow_back_ios, size: .025.sh, color: FlexiColor.primary)
               ),
-              Text('App Setting', style: FlexiFont.semiBold20),
+              Text('App Setting', style: Theme.of(context).textTheme.displaySmall),
               SizedBox(width: .05.sh)
             ],
           ),
           SizedBox(height: .03.sh),
-          Text('Device Register Option', style: FlexiFont.regular14),
+          Text('Device Register Option', style: Theme.of(context).textTheme.bodySmall),
           SizedBox(height: .01.sh),
           Container(
             width: .89.sw,
@@ -52,7 +51,7 @@ class AppSettingScreen extends ConsumerWidget {
                     );
                   }).toList(),
                   onChanged: (value) => ref.watch(appSettingControllerProvider.notifier).setRegisterType(value.toString()),
-                  style: FlexiFont.regular16,
+                  style: Theme.of(context).textTheme.bodyMedium,
                   dropdownColor: Colors.white,
                   borderRadius: BorderRadius.circular(.01.sh),
                   icon: Icon(Icons.keyboard_arrow_down, size: .03.sh, color: FlexiColor.grey[600]),

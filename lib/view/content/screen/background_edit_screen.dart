@@ -5,12 +5,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-import '../../../core/providers/local_storage_controller.dart';
+import '../../../core/controller/local_storage_controller.dart';
 import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
-import '../../../util/utils.dart';
 import '../component/background_edit_preview.dart';
 
 
@@ -29,7 +27,7 @@ class _BackgroundEditScreenState extends ConsumerState<BackgroundEditScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: FlexiUtils.stringToColor(ref.watch(contentEditControllerProvider).backgroundColor),
+      backgroundColor: FlexiColor.stringToColor(ref.watch(contentEditControllerProvider).backgroundColor),
       body: Column(
         children: [
           Container(
@@ -51,7 +49,7 @@ class _BackgroundEditScreenState extends ConsumerState<BackgroundEditScreen> {
                   onPressed: () {
                     ref.watch(contentEditControllerProvider.notifier).undo();
                   },
-                  child: Text('Reset', style: FlexiFont.regular16.copyWith(color: Colors.white))
+                  child: Text('Reset', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white))
                 )
               ],
             )
@@ -68,19 +66,19 @@ class _BackgroundEditScreenState extends ConsumerState<BackgroundEditScreen> {
                     onPressed: () => setState(() {
                       _tabIndex = 0;
                     }), 
-                    child: Text('Asset', style: FlexiFont.regular16.copyWith(color: _tabIndex == 0 ? Colors.white : FlexiColor.grey[600]))
+                    child: Text('Asset', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: _tabIndex == 0 ? Colors.white : FlexiColor.grey[600]))
                   ),
                   TextButton(
                     onPressed: () => setState(() {
                       _tabIndex = 1;
                     }), 
-                    child: Text('Palette', style: FlexiFont.regular16.copyWith(color: _tabIndex == 1 ? Colors.white : FlexiColor.grey[600]))
+                    child: Text('Palette', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: _tabIndex == 1 ? Colors.white : FlexiColor.grey[600]))
                   ),
                   TextButton(
                     onPressed: () => setState(() {
                       _tabIndex = 2;
                     }), 
-                    child: Text('Gallery', style: FlexiFont.regular16.copyWith(color: _tabIndex == 2 ? Colors.white : FlexiColor.grey[600]))
+                    child: Text('Gallery', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: _tabIndex == 2 ? Colors.white : FlexiColor.grey[600]))
                    )
                 ],
               ),
@@ -193,7 +191,7 @@ class _BackgroundEditScreenState extends ConsumerState<BackgroundEditScreen> {
                             msg: 'error',
                             backgroundColor: Colors.black.withOpacity(.8),
                             textColor: Colors.white,
-                            fontSize: FlexiFont.regular20.fontSize
+                            fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize
                           );
                         }
                       },

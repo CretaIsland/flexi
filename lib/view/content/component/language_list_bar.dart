@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/controller/current_language_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 
 
 
@@ -45,7 +44,7 @@ class InputLanguageListBar extends ConsumerWidget {
                     child: Text(
                       currentLanguage['name']!, 
                       style: ref.watch(selectInputLanguageProvider)['code'] == currentLanguage['code'] ?
-                        FlexiFont.semiBold14.copyWith(color: FlexiColor.primary): FlexiFont.regular14
+                        Theme.of(context).textTheme.bodySmall!.copyWith(color: FlexiColor.primary): Theme.of(context).textTheme.bodySmall
                       ),
                   ),
                 ),
@@ -77,7 +76,7 @@ class InputLanguageListBar extends ConsumerWidget {
                 PopupMenuItem(
                   height: .04.sh,
                   value: language['code'],
-                  child: Text(language['name']!, style: FlexiFont.regular14),
+                  child: Text(language['name']!, style: Theme.of(context).textTheme.bodySmall),
                   onTap: () async {
                     ref.watch(selectInputLanguageProvider.notifier).state = language;
                     if(!ref.watch(currentInputLanguagesControllerProvider).contains(language)) {
@@ -131,7 +130,7 @@ class OutputLanguageListBar extends ConsumerWidget {
                     child: Text(
                       currentLanguage['name']!, 
                       style: ref.watch(selectOutputLanguageProvider)['code'] == currentLanguage['code'] ?
-                        FlexiFont.semiBold14.copyWith(color: FlexiColor.primary) : FlexiFont.regular14
+                        Theme.of(context).textTheme.bodySmall!.copyWith(color: FlexiColor.primary) : Theme.of(context).textTheme.bodySmall
                       ),
                   ),
                 ),
@@ -163,7 +162,7 @@ class OutputLanguageListBar extends ConsumerWidget {
                 PopupMenuItem(
                   height: .04.sh,
                   value: language['code'],
-                  child: Text(language['name']!, style: FlexiFont.regular14),
+                  child: Text(language['name']!, style: Theme.of(context).textTheme.bodySmall),
                   onTap: () async {
                     ref.watch(selectOutputLanguageProvider.notifier).state = language;
                     if(!ref.watch(currentOutputLanguagesControllerProvider).contains(language)) {

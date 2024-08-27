@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../feature/content/model/content_model.dart';
-import '../../../util/utils.dart';
+import '../../../util/design/colors.dart';
 
 
 
@@ -86,7 +86,7 @@ class _ContentPreviewState extends ConsumerState<ContentPreview> {
           width: _responsiveWidth,
           height: _responsiveHeight,
           decoration: BoxDecoration(
-            color: FlexiUtils.stringToColor(widget.content.backgroundColor),
+            color: FlexiColor.stringToColor(widget.content.backgroundColor),
             image: widget.content.backgroundType != 'color' && widget.content.fileThumbnail != null ? DecorationImage(
               image: Image.memory(base64Decode(widget.content.fileThumbnail!)).image,
               fit: BoxFit.cover
@@ -98,7 +98,7 @@ class _ContentPreviewState extends ConsumerState<ContentPreview> {
                 text: widget.content.text,
                 style: TextStyle(
                   fontSize: _textScaler * widget.content.textSize,
-                  color: FlexiUtils.stringToColor(widget.content.textColor),
+                  color: FlexiColor.stringToColor(widget.content.textColor),
                   fontWeight: widget.content.bold ? FontWeight.bold : FontWeight.normal,
                   fontStyle: widget.content.italic ? FontStyle.italic : FontStyle.normal
                 ),
@@ -139,7 +139,7 @@ class _ContentPreviewState extends ConsumerState<ContentPreview> {
                       widget.content.text, 
                       style: TextStyle(
                         fontSize: _textScaler * widget.content.textSize,
-                        color: FlexiUtils.stringToColor(widget.content.textColor),
+                        color: FlexiColor.stringToColor(widget.content.textColor),
                         fontWeight: widget.content.bold ? FontWeight.bold : FontWeight.normal,
                         fontStyle: widget.content.italic ? FontStyle.italic : FontStyle.normal
                       ),

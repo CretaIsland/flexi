@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../util/design/colors.dart';
-import '../../../util/design/fonts.dart';
 import '../../../component/text_button.dart';
 
 
@@ -39,12 +38,12 @@ class _DeviceRecoveryScreenState extends State<DeviceRecoveryScreen> {
                 onPressed: () => context.go('/setting'), 
                 icon: Icon(Icons.arrow_back_ios, size: .025.sh, color: FlexiColor.primary)
               ),
-              Text('Device Recovery', style: FlexiFont.semiBold20),
+              Text('Device Recovery', style: Theme.of(context).textTheme.displaySmall),
               SizedBox(width: .05.sh)
             ],
           ),
           SizedBox(height: .03.sh),
-          Text('Device ID', style: FlexiFont.regular14),
+          Text('Device ID', style: Theme.of(context).textTheme.bodySmall),
           SizedBox(height: .01.sh),
           SizedBox(
             width: .89.sw,
@@ -68,7 +67,7 @@ class _DeviceRecoveryScreenState extends State<DeviceRecoveryScreen> {
                   borderSide: BorderSide(color: FlexiColor.grey[400]!)
                 )
               ),
-              style: FlexiFont.regular16,
+              style: Theme.of(context).textTheme.bodyMedium,
             )
           ),
           SizedBox(height: .02.sh),
