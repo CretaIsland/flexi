@@ -68,7 +68,7 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
                     if(ref.watch(settingControllerProvider)['registerType'] == 'Hotspot' && Platform.isIOS) {
                       showModalBottomSheet(
                         backgroundColor: Colors.transparent,
-                        context: context, 
+                        context: widget.rootContext, 
                         builder: (context) => const DeviceSetupModal()
                       );
                     } else {

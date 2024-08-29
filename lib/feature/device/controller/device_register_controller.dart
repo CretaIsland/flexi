@@ -15,7 +15,6 @@ import 'package:wifi_scan/wifi_scan.dart';
 
 import '../../../core/constants/config.dart';
 import '../../../util/utils.dart';
-import '../../setting/controller/user_controller.dart';
 import '../model/device_model.dart';
 
 part 'device_register_controller.g.dart';
@@ -113,7 +112,7 @@ class AccessibleDeviceBluetooths extends _$AccessibleDeviceBluetooths {
   }
 
   void initialize() async {
-    if(await Permission.locationAlways.request().isGranted) {
+    if(await Permission.locationWhenInUse.request().isGranted) {
       await _centralManager.startDiscovery();
       _centralManager.discovered.listen((result) {
         if(result.advertisement.name != null && FlexiUtils.deviceCheck(result.advertisement.name!)) {
