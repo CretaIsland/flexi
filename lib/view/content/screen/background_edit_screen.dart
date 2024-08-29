@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -88,7 +89,7 @@ class _BackgroundEditScreenState extends ConsumerState<BackgroundEditScreen> {
             width: 1.sw,
             height: .42.sh,
             color: FlexiColor.backgroundColor,
-            child: _tabIndex == 0 ? Container() : _tabIndex == 1 ? colorPalette() : galleryContent(),
+            child: _tabIndex == 0 ? assetContent() : _tabIndex == 1 ? colorPalette() : galleryContent(),
           )
         ],
       )
@@ -96,22 +97,35 @@ class _BackgroundEditScreenState extends ConsumerState<BackgroundEditScreen> {
   }
 
   Widget assetContent() {
-    List<String> assetContents = const [];
+    List<String> assetContents = const [
+      'assets/template/escalator_guide.png',
+      'assets/template/restricted_area.png'
+    ];
 
     return ListView.builder(
       padding: EdgeInsets.zero,
       itemCount: assetContents.length,
       itemBuilder: (context, index) {
-        return InkWell(
-          onTap: () { },
+        return GestureDetector(
+          onTap: () async {
+            Uint8List assetBytes = (await rootBundle.load(assetContents[index])).buffer.asUint8List();
+            ref.watch(contentEditControllerProvider.notifier).setBackgroundContent(
+              'image', 
+              assetContents[index], 
+              assetContents[index].split('/').last, 
+              assetBytes
+            );
+          },
           child: Container(
             width: 1.sw,
-            height: .06.sw,
+            height: .06.sh,
             margin: const EdgeInsets.only(bottom: 1),
-            child: Image(
-              image: AssetImage(assetContents[index]),
-              fit: BoxFit.cover,
-            ),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: Image.asset(assetContents[index]).image,
+                fit: BoxFit.cover
+              )
+            )
           ),
         );
       },

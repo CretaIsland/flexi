@@ -73,6 +73,8 @@ flutter:
     - assets/image/speaking.gif
     - assets/image/wifi_loading.gif
     - assets/image/google_logo.png
+    - assets/template/escalator_guide.png
+    - assets/template/restricted_area.png
 
   fonts:
     - family: Roboto

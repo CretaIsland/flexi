@@ -14,6 +14,7 @@ import 'package:wifi_iot/wifi_iot.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 
 import '../../../core/constants/config.dart';
+import '../../../util/utils.dart';
 import '../../setting/controller/user_controller.dart';
 import '../model/device_model.dart';
 
@@ -84,7 +85,7 @@ Future<Stream<List<String>>> accessibleDeviceHotspots(AccessibleDeviceHotspotsRe
     if(await WiFiScan.instance.canStartScan(askPermissions: true) == CanStartScan.yes) {
       await WiFiScan.instance.startScan();
       return WiFiScan.instance.onScannedResultsAvailable.map((result) {
-        return result.where((element) => element.ssid.isNotEmpty && element.ssid.contains(ref.watch(userControllerProvider)!.enterprise)).map((e) {
+        return result.where((element) => element.ssid.isNotEmpty && FlexiUtils.deviceCheck(element.ssid)).map((e) {
           return e.ssid;
         }).toList();
       });
@@ -115,7 +116,7 @@ class AccessibleDeviceBluetooths extends _$AccessibleDeviceBluetooths {
     if(await Permission.locationAlways.request().isGranted) {
       await _centralManager.startDiscovery();
       _centralManager.discovered.listen((result) {
-        if(result.advertisement.name != null && result.advertisement.name!.contains('')) {
+        if(result.advertisement.name != null && FlexiUtils.deviceCheck(result.advertisement.name!)) {
           final peripheral = result.peripheral;
           final index = state.indexWhere((element) => element.peripheral == peripheral);
           if(index != -1) {
