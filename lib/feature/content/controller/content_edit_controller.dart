@@ -69,9 +69,9 @@ class ContentEditController extends _$ContentEditController {
     if(size == 'S') {
       state = state.copyWith(textSize: (state.height * .4).floor(), textSizeType: 'S');
     } else if(size == 'M') {
-      state = state.copyWith(textSize: (state.height * .6).floor(), textSizeType: 'M');
+      state = state.copyWith(textSize: (state.height * .5).floor(), textSizeType: 'M');
     } else if(size == 'L') {
-      state = state.copyWith(textSize: (state.height * .8).floor(), textSizeType: 'L');
+      state = state.copyWith(textSize: (state.height * .65).floor(), textSizeType: 'L');
     }
   }
 
