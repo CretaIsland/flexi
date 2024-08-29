@@ -63,6 +63,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                   children: [
                     IconButton(
                       onPressed: () {
+                        ref.watch(sttModeProvider.notifier).state = true;
                         ref.watch(currentInputLanguagesControllerProvider.notifier).saveChange();
                         ref.watch(contentInfoControllerProvider.notifier).setContent(ref.watch(contentEditControllerProvider));
                         context.go('/content/info');

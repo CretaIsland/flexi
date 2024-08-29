@@ -80,11 +80,12 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
               height: .15.sh,
               child: TextField(
                 controller: _textEditingController,
-                maxLines: 2,
+                maxLines: 5,
                 readOnly: ref.watch(sttModeProvider),
                 focusNode: ref.watch(keyboardEventProvider),
+                cursorHeight: responsiveHeight,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.zero,
+                  contentPadding: const EdgeInsets.only(bottom: 5),
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
@@ -95,7 +96,8 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
                   fontWeight: content.bold ? FontWeight.bold : FontWeight.normal,
                   fontStyle: content.italic ? FontStyle.italic : FontStyle.normal,
                   color: FlexiColor.stringToColor(content.textColor),
-                  height: content.textSizeType == 's' ? 1.6 : content.textSizeType == 'm' ? 1.4 : 1.2
+                  height: content.textSizeType == 'S' ? 2.5 : content.textSizeType == 'M' ? 1.9 : 1.6,
+                  decorationThickness: 0
                 ),
                 onEditingComplete: () => ref.watch(contentEditControllerProvider.notifier).setText(_textEditingController.text),
                 onTapOutside: (event) => ref.watch(contentEditControllerProvider.notifier).setText(_textEditingController.text),

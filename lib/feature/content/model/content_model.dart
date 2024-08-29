@@ -23,7 +23,7 @@ class ContentModel with _$ContentModel {
     @Default(false) bool italic,
     @Default('')String language,
     @Default('color') String backgroundType,
-    @Default('Color(0xff000000)') String backgroundColor,
+    @Default('Color(0xff7F7F85)') String backgroundColor,
     @Default('')String filePath,
     @Default('')String fileName,
     String? fileThumbnail
