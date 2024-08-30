@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -61,12 +62,18 @@ class ContentInfoController extends _$ContentInfoController {
 
   Future<File?> getContentFile() async {
     try {
+      print(state.filePath);
+      print(state.fileName);
       if(state.filePath.startsWith('assets/')) {
-        final ByteData assetBytes = await rootBundle.load(state.filePath);
-        final tempFile = File('${(await getTemporaryDirectory()).path}/${state.filePath}');
-        final file = await tempFile.writeAsBytes(assetBytes.buffer.asUint8List(assetBytes.offsetInBytes, assetBytes.lengthInBytes));
-        
-        return file;
+        final byteData = await rootBundle.load(state.filePath);
+
+        // 임시 디렉토리 생성 및 임시 파일 생성
+        final tempDir = await getTemporaryDirectory();
+        final tempFile = File('${tempDir.path}/${state.fileName}');
+
+        // 임시 파일에 이미지 데이터 쓰기
+        await tempFile.writeAsBytes(byteData.buffer.asUint8List());
+        return tempFile;
       } else {
         return File(state.filePath);
       }

@@ -36,7 +36,7 @@ class ContentEditController extends _$ContentEditController {
   void setBackgroundColor(Color color) {
     state = state.copyWith(
       backgroundType: 'color',
-      backgroundColor: color.toString(),
+      backgroundColor: color.value.toString(),
       filePath: '',
       fileName: '',
       fileThumbnail: ''
@@ -62,7 +62,7 @@ class ContentEditController extends _$ContentEditController {
   }
 
   void setTextColor(Color color) {
-    state = state.copyWith(textColor: color.toString());
+    state = state.copyWith(textColor: color.value.toString());
   }
 
   void setTextSize(String size) {

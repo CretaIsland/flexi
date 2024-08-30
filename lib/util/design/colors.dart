@@ -21,22 +21,11 @@ class FlexiColor {
   static Color backgroundColor = grey[200]!;
 
   // string to color
-  static stringToColor(String colorStr) {
-    String extract = extractColorString(colorStr);
-    if (extract.length == 8) {
-      return Color(int.parse(extract, radix: 16));
+  static Color? stringToColor(String colorValue) {
+    if (colorValue.isNotEmpty) {
+      return Color(int.parse(colorValue));
     }
     return null;
-  }
-
-  // extract color from string
-  static String extractColorString(String input) {
-    final RegExp colorRegex = RegExp(r'Color\(0x(.{8})\)');
-    final Match? match = colorRegex.firstMatch(input);
-    if (match != null && match.groupCount >= 1) {
-      return match.group(1)!;
-    }
-    return '';
   }
   
 }

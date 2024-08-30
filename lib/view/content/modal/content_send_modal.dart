@@ -53,6 +53,8 @@ class ContentSendModal extends ConsumerWidget {
                   if(connected) {
                     Map<String, dynamic> data = content.toJson();
                     data.addAll({"command": "playerContent", "deviceId": device.deviceId});
+                    data['textColor'] = FlexiColor.stringToColor(data['textColor']).toString();
+                    data['backgroundColor'] = FlexiColor.stringToColor(data['backgroundColor']).toString();
                     data.remove('textSizeType');
                     data.remove('filePath');
                     data.remove('fileThumbnail');
@@ -66,6 +68,8 @@ class ContentSendModal extends ConsumerWidget {
                     if(connected) {
                       Map<String, dynamic> data = content.toJson();
                       data.addAll({"command": "playerContent", "deviceId": device.deviceId});
+                      data['textColor'] = FlexiColor.stringToColor(data['textColor']).toString();
+                      data['backgroundColor'] = FlexiColor.stringToColor(data['backgroundColor']).toString();
                       data.remove('textSizeType');
                       data.remove('filePath');
                       data.remove('fileThumbnail');

@@ -61,7 +61,21 @@ class _ContentSendScreenState extends ConsumerState<ContentSendScreen> {
             ),
             SizedBox(height: .04.sh),
             Expanded(
-              child: ListView.builder(
+              child: devices.isEmpty ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: .03.sh,
+                    height: .03.sh,
+                    child: CircularProgressIndicator(
+                      color: FlexiColor.grey[600],
+                      strokeWidth: 2.5
+                    )
+                  ),
+                  SizedBox(height: .01.sh),
+                  Text('Scanning for nearby device(s)', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600]))
+                ]
+              ): ListView.builder(
                 padding: EdgeInsets.zero,
                 itemCount: devices.length,
                 itemBuilder: (context, index) {
