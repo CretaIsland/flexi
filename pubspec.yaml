@@ -20,7 +20,6 @@ dependencies:
   flutter_advanced_switch: ^3.1.0
   flutter_blue_plus: ^1.32.6
   flutter_native_splash: ^2.4.0
-  flutter_native_timezone_updated_gradle: ^2.0.3
   flutter_riverpod: ^2.4.9
   flutter_screenutil: ^5.9.1
   fluttertoast: ^8.2.5
