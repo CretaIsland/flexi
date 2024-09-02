@@ -113,7 +113,7 @@ class AccessibleDeviceBluetooths extends _$AccessibleDeviceBluetooths {
   }
 
   void initialize() async {
-    if(await Permission.locationWhenInUse.request().isGranted) {
+    if(await Permission.locationWhenInUse.request().isGranted && await Permission.bluetoothScan.request().isGranted && await Permission.bluetoothConnect.request().isGranted) {
       await _centralManager.startDiscovery();
       _centralManager.discovered.listen((result) {
         if(result.advertisement.name != null && FlexiUtils.deviceCheck(result.advertisement.name!, ref.watch(userControllerProvider)!.enterprise)) {

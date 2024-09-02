@@ -61,7 +61,7 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
                   onPressed: () => context.go('/device/setTimezone'), 
                   icon: Icon(Icons.arrow_back_ios_rounded, size: .025.sh, color: FlexiColor.primary)
                 ),
-                Text('Set Device Timezone', style: Theme.of(context).textTheme.displaySmall),
+                Text('WiFi Setup', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
                   onPressed: () {
                     ref.watch(registerDataControllerProvider.notifier).setNetwork(_ssidController.text, _typeController.text, _passwordController.text);
