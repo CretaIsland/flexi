@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/controller/socket_client_controller.dart';
+import '../../../core/controller/network_controller.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../feature/content/controller/content_send_controller.dart';
 import '../../../util/design/colors.dart';
@@ -52,7 +52,7 @@ class ContentSendModal extends ConsumerWidget {
                   var connected = await ref.watch(socketClientControllerProvider.notifier).connect(device.ip);
                   if(connected) {
                     Map<String, dynamic> data = content.toJson();
-                    data.addAll({"command": "playerContent", "deviceId": device.deviceId});
+                    data.addAll({"command": "playerContent", "deviceId": device.deviceId, "requestTime": DateTime.now().toUtc().toIso8601String()});
                     data['textColor'] = FlexiColor.stringToColor(data['textColor']).toString();
                     data['backgroundColor'] = FlexiColor.stringToColor(data['backgroundColor']).toString();
                     data.remove('textSizeType');
@@ -67,7 +67,7 @@ class ContentSendModal extends ConsumerWidget {
                     var connected = await ref.watch(socketClientControllerProvider.notifier).connect(device.ip);
                     if(connected) {
                       Map<String, dynamic> data = content.toJson();
-                      data.addAll({"command": "playerContent", "deviceId": device.deviceId});
+                      data.addAll({"command": "playerContent", "deviceId": device.deviceId, "requestTime": DateTime.now().toUtc().toIso8601String()});
                       data['textColor'] = FlexiColor.stringToColor(data['textColor']).toString();
                       data['backgroundColor'] = FlexiColor.stringToColor(data['backgroundColor']).toString();
                       data.remove('textSizeType');

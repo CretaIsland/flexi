@@ -250,7 +250,6 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                       } else {
                         ref.watch(isSpeakingProvider.notifier).state = true;
                         textEditController.setLanguage(ref.watch(selectInputLanguageProvider)['localeId']!.replaceAll("_", "-"));
-                        print(ref.watch(selectInputLanguageProvider)['localeId']!);
                         sttController.startRecord(ref.watch(selectInputLanguageProvider)['localeId']!, (value) { 
                           print(value);
                           if(value.isNotEmpty) textEditController.setText(value);

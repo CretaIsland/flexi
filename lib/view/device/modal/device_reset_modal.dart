@@ -1,6 +1,6 @@
-import 'package:flexi/component/progress_overlay.dart';
-import 'package:flexi/core/controller/socket_client_controller.dart';
-import 'package:flexi/feature/device/controller/device_list_controller.dart';
+import '../../../component/progress_overlay.dart';
+import '../../../core/controller/network_controller.dart';
+import '../../../feature/device/controller/device_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

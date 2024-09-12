@@ -16,7 +16,7 @@ class CurrentLanguageRepository {
       var results = await _inputLangStore.find(await _dbClient);
       return results.map((element) => Map<String, String>.from(element.value)).toList();
     } catch (error) {
-      print('error at LanguageRepository.getInputLangs >>> $error');
+      print('Error at LanguageRepository.getInputLangs >>> $error');
     }
     return List.empty();
   }
@@ -26,7 +26,7 @@ class CurrentLanguageRepository {
       var results = await _outputLangStore.find(await _dbClient);
       return results.map((element) => Map<String, String>.from(element.value)).toList();
     } catch (error) {
-      print('error at LanguageRepository.getOutputLangs >>> $error');
+      print('Error at LanguageRepository.getOutputLangs >>> $error');
     }
     return List.empty();
   }
@@ -36,7 +36,7 @@ class CurrentLanguageRepository {
       await _inputLangStore.delete(await _dbClient);
       await _inputLangStore.addAll(await _dbClient, updateInputLangs);
     } catch (error) {
-      print('error at LanguageRepository.updateInputLangs >>> $error');
+      print('Error at LanguageRepository.updateInputLangs >>> $error');
     }
   }
 
@@ -45,7 +45,7 @@ class CurrentLanguageRepository {
       await _outputLangStore.delete(await _dbClient);
       await _outputLangStore.addAll(await _dbClient, updateOutputLangs);
     } catch (error) {
-      print('error at LanguageRepository.updateOutputLangs >>> $error');
+      print('Error at LanguageRepository.updateOutputLangs >>> $error');
     }
   }
 

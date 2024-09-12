@@ -1,59 +1,27 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
-
+import 'package:qr_code_dart_scan/qr_code_dart_scan.dart';
 import '../../../core/controller/gallery_controller.dart';
 import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../util/design/colors.dart';
+import '../../../util/utils.dart';
 
 
 
-class QrcodeLoadScreen extends ConsumerStatefulWidget {
+final selectImageIndex = StateProvider((ref) => -1);
+
+class QrcodeLoadScreen extends ConsumerWidget {
   const QrcodeLoadScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _QrcodeLoadScreenState();
-}
-
-class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
-
-  int _selectFileIndex = -1;
-
-  Future<bool> getWiFiCredentials(File image) async {
-    try {
-      List<String> wifiEncryptionTypes = ['', 'OPEN', 'WPA', 'WEP'];
-      var barcodeScanner = BarcodeScanner(formats: [BarcodeFormat.qrCode]);
-      var result = await barcodeScanner.processImage(InputImage.fromFile(image));
-      for(var data in result) {
-        if(data.type == BarcodeType.wifi) {
-          var wifiInfo = data.value as BarcodeWifi;
-          ref.watch(registerDataControllerProvider.notifier).setNetwork(
-            wifiInfo.ssid ?? '', 
-            wifiInfo.encryptionType == null ? wifiEncryptionTypes[0] : wifiEncryptionTypes[wifiInfo.encryptionType!], 
-            wifiInfo.password ?? ''
-          );
-          return true;
-        }
-      }
-    } catch (error) {
-      print('error at DeviceRegisterController.setWifiCredentialFromImage >>> $error');
-    }
-    return false;
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(registerDataControllerProvider);
-    var localFiles = ref.watch(galleryControllerProvider);
+    var images = ref.watch(galleryControllerProvider);
     return Scaffold(
       backgroundColor: FlexiColor.backgroundColor,
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw, bottom: .02.sh),
@@ -61,76 +29,77 @@ class _QrcodeLoadScreenState extends ConsumerState<QrcodeLoadScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: () => context.go('/device/setWifi'),
-                  icon: Icon(Icons.arrow_back_ios, color: FlexiColor.primary, size: .03.sh),
+                  onPressed: () => context.go('/device/setWifi'), 
+                  icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary)
                 ),
-                Text('Load QRCode Image', style: Theme.of(context).textTheme.displaySmall),
+                Text('Set Device Timezone', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
                   onPressed: () async {
-                    if(_selectFileIndex != -1) {
-                      var file = await localFiles[_selectFileIndex].loadFile();
-                      if(file != null) {
-                        if(await getWiFiCredentials(file)) {
-                          context.go('/device/setWifi');
-                        } else {
-                          Fluttertoast.showToast(
-                            msg: 'Invalid QR Code.',
-                            backgroundColor: Colors.black.withOpacity(.8),
-                            textColor: Colors.white,
-                            fontSize: Theme.of(context).textTheme.displaySmall!.fontSize
-                          );
-                        }
+                    if(ref.read(selectImageIndex) != -1) {
+                      var fileBytes = await images[ref.read(selectImageIndex)].originBytes;
+                      if(fileBytes == null) {
+                        FlexiUtils.showMsg('Error Load QR-Code');
+                        return;
                       }
+                      var value = await QRCodeDartScanDecoder(formats: [BarcodeFormat.qrCode]).decodeFile(XFile.fromData(fileBytes));
+                      if(value == null) {
+                        FlexiUtils.showMsg('Invalid QR-Code');
+                        return;
+                      }
+                      var credential = FlexiUtils.getWifiCredential(value.text);
+                      if(credential == null) {
+                        FlexiUtils.showMsg('Invalid QR-Code');
+                        return;
+                      }
+                      ref.watch(registerDataControllerProvider.notifier).setNetwork(credential['ssid']!, credential['security']!, credential['password']!);
+                      if(context.mounted) context.go('/device/setWifi');
+                    } else {
+                      FlexiUtils.showMsg('Select image');
                     }
-                  },
-                  child: Text('Load', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
+                  }, 
+                  child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
-              ],
-            ),
+              ]
+            )
           ),
           Expanded(
-            child: NotificationListener<ScrollNotification>(
+            child: NotificationListener<ScrollEndNotification>(
               onNotification: (notification) {
-                if(notification is ScrollEndNotification && notification.metrics.pixels == notification.metrics.maxScrollExtent) ref.watch(galleryControllerProvider.notifier).loadNext();
+                if(notification.metrics.pixels == notification.metrics.maxScrollExtent) {
+                  ref.watch(galleryControllerProvider.notifier).loadNext();
+                }
                 return true;
               },
               child: GridView.builder(
                 padding: EdgeInsets.zero,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3
-                ), 
-                itemCount: localFiles.length,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () => setState(() {
-                      _selectFileIndex = index;
-                    }),
-                    child: FutureBuilder(
-                      future: localFiles[index].thumbnailData,
-                      builder: (context, snapshot) {
-                        if(snapshot.connectionState == ConnectionState.done) {
-                          if(snapshot.data == null) {
-                            return const SizedBox.shrink();
-                          }
-                          return Container(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+                itemCount: images.length,
+                itemBuilder: (context, index) => GestureDetector(
+                  onTap: () => ref.watch(selectImageIndex.notifier).state = index,
+                  child: FutureBuilder(
+                    future: images[index].thumbnailData, 
+                    builder: (context, snapshot) {
+                      if(snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
+                        return Consumer(
+                          builder: (context, ref, child) => Container(
                             decoration: BoxDecoration(
-                              border: Border.all(color: _selectFileIndex == index ? FlexiColor.primary : FlexiColor.grey[600]!)
+                              border: ref.watch(selectImageIndex) == index ?
+                                Border.all(color: FlexiColor.primary, width: 3) :
+                                Border.all(color: FlexiColor.grey[400]!)
                             ),
-                            child: Image.memory(snapshot.data!, fit: BoxFit.cover),
-                          );
-                        } else {
-                          return Center(child: CircularProgressIndicator(color: FlexiColor.primary));
-                        }
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
+                            child: Image.memory(snapshot.data!, fit: BoxFit.cover)
+                          )
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    }
+                  )
+                )
+              )
+            )
           )
-        ],
-      ),
+        ]
+      )
     );
   }
-
 }

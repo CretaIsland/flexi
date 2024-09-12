@@ -61,8 +61,6 @@ class ContentInfoController extends _$ContentInfoController {
 
   Future<File?> getContentFile() async {
     try {
-      print(state.filePath);
-      print(state.fileName);
       if(state.filePath.startsWith('assets/')) {
         final byteData = await rootBundle.load(state.filePath);
 
@@ -77,7 +75,7 @@ class ContentInfoController extends _$ContentInfoController {
         return File(state.filePath);
       }
     } catch (error) {
-      print('error at ContentSendController.getContentFile >>> $error');
+      print('Error at ContentSendController.getContentFile >>> $error');
     }
     return null;
   }

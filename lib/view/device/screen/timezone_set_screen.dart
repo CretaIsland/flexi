@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../component/search_bar.dart';
 import '../../../feature/device/controller/device_register_controller.dart';
+import '../../../feature/device/provider/timezone_provider.dart';
 import '../../../util/design/colors.dart';
 
 
@@ -24,20 +25,25 @@ class _TimezoneSetScreenState extends ConsumerState<TimezoneSetScreen> {
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((_) async {
-    //   if(ref.watch(registerDataControllerProvider)['timeZone']!.isEmpty) {
-    //     initializeTimeZones();
-    //     setLocalLocation(getLocation(""));
-    //     ref.watch(registerDataControllerProvider.notifier).setTimezone(await FlutterNativeTimezone.getLocalTimezone());
-    //   }
-    //   var index = ref.watch(timezonesProvider).indexWhere((timezone) => timezone['name'] == ref.watch(registerDataControllerProvider)['timeZone']);
-    //   _scrollController.jumpTo(index * .0865.sh);
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if(ref.watch(registerDataControllerProvider)['timeZone']!.isEmpty) {
+        ref.watch(registerDataControllerProvider.notifier).setTimezone(await FlutterTimezone.getLocalTimezone());
+      }
+      var index = ref.watch(timezonesProvider).indexWhere((timezone) => timezone['timezone'] == ref.watch(registerDataControllerProvider)['timeZone']);
+      _scrollController.jumpTo(index * .075.sh);
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     var timezones = ref.watch(timezonesProvider);
+    var selectTimezone = ref.watch(registerDataControllerProvider)['timeZone'];
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
       child: SingleChildScrollView(
@@ -48,7 +54,7 @@ class _TimezoneSetScreenState extends ConsumerState<TimezoneSetScreen> {
               children: [
                 IconButton(
                   onPressed: () => context.go('/device/list'), 
-                  icon: Icon(Icons.arrow_back_ios_rounded, size: .025.sh, color: FlexiColor.primary)
+                  icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary)
                 ),
                 Text('Set Device Timezone', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
@@ -65,37 +71,35 @@ class _TimezoneSetScreenState extends ConsumerState<TimezoneSetScreen> {
             SizedBox(height: .02.sh),
             Container(
               width: .89.sw,
-              height: .68.sh,
+              height: .675.sh,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(.015.sh)
               ),
               child: ListView.builder(
-                padding: EdgeInsets.zero,
                 controller: _scrollController,
+                padding: EdgeInsets.zero,
                 itemCount: timezones.length,
-                itemBuilder: (context, index) => timezones[index]['label']!.contains(_searchText) ? GestureDetector(
-                  onTap: () => ref.watch(registerDataControllerProvider.notifier).setTimezone(timezones[index]['name']!),
+                itemBuilder: (context, index) => timezones[index]['name']!.toLowerCase().contains(_searchText.toLowerCase()) ? GestureDetector(
+                  onTap: () => ref.watch(registerDataControllerProvider.notifier).setTimezone(timezones[index]['timezone']!),
                   child: Container(
                     padding: EdgeInsets.all(.02.sh),
-                    decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(color: FlexiColor.grey[400]!))
-                    ),
+                    decoration: BoxDecoration(border: Border(bottom: BorderSide(color: FlexiColor.grey[400]!))),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SizedBox(
-                          width: .65.sw,
+                          width: .7.sw,
                           child: Text(
-                            timezones[index]['label']!,
-                            style: ref.watch(registerDataControllerProvider)['timeZone'] == timezones[index]['name'] ?
+                            timezones[index]['name']!,
+                            style: selectTimezone == timezones[index]['timezone']! ? 
                               Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary) :
-                              Theme.of(context).textTheme.bodyMedium
-                          )
+                              Theme.of(context).textTheme.bodyMedium,
+                            overflow: TextOverflow.ellipsis
+                          ),
                         ),
                         Visibility(
-                          visible: ref.watch(registerDataControllerProvider)['timeZone'] == timezones[index]['name'],
-                          child: Icon(Icons.check_rounded, size: .025.sh, color: FlexiColor.primary)
+                          visible: selectTimezone == timezones[index]['timezone'],
+                          child: Icon(Icons.check, size: .025.sh, color: FlexiColor.primary)
                         )
                       ]
                     )

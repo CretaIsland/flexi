@@ -1,25 +1,69 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:network_info_plus/network_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:socket_io_client/socket_io_client.dart' as socket_io;
+import 'package:socket_io_client/socket_io_client.dart' as socket;
+import 'package:wifi_iot/wifi_iot.dart';
 
 import '../constants/config.dart';
 
-part 'socket_client_controller.g.dart';
+part 'network_controller.g.dart';
 
 
 
 @riverpod
+class NetworkController extends _$NetworkController {
+
+  @override
+  void build() {}
+
+  Future<String?> getSSID() async {
+    try {
+      if(await Permission.location.request().isGranted) {
+        var ssid = await NetworkInfo().getWifiName();
+        if(ssid != null) return ssid.replaceAll('"', '');
+      }
+    } catch (error) {
+      print('Error at NetworkController.getSSID >>> $error');
+    }
+    return null;
+  }
+
+  Future<bool> connectWifi(String ssid, String security, String password) async {
+    try {
+      if(await Permission.location.request().isGranted) {
+        var networkSecurity = security.contains('WPA') ? NetworkSecurity.WPA
+          : security.contains('WEP') ? NetworkSecurity.WEP
+            : NetworkSecurity.NONE;
+        
+        var connected = await WiFiForIoTPlugin.connect(ssid, security: networkSecurity, password: password, joinOnce: true, withInternet: true, timeoutInSeconds: 30);
+        if(connected) {
+          return ssid == await getSSID();
+        }
+      }
+    } catch (error) {
+      print('Error at NetworkController.connectWifi >>> $error');
+    }
+    return false;
+  }
+
+}
+
+@riverpod
 class SocketClientController extends _$SocketClientController {
 
-  late socket_io.Socket _socket;
+  late socket.Socket _socket;
 
   @override
   void build() {
-    print('SocketClientController Build');
-    _socket = socket_io.io('', socket_io.OptionBuilder()
+    ref.onDispose(() {
+      _socket.disconnect();
+      _socket.close();
+      _socket.dispose();
+    });
+    _socket = socket.io('', socket.OptionBuilder()
       .setTransports(['websocket'])
       .disableAutoConnect()
       .setTimeout(15000)
@@ -31,7 +75,7 @@ class SocketClientController extends _$SocketClientController {
     try {
       final completer = Completer<bool>();
       String url = 'http://$ip:${NetworkConfig.socketIOPort}';
-      if(_socket.io.uri == url && _socket.connected) completer.complete(true);
+      if(_socket.io.uri == url && _socket.connected) return true;
 
       _socket.onConnect((event) {
         if(!completer.isCompleted) completer.complete(true);
@@ -55,7 +99,7 @@ class SocketClientController extends _$SocketClientController {
   Future<bool> disconnect() async {
     try {
       final completer = Completer<bool>();
-      if(!_socket.connected) completer.complete(true);
+      if(!_socket.connected) return true;
 
       _socket.onDisconnect((event) {
         if(!completer.isCompleted) completer.complete(true);
@@ -71,6 +115,7 @@ class SocketClientController extends _$SocketClientController {
 
   Future<void> sendData(Map<String, dynamic> data) async {
     try {
+      print(jsonEncode(data));
       _socket.emit('message', utf8.encode(jsonEncode(data)));
       await Future.delayed(const Duration(milliseconds: 500));
     } catch (error) {
@@ -81,10 +126,7 @@ class SocketClientController extends _$SocketClientController {
   Future<void> sendFile(String fileName, File file) async {
     try {
       final completer = Completer<void>();
-      _socket.emit('message', utf8.encode(jsonEncode({'command': 'fileReady'})));
-      print('ready');
       _socket.emit('fileStart', utf8.encode(fileName));
-      print('start');
 
       int total = await file.length();
       int count = 0;
@@ -96,7 +138,6 @@ class SocketClientController extends _$SocketClientController {
         print('$count/$total');
       }, onDone: () {
         _socket.emit('fileDone');
-        print('done');
         completer.complete();
       });
 

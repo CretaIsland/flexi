@@ -19,7 +19,6 @@ class FlexiApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(360, 800),
       builder: (context, child) {
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,

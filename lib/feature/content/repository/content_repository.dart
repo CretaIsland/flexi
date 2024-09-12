@@ -23,7 +23,7 @@ class ContentRepository {
       var result = await _store.record(newContent.contentId).put(await _dbClient, newContent.toJson());
       return ContentModel.fromJson(result);
     } catch (error) {
-      print('error at ContentRepository.create >>> $error');
+      print('Error at ContentRepository.create >>> $error');
     }
     return null;
   }
@@ -33,7 +33,7 @@ class ContentRepository {
       var results = await _store.find(await _dbClient);
       return results.map((element) => ContentModel.fromJson(element.value)).toList();
     } catch (error) {
-      print('error at ContentRepository.getAll >>> $error');
+      print('Error at ContentRepository.getAll >>> $error');
     }
     return List.empty();
   }
@@ -43,7 +43,7 @@ class ContentRepository {
       var result = await _store.record(updateContent.contentId).update(await _dbClient, updateContent.toJson());
       return ContentModel.fromJson(result!);
     } catch (error) {
-      print('error at ContentRepository.create >>> $error');
+      print('Error at ContentRepository.create >>> $error');
     }
     return null;
   }
@@ -52,14 +52,14 @@ class ContentRepository {
     try {
       await _store.record(contentId).delete(await _dbClient);
     } catch (error) {
-      print('error at ContentRepository.delete >>> $error');
+      print('Error at ContentRepository.delete >>> $error');
     }
   }
 
     Future<void> deleteAll() async {
     try {await _store.delete(await _dbClient);
     } catch (error) {
-      print('error at ContentRepository.deleteAll >>> $error');
+      print('Error at ContentRepository.deleteAll >>> $error');
     }
   }
 

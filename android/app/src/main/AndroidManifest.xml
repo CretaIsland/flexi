@@ -1,12 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- NetworkInfoPlus 권한 -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- InternetConnectionCheckerPlus 권한 -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <!-- QRCode Scan 권한 -->
-    <uses-permission android:name="android.permission.CAMERA" />
     <!-- BLUETOOTH 권한 -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -15,9 +7,20 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <!-- RECORD AUDIO 권한 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- CAMERA 권한 -->
+    <uses-permission android:name="android.permission.CAMERA" />
     <!-- LOCAL STORAGE 권한 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"/>
+    <!-- LOCATION 권한 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- NETWORK 권한 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:label="flexi"
         android:name="${applicationName}"

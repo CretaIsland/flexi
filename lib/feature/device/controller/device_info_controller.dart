@@ -70,7 +70,7 @@ Future<List<Map<String, String>>> bondedBluetooths(BondedBluetoothsRef ref) asyn
       };
     }).toList();
   } catch (error) {
-    print('error at BondedBluetoothsProvider >>> $error');
+    print('Error at BondedBluetoothsProvider >>> $error');
   }
   return List.empty();
 }
@@ -91,7 +91,7 @@ Future<Stream<List<Map<String, String>>>> accessibleBluetooths(AccessibleBluetoo
       }).toList();
     });
   } catch (error) {
-    print('error at AccessibilityBluetoothsProvider >>> $error');
+    print('Error at AccessibilityBluetoothsProvider >>> $error');
   }
   return const Stream.empty();
 }

@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/controller/socket_client_controller.dart';
+import '../../../core/controller/network_controller.dart';
 import '../../../feature/device/controller/device_info_controller.dart';
 import '../../../util/design/colors.dart';
 import '../../../component/text_field.dart';

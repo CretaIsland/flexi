@@ -1,134 +1,100 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-import '../../../core/controller/gallery_controller.dart';
+import '../../../core/controller/local_storage_controller.dart';
 import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../util/design/colors.dart';
+import '../../../util/utils.dart';
 import '../component/background_edit_preview.dart';
 
 
 
-class BackgroundEditScreen extends ConsumerStatefulWidget {
+class BackgroundEditScreen extends StatefulWidget {
   const BackgroundEditScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _BackgroundEditScreenState();
+  State<BackgroundEditScreen> createState() => _BackgroundEditScreenState();
 }
 
-class _BackgroundEditScreenState extends ConsumerState<BackgroundEditScreen> {
+class _BackgroundEditScreenState extends State<BackgroundEditScreen> {
 
   int _tabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: FlexiColor.stringToColor(ref.watch(contentEditControllerProvider).backgroundColor),
       body: Column(
         children: [
-          Container(
-            height: .275.sh,
-            color: Colors.black.withOpacity(.6),
-            padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    ref.watch(contentInfoControllerProvider.notifier).setContent(ref.watch(contentEditControllerProvider));
-                    context.go('/content/info');
-                  }, 
-                  icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: Colors.white)
-                ),
-                TextButton(
-                  onPressed: () {
-                    ref.watch(contentEditControllerProvider.notifier).undo();
-                  },
-                  child: Text('Reset', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white))
+          Consumer(
+            builder: (context, ref, child) {
+              var content = ref.watch(contentEditControllerProvider);
+              return Container(
+                height: .6.sh,
+                color: FlexiColor.stringToColor(content.backgroundColor),
+                child: Column(
+                  children: [
+                    Container(
+                      height: .275.sh,
+                      color: Colors.black.withOpacity(.6),
+                      padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              ref.watch(contentInfoControllerProvider.notifier).setContent(content);
+                              context.go('/content/info');
+                            }, 
+                            icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: Colors.white)
+                          ),
+                          TextButton(
+                            onPressed: () => ref.watch(contentEditControllerProvider.notifier).undo(), 
+                            child: Text('Reset', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white))
+                          )
+                        ]
+                      )
+                    ),
+                    BackgroundEditPreview(content: content),
+                    Expanded(
+                      child: Container(
+                        color: Colors.black.withOpacity(.6),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed: () => setState(() => _tabIndex = 0), 
+                              child: Text('Asset', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: _tabIndex == 0 ? Colors.white : FlexiColor.grey[600]))
+                            ),
+                            TextButton(
+                              onPressed: () => setState(() => _tabIndex = 1), 
+                              child: Text('Palette', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: _tabIndex == 1 ? Colors.white : FlexiColor.grey[600]))
+                            ),
+                            TextButton(
+                              onPressed: () => setState(() => _tabIndex = 2), 
+                              child: Text('Gallery', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: _tabIndex == 2 ? Colors.white : FlexiColor.grey[600]))
+                            )
+                          ]
+                        )
+                      )
+                    )
+                  ]
                 )
-              ],
-            )
-          ),
-          BackgroundEditPreview(content: ref.watch(contentEditControllerProvider)),
-          Expanded(
-            child: Container(
-              color: Colors.black.withOpacity(.6),
-              padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => setState(() {
-                      _tabIndex = 0;
-                    }), 
-                    child: Text('Asset', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: _tabIndex == 0 ? Colors.white : FlexiColor.grey[600]))
-                  ),
-                  TextButton(
-                    onPressed: () => setState(() {
-                      _tabIndex = 1;
-                    }), 
-                    child: Text('Palette', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: _tabIndex == 1 ? Colors.white : FlexiColor.grey[600]))
-                  ),
-                  TextButton(
-                    onPressed: () => setState(() {
-                      _tabIndex = 2;
-                    }), 
-                    child: Text('Gallery', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: _tabIndex == 2 ? Colors.white : FlexiColor.grey[600]))
-                   )
-                ],
-              ),
-            ),
+              );
+            }
           ),
           Container(
             width: 1.sw,
-            height: .42.sh,
+            height: .4.sh,
             color: FlexiColor.backgroundColor,
-            child: _tabIndex == 0 ? assetContent() : _tabIndex == 1 ? colorPalette() : galleryContent(),
+            child: _tabIndex == 0 ? Container() : _tabIndex == 1 ? colorPalette() : galleryContent()
           )
-        ],
+        ]
       )
-    );
-  }
-
-  Widget assetContent() {
-    List<String> assetContents = const [
-      'assets/template/escalator_guide.png',
-      'assets/template/restricted_area.png'
-    ];
-
-    return ListView.builder(
-      padding: EdgeInsets.zero,
-      itemCount: assetContents.length,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () async {
-            Uint8List assetBytes = (await rootBundle.load(assetContents[index])).buffer.asUint8List();
-            ref.watch(contentEditControllerProvider.notifier).setBackgroundContent(
-              'image', 
-              assetContents[index], 
-              assetContents[index].split('/').last, 
-              assetBytes
-            );
-          },
-          child: Container(
-            width: 1.sw,
-            height: .06.sh,
-            margin: const EdgeInsets.only(bottom: 1),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: Image.asset(assetContents[index]).image,
-                fit: BoxFit.cover
-              )
-            )
-          ),
-        );
-      },
     );
   }
 
@@ -143,99 +109,87 @@ class _BackgroundEditScreenState extends ConsumerState<BackgroundEditScreen> {
       Color(0xffFF768B), Color(0xffFFBCC5), Color(0xffFFDDE2), Color(0xffB16C57), Color(0xffCF9684), Color(0xffECC7BC),
     ];
 
-    return GridView.builder(
-      padding: EdgeInsets.only(left: .045.sw, top: .025.sh, right: .045.sw),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 6,
-        childAspectRatio: 22/17,
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 12
-      ),
-      itemCount: colors.length,
-      itemBuilder: (context, index) {
-        return InkWell(
+    return Consumer(
+      builder: (context, ref, child) => GridView.builder(
+        padding: EdgeInsets.only(left: .045.sw, top: .025.sh, right: .045.sw),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 6,
+          childAspectRatio: 22/17,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 12
+        ), 
+        itemCount: colors.length,
+        itemBuilder: (context, index) => GestureDetector(
           onTap: () => ref.watch(contentEditControllerProvider.notifier).setBackgroundColor(colors[index]),
           child: Container(
             decoration: BoxDecoration(
               color: colors[index],
               border: Border.all(color: Colors.white),
               borderRadius: BorderRadius.circular(.01.sh)
-            ),
-          ),
-        );
-      },
+            )
+          )
+        )
+      )
     );
   }
 
   Widget galleryContent() {
-    final localStorageFiles = ref.watch(galleryControllerProvider);     
+    return Consumer(
+      builder: (context, ref, child) {
+        var files = ref.watch(localStorageControllerProvider);
 
-    return NotificationListener<ScrollNotification>(
-      onNotification: (notification) {
-        if(notification is ScrollEndNotification && notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-          ref.watch(galleryControllerProvider.notifier).loadNext();
-        }
-        return true;
-      },
-      child: ListView.builder(
-        padding: EdgeInsets.zero,
-        itemCount: localStorageFiles.length,
-        itemBuilder: (context, index) {
-          return Container(
-            width: 1.sw,
-            height: .06.sh,
-            margin: const EdgeInsets.only(bottom: 3),
-            child: FutureBuilder(
-              future: localStorageFiles[index].thumbnailData,
+        return NotificationListener<ScrollEndNotification>(
+          onNotification: (notification) {
+            if(notification.metrics.pixels == notification.metrics.maxScrollExtent) {
+              ref.watch(localStorageControllerProvider.notifier).loadNext();
+            }
+            return true;
+          },
+          child: ListView.builder(
+            padding: EdgeInsets.zero,
+            itemCount: files.length,
+            itemBuilder: (context, index) => FutureBuilder(
+              future: files[index].thumbnailData, 
               builder: (context, snapshot) {
                 if(snapshot.connectionState == ConnectionState.done) {
-                  if(snapshot.data != null) {
-                    return InkWell(
-                      onTap: () async {
-                        var selectFile = await localStorageFiles[index].loadFile();
-                        if(selectFile != null) {
-                          ref.watch(contentEditControllerProvider.notifier).setBackgroundContent(
-                            localStorageFiles[index].type.name, 
-                            selectFile.path, 
-                            selectFile.path.split('/').last, 
-                            snapshot.data! 
-                          );
-                        } else {
-                          Fluttertoast.showToast(
-                            msg: 'error',
-                            backgroundColor: Colors.black.withOpacity(.8),
-                            textColor: Colors.white,
-                            fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize
-                          );
-                        }
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: Image.memory(snapshot.data!).image,
-                            fit: BoxFit.cover
-                          )
-                        ),
-                        child: localStorageFiles[index].type == AssetType.video ? 
-                          Center(child: Icon(Icons.play_arrow_rounded, color: Colors.white, size: .03.sh)) : 
-                          const SizedBox.shrink()
+                  if(snapshot.data == null) return const SizedBox.shrink();
+                  return GestureDetector(
+                    onTap: () async {
+                      var selectFile = await files[index].loadFile();
+                      if(selectFile != null) {
+                        ref.watch(contentEditControllerProvider.notifier).setBackgroundContent(
+                          files[index].type.name, 
+                          selectFile.path,
+                          selectFile.path.split('/').last, 
+                          snapshot.data!
+                        );
+                      } else {
+                        FlexiUtils.showMsg('Error during load file');
+                      }
+                    },
+                    child: Container(
+                      width: 1.sw,
+                      height: .06.sh,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(image: Image.memory(snapshot.data!).image, fit: BoxFit.cover),
+                        border: const Border(bottom: BorderSide(color: Colors.white))
                       ),
-                    );  
-                  }
-                  return const SizedBox.shrink();
+                      child: files[index].type == AssetType.video ?
+                        Center(child: Icon(Icons.play_arrow_rounded, size: .03.sh, color: Colors.white)) : 
+                        const SizedBox.shrink()
+                    )
+                  );
                 } else {
-                  return Center(
-                    child: SizedBox(
-                      width: .03.sh,
-                      child: CircularProgressIndicator(color: FlexiColor.primary),
-                    ),
+                  return SizedBox(
+                    width: 1.sw,
+                    height: .06.sh
                   );
                 }
-              },
-            ),
-          );
-        },
-      )
+              }
+            )
+          )
+        );
+      }
     );
   }
 

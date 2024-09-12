@@ -80,7 +80,7 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
               ],
             ),
             SizedBox(height: .03.sh),
-            ContentPreview(.89.sw, .04.sh, content),
+            ContentPreview(width: .89.sw, height: .04.sh, content: content),
             SizedBox(height: .02.sh),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

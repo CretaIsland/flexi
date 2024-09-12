@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 
-import '../../../core/controller/socket_client_controller.dart';
+import '../../../core/controller/network_controller.dart';
 import '../../../feature/device/controller/device_info_controller.dart';
 import '../../../util/design/colors.dart';
 

@@ -42,7 +42,6 @@ class ConnectedDeviceController extends _$ConnectedDeviceController {
 
       if(data['deviceName'] == 'null') data['deviceName'] = data['deviceId'];
       DeviceModel newDevice = DeviceModel.fromJson(data);
-      print(data);
       if(state.contains(newDevice)) return;
 
       var isExist = state.indexWhere((device) => device.deviceId == newDevice.deviceId);

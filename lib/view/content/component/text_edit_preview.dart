@@ -96,7 +96,7 @@ class _TextEditPreviewState extends ConsumerState<TextEditPreview> {
                   fontWeight: content.bold ? FontWeight.bold : FontWeight.normal,
                   fontStyle: content.italic ? FontStyle.italic : FontStyle.normal,
                   color: FlexiColor.stringToColor(content.textColor),
-                  height: content.textSizeType == 'S' ? 2.5 : content.textSizeType == 'M' ? 1.9 : 1.6,
+                  height: content.textSizeType == 'S' ? 1.55 : content.textSizeType == 'M' ? 1.25 : 1,
                   decorationThickness: 0
                 ),
                 onEditingComplete: () => ref.watch(contentEditControllerProvider.notifier).setText(_textEditingController.text),

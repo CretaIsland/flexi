@@ -1,13 +1,13 @@
+import 'package:flexi/feature/content/controller/content_info_controller.dart';
+import 'package:flexi/feature/content/controller/content_list_controller.dart';
+import 'package:flexi/util/design/colors.dart';
+import 'package:flexi/view/content/component/content_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../feature/content/controller/content_info_controller.dart';
-import '../../../feature/content/controller/content_list_controller.dart';
-import '../../../util/design/colors.dart';
 import '../../../component/search_bar.dart';
-import '../component/content_preview.dart';
 import '../modal/content_delete_modal.dart';
 
 
@@ -28,6 +28,7 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var selectContents = ref.watch(selectContentsProvider);
     return GestureDetector(
       onTap: () {
         if(_selectMode) {
@@ -46,22 +47,21 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Contents', style: Theme.of(context).textTheme.displayLarge),
-                InkWell(
-                  onTap: () {
+                Text('Content', style: Theme.of(context).textTheme.displayLarge),
+                GestureDetector(
+                  onTap: () async {
                     if(_selectMode) {
                       showModalBottomSheet(
                         backgroundColor: Colors.transparent,
                         context: widget.rootContext, 
-                        builder: (context) => ContentDeleteModal(deleteAll: _selectAll),
+                        builder: (context) => ContentDeleteModal(deleteAll: _selectAll)
                       );
                     } else {
-                      ref.watch(contentListControllerProvider.notifier).createContent().then((value) {
-                        if(value != null) {
-                          ref.watch(contentInfoControllerProvider.notifier).setContent(value);
-                          context.go('/content/info');
-                        }
-                      });
+                      var newContent = await ref.watch(contentListControllerProvider.notifier).createContent();
+                      if(newContent != null) {
+                        ref.watch(contentInfoControllerProvider.notifier).setContent(newContent);
+                        if(context.mounted) context.go('/content/info');
+                      }
                     }
                   },
                   child: Container(
@@ -71,17 +71,15 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                       color: _selectMode ? FlexiColor.secondary : FlexiColor.primary,
                       borderRadius: BorderRadius.circular(.02.sh)
                     ),
-                    child: Icon(_selectMode ? Icons.delete_outline : Icons.add, size: .03.sh, color: Colors.white),
-                  ),
+                    child: Icon(_selectMode ? Icons.delete_outline : Icons.add, size: .03.sh, color: Colors.white)
+                  )
                 )
-              ],
+              ]
             ),
             SizedBox(height: .02.sh),
             FlexiSearchBar(
-              hintText: 'Search your content',
-              onChanged: (value) => setState(() {
-                _searchText = value;
-              }),
+              hintText: 'Search your content', 
+              onChanged: (value) => setState(() => _searchText = value)
             ),
             SizedBox(height: .025.sh),
             Visibility(
@@ -89,38 +87,39 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text('Select All', style: Theme.of(context).textTheme.labelSmall),
-                  SizedBox(width: .015.sw),
-                  InkWell(
-                    onTap: () => setState(() {
-                      _selectAll = !_selectAll;
-                    }),
+                  Text('Select All', style: Theme.of(context).textTheme.labelSmall!.copyWith(color: FlexiColor.grey[600])),
+                  SizedBox(width: .01.sw),
+                  GestureDetector(
+                    onTap: () => setState(() => _selectAll = !_selectAll),
                     child: _selectAll ? Icon(Icons.check_circle, size: .025.sh, color: FlexiColor.secondary) :
                       Icon(Icons.check_circle_outline, size: .025.sh, color: FlexiColor.grey[600])
                   )
-                ],
+                ]
               )
             ),
-            SizedBox(height: .01.sh),
+            SizedBox(height: .015.sh),
             Expanded(
               child: ref.watch(contentListControllerProvider).when(
                 data: (data) {
                   if(data.isEmpty) {
                     return Center(
-                      child: Text('No content', style: Theme.of(context).textTheme.bodySmall),
+                      child: Text(
+                        'No content', 
+                        style: Theme.of(context).textTheme.labelSmall!.copyWith(color: FlexiColor.grey[600])
+                      )
                     );
                   }
                   return ListView.builder(
                     padding: EdgeInsets.zero,
                     itemCount: data.length,
-                    itemBuilder: (context, index) => data[index].contentName.contains(_searchText) ? GestureDetector(
+                    itemBuilder: (context, index) => data[index].contentName.toLowerCase().contains(_searchText.toLowerCase()) ? GestureDetector(
                       onTap: () {
                         if(_selectMode) {
-                          if(ref.watch(selectContentsProvider).contains(data[index].contentId)) {
-                            ref.watch(selectContentsProvider).remove(data[index].contentId);
-                            ref.watch(selectContentsProvider.notifier).state = [...ref.watch(selectContentsProvider)];
+                          if(selectContents.contains(data[index].contentId)) {
+                            selectContents.remove(data[index].contentId);
+                            ref.watch(selectContentsProvider.notifier).state = [...selectContents];
                           } else {
-                            ref.watch(selectContentsProvider.notifier).state = [...ref.watch(selectContentsProvider), data[index].contentId];
+                            ref.watch(selectContentsProvider.notifier).state = [...selectContents, data[index].contentId];
                           }
                         } else {
                           ref.watch(contentInfoControllerProvider.notifier).setContent(data[index]);
@@ -151,27 +150,46 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                                 Text(data[index].contentName, style: Theme.of(context).textTheme.bodySmall),
                                 Visibility(
                                   visible: _selectMode,
-                                  child: ref.watch(selectContentsProvider).contains(data[index].contentId) || _selectAll ? 
+                                  child: selectContents.contains(data[index].contentId) ?
                                     Icon(Icons.check_circle, size: .025.sh, color: FlexiColor.secondary) :
                                     Icon(Icons.check_circle_outline, size: .025.sh, color: FlexiColor.grey[600])
                                 )
-                              ],
+                              ]
                             ),
                             SizedBox(height: .01.sh),
-                            ContentPreview(.82.sw, .07.sh, data[index])
+                            ContentPreview(width: .82.sw, height: .07.sh, content: data[index])
                           ],
-                        ),
-                      ),
-                    ) : const SizedBox.shrink(),
+                        )
+                      )
+                    ) : const SizedBox.shrink()
                   );
-                }, 
-                error: (error, stackTrace) => Center(child: Text('error during get contents',style: Theme.of(context).textTheme.bodySmall)), 
-                loading: () => Center(child: CircularProgressIndicator(color: FlexiColor.primary))
-              ),
+                },
+                error: (error, stackTrace) => Center(
+                  child: Text(
+                    'Error during load content', 
+                    style: Theme.of(context).textTheme.labelSmall!.copyWith(color: FlexiColor.grey[600])
+                  )
+                ), 
+                loading: () => Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: .03.sh,
+                      height: .03.sh,
+                      child: CircularProgressIndicator(
+                        color: FlexiColor.grey[600],
+                        strokeWidth: 2.5
+                      )
+                    ),
+                    SizedBox(height: .015.sh),
+                    Text('Loading saved contents', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600]))
+                  ]
+                )
+              )
             )
-          ],
-        ),
-      ),
+          ]
+        )
+      )
     );
   }
 }

@@ -12,6 +12,7 @@ final List<Map<String, String>> languages = [
   {'name': 'English', 'localeId': 'en_US', 'code': 'en'},
   {'name': '한국어', 'localeId': 'ko_KR', 'code': 'ko'},
   {'name': '日本語', 'localeId': 'ja_JP', 'code': 'ja'},
+  {'name': '中文', 'localeId': 'cmn_CN', 'code': 'zh-cn'},
   {'name': 'French', 'localeId': 'fr_FR', 'code': 'fr'},
   {'name': 'Spanish', 'localeId': 'es_ES', 'code': 'es'},
 ];
@@ -22,6 +23,8 @@ class InputLanguageListBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,7 +85,6 @@ class InputLanguageListBar extends ConsumerWidget {
                     if(!ref.watch(currentInputLanguagesControllerProvider).contains(language)) {
                       ref.watch(currentInputLanguagesControllerProvider.notifier).updateCurrentLanguage(language);
                     }
-                    print(ref.watch(selectInputLanguageProvider));
                   },
                 )
               );

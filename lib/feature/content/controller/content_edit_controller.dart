@@ -67,11 +67,11 @@ class ContentEditController extends _$ContentEditController {
 
   void setTextSize(String size) {
     if(size == 'S') {
-      state = state.copyWith(textSize: (state.height * .4).floor(), textSizeType: 'S');
+      state = state.copyWith(textSize: 18, textSizeType: 'S');
     } else if(size == 'M') {
-      state = state.copyWith(textSize: (state.height * .5).floor(), textSizeType: 'M');
+      state = state.copyWith(textSize: 22, textSizeType: 'M');
     } else if(size == 'L') {
-      state = state.copyWith(textSize: (state.height * .65).floor(), textSizeType: 'L');
+      state = state.copyWith(textSize: 28, textSizeType: 'L');
     }
   }
 
@@ -98,7 +98,9 @@ class STTController extends _$STTController {
     });
     print('STTController Build!!!');
     _stt = SpeechToText();
-    _stt.initialize().then((value) => _sttInit = value);
+    _stt.initialize().then((value) {
+      _sttInit = value;
+    });
     return '';
   }
 
@@ -112,7 +114,7 @@ class STTController extends _$STTController {
         );
       }
     } catch (error) {
-      print('error at TextEditController.startRecord >>> $error');
+      print('Error at TextEditController.startRecord >>> $error');
     }
   }
 
@@ -149,7 +151,7 @@ class TranslateController extends _$TranslateController {
       );
       state = outputText.text;
     } catch (error) {
-      print('error during TextEditController.translate >>> $error');
+      print('Error at TextEditController.translate >>> ${error.toString()}');
     }
   }
 
