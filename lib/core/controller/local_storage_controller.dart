@@ -1,19 +1,24 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'local_storage_controller.g.dart';
 
 
 
 @riverpod
-class LocalStorageImageController extends _$LocalStorageImageController {
+class GalleryImageControlller extends _$GalleryImageControlller {
 
   int _pageIndex = 0;
   final int _pageCount = 30;
   late PermissionState _permissionState;
 
+
   @override
   List<AssetEntity> build() {
+    ref.onDispose(() {
+      print('GalleryImageControlller Dispose');
+    });
+    print('GalleryImageControlller Build');
     initialize();
     return List.empty();
   }
@@ -25,8 +30,8 @@ class LocalStorageImageController extends _$LocalStorageImageController {
         state = await PhotoManager.getAssetListPaged(page: _pageIndex, pageCount: _pageCount, type: RequestType.image);
         _pageIndex = 1;
       }
-    } catch (error) {
-      print('Error at LocalStorageImageController.initialize >>> $error');
+    } catch (error) { 
+      print('Error at GalleryImageControlller.initialize >>> $error');
     }
   }
 
@@ -38,21 +43,26 @@ class LocalStorageImageController extends _$LocalStorageImageController {
         _pageIndex++;
       }
     } catch (error) {
-      print('Error at LocalStorageImageController.loadNext >>> $error');
+      print('Error at GalleryImageControlller.loadNext >>> $error');
     }
   }
 
 }
 
 @riverpod
-class LocalStorageController extends _$LocalStorageController {
+class GalleryControlller extends _$GalleryControlller {
 
   int _pageIndex = 0;
   final int _pageCount = 30;
   late PermissionState _permissionState;
 
+
   @override
   List<AssetEntity> build() {
+    ref.onDispose(() {
+      print('GalleryControlller Dispose');
+    });
+    print('GalleryControlller Build');
     initialize();
     return List.empty();
   }
@@ -64,8 +74,8 @@ class LocalStorageController extends _$LocalStorageController {
         state = await PhotoManager.getAssetListPaged(page: _pageIndex, pageCount: _pageCount);
         _pageIndex = 1;
       }
-    } catch (error) {
-      print('Error at LocalStorageController.initialize >>> $error');
+    } catch (error) { 
+      print('Error at GalleryControlller.initialize >>> $error');
     }
   }
 
@@ -77,7 +87,7 @@ class LocalStorageController extends _$LocalStorageController {
         _pageIndex++;
       }
     } catch (error) {
-      print('Error at LocalStorageController.loadNext >>> $error');
+      print('Error at GalleryControlller.loadNext >>> $error');
     }
   }
 

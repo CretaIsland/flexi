@@ -136,12 +136,12 @@ class _BackgroundEditScreenState extends State<BackgroundEditScreen> {
   Widget galleryContent() {
     return Consumer(
       builder: (context, ref, child) {
-        var files = ref.watch(localStorageControllerProvider);
+        var files = ref.watch(galleryControlllerProvider);
 
         return NotificationListener<ScrollEndNotification>(
           onNotification: (notification) {
             if(notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-              ref.watch(localStorageControllerProvider.notifier).loadNext();
+              ref.watch(galleryControlllerProvider.notifier).loadNext();
             }
             return true;
           },

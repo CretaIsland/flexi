@@ -62,7 +62,7 @@ class DeviceSetupModal extends ConsumerWidget {
                 await Future.delayed(const Duration(milliseconds: 500));
               }
               
-              await ref.watch(networkControllerProvider.notifier).connectWifi(registerData['ssid']!, registerData['security']!, registerData['password']!);
+              await ref.watch(networkControllerProvider.notifier).connectWiFi(registerData['ssid']!, registerData['security']!, registerData['password']!);
               String resultMsg = 'Success $successDevice devices';
               if(ref.watch(totalTaskProvider) > successDevice) resultMsg += ' (Fail ${ref.watch(totalTaskProvider) - successDevice} devices)';
               

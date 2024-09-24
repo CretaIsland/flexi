@@ -6,7 +6,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:socket_io_client/socket_io_client.dart' as socket;
 import 'package:wifi_iot/wifi_iot.dart';
-
 import '../constants/config.dart';
 
 part 'network_controller.g.dart';
@@ -16,8 +15,12 @@ part 'network_controller.g.dart';
 @riverpod
 class NetworkController extends _$NetworkController {
 
-  @override
-  void build() {}
+  void build() {
+    ref.onDispose(() {
+      print('NetworkController Dispose');
+    });
+    print('NetworkController Build');
+  }
 
   Future<String?> getSSID() async {
     try {
@@ -31,20 +34,28 @@ class NetworkController extends _$NetworkController {
     return null;
   }
 
-  Future<bool> connectWifi(String ssid, String security, String password) async {
+  Future<bool> connectWiFi(String ssid, String security, String password) async {
     try {
       if(await Permission.location.request().isGranted) {
-        var networkSecurity = security.contains('WPA') ? NetworkSecurity.WPA
-          : security.contains('WEP') ? NetworkSecurity.WEP
-            : NetworkSecurity.NONE;
+        var networkSecurity = security.contains('WPA') ? NetworkSecurity.WPA :
+          security.contains('WEP') ? NetworkSecurity.WEP :
+          NetworkSecurity.NONE;
         
-        var connected = await WiFiForIoTPlugin.connect(ssid, security: networkSecurity, password: password, joinOnce: true, withInternet: true, timeoutInSeconds: 30);
+        var connected = await WiFiForIoTPlugin.connect(
+          ssid, 
+          security: networkSecurity, 
+          password: password, 
+          joinOnce: true, 
+          withInternet: true, 
+          timeoutInSeconds: 30
+        );
+
         if(connected) {
           return ssid == await getSSID();
         }
       }
     } catch (error) {
-      print('Error at NetworkController.connectWifi >>> $error');
+      print('Error at NetworkController.connectWiFi >>> $error');
     }
     return false;
   }
@@ -59,10 +70,12 @@ class SocketClientController extends _$SocketClientController {
   @override
   void build() {
     ref.onDispose(() {
+      print('SocketClientController Dispose');
       _socket.disconnect();
       _socket.close();
       _socket.dispose();
     });
+    print('SocketClientController Build');
     _socket = socket.io('', socket.OptionBuilder()
       .setTransports(['websocket'])
       .disableAutoConnect()
@@ -115,7 +128,6 @@ class SocketClientController extends _$SocketClientController {
 
   Future<void> sendData(Map<String, dynamic> data) async {
     try {
-      print(jsonEncode(data));
       _socket.emit('message', utf8.encode(jsonEncode(data)));
       await Future.delayed(const Duration(milliseconds: 500));
     } catch (error) {

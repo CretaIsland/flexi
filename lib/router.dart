@@ -16,9 +16,6 @@ import 'view/device/screen/timezone_set_screen.dart';
 import 'view/device/screen/wifi_set_screen.dart';
 import 'view/login_screen.dart';
 import 'view/setting/screen/account_info_screen.dart';
-import 'view/setting/screen/app_setting_screen.dart';
-import 'view/setting/screen/app_update_screen.dart';
-import 'view/setting/screen/device_recovery_screen.dart';
 import 'view/setting/screen/setting_menu_screen.dart';
 import 'view/splash_screen.dart';
 
@@ -81,19 +78,7 @@ GoRouter router = GoRouter(
         GoRoute(
           path: '/setting/account',
           pageBuilder: (context, state) => const NoTransitionPage(child: AccountInfoScreen()),
-        ),
-        GoRoute(
-          path: '/setting/appSetting',
-          pageBuilder: (context, state) => const NoTransitionPage(child: AppSettingScreen()),
-        ),
-        GoRoute(
-          path: '/setting/appUpdate',
-          pageBuilder: (context, state) => const NoTransitionPage(child: AppUpdateScreen()),
-        ),
-        GoRoute(
-          path: '/setting/deviceRecovery',
-          pageBuilder: (context, state) => const NoTransitionPage(child: DeviceRecoveryScreen()),
-        ),
+        )
       ]
     ),
     // ********** Qrcode **********

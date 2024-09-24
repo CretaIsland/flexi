@@ -21,8 +21,9 @@ class FlexiTextField extends StatelessWidget {
       height: height,
       child: TextField(
         controller: controller,
-        style: Theme.of(context).textTheme.bodyMedium!.copyWith(decorationThickness: 0),
+        cursorWidth: 1.0,
         readOnly: readOnly,
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(decorationThickness: 0),
         decoration: InputDecoration(
           contentPadding: EdgeInsets.only(left: .025.sw),
           hintText: hintText,
@@ -39,7 +40,7 @@ class FlexiTextField extends StatelessWidget {
           )
         ),
         onChanged: onChanged
-      ),
+      )
     );
   }
 }

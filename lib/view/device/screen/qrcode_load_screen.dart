@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_code_dart_scan/qr_code_dart_scan.dart';
-import '../../../core/controller/gallery_controller.dart';
+import '../../../core/controller/local_storage_controller.dart';
 import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../util/design/colors.dart';
 import '../../../util/utils.dart';
@@ -18,7 +18,7 @@ class QrcodeLoadScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(registerDataControllerProvider);
-    var images = ref.watch(galleryControllerProvider);
+    var images = ref.watch(galleryImageControlllerProvider);
     return Scaffold(
       backgroundColor: FlexiColor.backgroundColor,
       body: Column(
@@ -66,7 +66,7 @@ class QrcodeLoadScreen extends ConsumerWidget {
             child: NotificationListener<ScrollEndNotification>(
               onNotification: (notification) {
                 if(notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-                  ref.watch(galleryControllerProvider.notifier).loadNext();
+                  ref.watch(galleryImageControlllerProvider.notifier).loadNext();
                 }
                 return true;
               },

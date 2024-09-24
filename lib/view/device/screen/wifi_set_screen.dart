@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../component/text_field.dart';
 import '../../../feature/device/controller/device_register_controller.dart';
-import '../../../feature/setting/controller/setting_controller.dart';
 import '../../../util/design/colors.dart';
 import '../modal/device_setup_modal.dart';
 
@@ -65,15 +64,7 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
                 TextButton(
                   onPressed: () {
                     ref.watch(registerDataControllerProvider.notifier).setNetwork(_ssidController.text, _typeController.text, _passwordController.text);
-                    if(ref.watch(settingControllerProvider)['registerType'] == 'Hotspot' && Platform.isIOS) {
-                      showModalBottomSheet(
-                        backgroundColor: Colors.transparent,
-                        context: widget.rootContext, 
-                        builder: (context) => const DeviceSetupModal()
-                      );
-                    } else {
-                      context.go('/device/register');
-                    }
+                    context.go('/device/register');
                   },
                   child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
