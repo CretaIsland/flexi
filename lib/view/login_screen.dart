@@ -37,23 +37,33 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         padding: EdgeInsets.only(left: .09.sw, top: .05.sh, right: .09.sw),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
                 height: .55.sh,
                 child: Image.asset('assets/image/login_illustration.png')
               ),
               SizedBox(height: .03.sh),
-              Text('Login', style: Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.white)),
-              SizedBox(height: .005.sh),
-              Text('Hi there! Nice to see you', style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white)),
+              Text(
+                'Login', 
+                style: Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.white)
+              ),
+              Text(
+                'Hi there! Nice to see you', 
+                style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white)
+              ),
               SizedBox(height: .025.sh),
               SizedBox(
                 width: .82.sw,
                 height: .06.sh,
                 child: TextField(
                   controller: _emailController,
+                  cursorColor: Colors.white,
                   cursorWidth: 1.0,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white, decorationThickness: 0),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: Colors.white, 
+                    decorationThickness: 0
+                  ),
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.only(left: .025.sw),
                     hintText: 'Email',
@@ -75,9 +85,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 height: .06.sh,
                 child: TextField(
                   controller: _passwordController,
+                  cursorColor: Colors.white,
                   cursorWidth: 1.0,
                   obscureText: _hidePassword,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white, decorationThickness: 0),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: Colors.white, 
+                    decorationThickness: 0
+                  ),
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.only(left: .025.sw),
                     hintText: 'Password',
@@ -92,22 +106,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     suffixIcon: GestureDetector(
                       onTap: () => setState(() => _hidePassword = !_hidePassword),
-                      child: Icon(_hidePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined, size: .025.sh, color: Colors.white)
+                      child: Icon(
+                        _hidePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined, 
+                        size: .025.sh, 
+                        color: Colors.white
+                      )
                     )
                   )
                 )
               ),
               SizedBox(height: .025.sh),
               FlexiTextButton(
-                width: .82.sw,
-                height: .06.sh, 
+                width: .82.sw, 
+                height: .06.sh,
                 text: 'Login',
                 backgroundColor: FlexiColor.secondary,
                 onPressed: () async {
                   if(await ref.watch(userControllerProvider.notifier).loginByEmail(_emailController.text, _passwordController.text)) {
                     if(context.mounted) context.go('/device/list');
                   } else {
-                    FlexiUtils.showMsg('Incorrect email or password');
+                    FlexiUtils.showAlert('Incorrect email or password');
                   }
                 }
               )

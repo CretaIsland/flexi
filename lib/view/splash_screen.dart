@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 import '../feature/setting/controller/user_controller.dart';
 
 
@@ -21,9 +20,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await ref.watch(userControllerProvider.notifier).initialize();
       if(await ref.watch(userControllerProvider.notifier).autoLogin()) {
-        context.go('/device/list');
+        if(context.mounted) context.go('/device/list');
       } else {
-        context.go('/login');
+        if(context.mounted) context.go('/login');
       }
     });
   }
@@ -32,5 +31,4 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   Widget build(BuildContext context) {
     return Container(color: Colors.white);
   }
-
 }

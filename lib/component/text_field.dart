@@ -28,6 +28,7 @@ class FlexiTextField extends StatelessWidget {
       height: height,
       child: TextField(
         controller: controller,
+        cursorColor: Colors.black,
         cursorWidth: 1.0,
         readOnly: readOnly,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(decorationThickness: 0),

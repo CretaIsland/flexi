@@ -13,7 +13,7 @@ class FlexiBottomNavigationBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      height: 1.sh,
+      height: .1.sh,
       color: FlexiColor.grey[300],
       padding: EdgeInsets.only(left: .1.sw, right: .1.sw),
       child: Row(
