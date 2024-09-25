@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../component/bottom_navigation_bar.dart';
 import '../../../component/text_button.dart';
 import '../../../component/text_field.dart';
@@ -54,14 +53,24 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
             children: [
               IconButton(
                 onPressed: () => context.go('/setting'), 
-                icon: Icon(Icons.arrow_back_ios_rounded, color: FlexiColor.primary, size: .025.sh)
+                icon: Icon(
+                  Icons.arrow_back_ios_rounded,
+                  size: .025.sh, 
+                  color: FlexiColor.primary
+                )
               ),
-              Text('Account Detail', style: Theme.of(context).textTheme.displaySmall),
+              Text(
+                'Account Detail', 
+                style: Theme.of(context).textTheme.displaySmall
+              ),
               SizedBox(width: .05.sh)
             ]
           ),
           SizedBox(height: .03.sh),
-          Text('User Name', style: Theme.of(context).textTheme.bodySmall),
+          Text(
+            'User Name',
+            style: Theme.of(context).textTheme.bodySmall
+          ),
           SizedBox(height: .01.sh),
           FlexiTextField(
             width: .89.sw, 
@@ -70,7 +79,10 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
             readOnly: true
           ),
           SizedBox(height: .015.sh),
-          Text('Email', style: Theme.of(context).textTheme.bodySmall),
+          Text(
+            'Email',
+            style: Theme.of(context).textTheme.bodySmall
+          ),
           SizedBox(height: .01.sh),
           FlexiTextField(
             width: .89.sw, 
@@ -79,7 +91,10 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
             readOnly: true
           ),
           SizedBox(height: .015.sh),
-          Text('Enterprise', style: Theme.of(context).textTheme.bodySmall),
+          Text(
+            'Enterprise',
+            style: Theme.of(context).textTheme.bodySmall
+          ),
           SizedBox(height: .01.sh),
           FlexiTextField(
             width: .89.sw, 
@@ -92,13 +107,12 @@ class _AccountInfoScreenState extends ConsumerState<AccountInfoScreen> {
             width: .89.sw, 
             height: .06.sh, 
             text: 'Logout',
-            backgroundColor: Colors.white,
             textColor: FlexiColor.secondary,
             onPressed: () async {
               await ref.watch(userControllerProvider.notifier).logout();
               ref.invalidate(currentTabProvider);
-              context.go('/login');
-            }
+              if(context.mounted) context.go('/login');
+            },
           )
         ]
       )
