@@ -1,19 +1,9 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'bluetooth_provider.g.dart';
 
 
-
-@riverpod
-Stream<bool> bluetoothState(BluetoothStateRef ref) {
-  try {
-    return FlutterBluePlus.adapterState.map((event) => event == BluetoothAdapterState.on);
-  } catch (error) {
-    print('Error at bluetoothStateProvider >>> $error');
-  }
-  return const Stream.empty();
-}
 
 @riverpod
 Future<List<Map<String, String>>> bondedBluetooths(BondedBluetoothsRef ref) async {

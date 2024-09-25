@@ -1,5 +1,4 @@
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../util/utils.dart';
@@ -7,8 +6,6 @@ import '../../../util/utils.dart';
 part 'device_register_controller.g.dart';
 
 
-
-final selectDeviceBluetoothsProvider = StateProvider<List<DiscoveredEventArgs>>((ref) => List.empty());
 
 @riverpod
 class RegisterDataController extends _$RegisterDataController {

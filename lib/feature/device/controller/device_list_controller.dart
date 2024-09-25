@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import '../../../core/constant/config.dart';
 import '../model/device_model.dart';
 
@@ -15,7 +13,7 @@ final selectDevicesProvider = StateProvider<List<DeviceModel>>((ref) => List.emp
 
 @riverpod
 class ConnectedDeviceController extends _$ConnectedDeviceController {
-
+  
   late RawDatagramSocket _socket;
 
   @override
@@ -50,10 +48,6 @@ class ConnectedDeviceController extends _$ConnectedDeviceController {
         state = [...state, newDevice];
       }
     });
-  }
-
-  void refresh() {
-    state = List.empty();
   }
 
 }
