@@ -5,9 +5,9 @@ import '../util/design/colors.dart';
 
 
 class FlexiSearchBar extends StatelessWidget {
-  const FlexiSearchBar({super.key, this.hintText, this.onChange});
+  const FlexiSearchBar({super.key, this.hintText, this.onChanged});
   final String? hintText;
-  final void Function(String)? onChange;
+  final void Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class FlexiSearchBar extends StatelessWidget {
           ),
           prefixIcon: Icon(Icons.search, size: .025.sh, color: FlexiColor.grey[700])
         ),
-        onChanged: onChange
+        onChanged: onChanged
       )
     );
   }

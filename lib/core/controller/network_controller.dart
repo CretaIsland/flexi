@@ -6,7 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:socket_io_client/socket_io_client.dart' as socket;
 import 'package:wifi_iot/wifi_iot.dart';
-import '../constants/config.dart';
+import '../constant/config.dart';
 
 part 'network_controller.g.dart';
 

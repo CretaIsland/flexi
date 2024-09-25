@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/constants/config.dart';
+import '../../../core/constant/config.dart';
 import '../../device/model/device_model.dart';
 
 part 'content_send_controller.g.dart';

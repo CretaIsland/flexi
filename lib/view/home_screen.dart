@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../util/design/colors.dart';
 import '../component/bottom_navigation_bar.dart';
+import '../util/design/colors.dart';
 
 
 
@@ -14,7 +13,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: FlexiColor.backgroundColor,
       body: child,
-      bottomNavigationBar: const FlexiBottomNavigationBar(),
+      bottomNavigationBar: const FlexiBottomNavigationBar()
     );
   }
 }
