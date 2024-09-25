@@ -18,7 +18,7 @@ class QrcodeLoadScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(registerDataControllerProvider);
-    var images = ref.watch(galleryImageControlllerProvider);
+    var images = ref.watch(galleryImageControllerProvider);
     return Scaffold(
       backgroundColor: FlexiColor.backgroundColor,
       body: Column(
@@ -66,7 +66,7 @@ class QrcodeLoadScreen extends ConsumerWidget {
             child: NotificationListener<ScrollEndNotification>(
               onNotification: (notification) {
                 if(notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-                  ref.watch(galleryImageControlllerProvider.notifier).loadNext();
+                  ref.watch(galleryImageControllerProvider.notifier).loadNext();
                 }
                 return true;
               },

@@ -1,13 +1,12 @@
-import '../../../component/progress_overlay.dart';
-import '../../../core/controller/network_controller.dart';
-import '../../../feature/device/controller/device_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
-
+import '../../../component/progress_overlay.dart';
 import '../../../component/text_button.dart';
+import '../../../core/controller/network_controller.dart';
+import '../../../feature/device/controller/device_list_controller.dart';
 import '../../../util/design/colors.dart';
 
 
@@ -30,46 +29,53 @@ class DeviceResetModal extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Text('Are you sure?', style: Theme.of(context).textTheme.displayMedium),
-          Text('This will reset the wifi credentials \of the device(s)', style: Theme.of(context).textTheme.bodyMedium),
+          Text(
+            'Are you sure?',
+            style: Theme.of(context).textTheme.displayMedium
+          ),
+          Text(
+            'This will reset the wifi credentials \of the device(s)',
+            style: Theme.of(context).textTheme.bodyMedium
+          ),
           FlexiTextButton(
             width: .82.sw, 
             height: .06.sh, 
             text: 'Reset',
             backgroundColor: FlexiColor.secondary,
             onPressed: () async {
-              var successTask = 0;
-              ref.watch(totalTaskProvider.notifier).state = ref.read(selectDevicesProvider).length;
+              var selectDevices = ref.read(selectDevicesProvider);
+
+              ref.watch(totalTaskProvider.notifier).state = selectDevices.length;
               OverlayEntry progressOverlay = OverlayEntry(builder: (context) => const ProgressOverlay());
               Navigator.of(context).overlay!.insert(progressOverlay);
 
-              for(var device in ref.read(selectDevicesProvider)) {
-                var connected = await ref.watch(socketClientControllerProvider.notifier).connect(device.ip);
-                if(connected) {
-                  await ref.watch(socketClientControllerProvider.notifier).sendData({
-                    "command": "unregister",
-                    "deviceId": device.deviceId
+              var successTask = 0;
+              var socketClient = ref.watch(socketClientControllerProvider.notifier);
+              for(var device in selectDevices) {
+                if(await socketClient.connect(device.ip)) {
+                  await socketClient.sendData({
+                    'command': 'unregister',
+                    'deviceId': device.deviceId
                   });
                   successTask++;
                 }
                 ref.watch(completeTaskProvider.notifier).state = ref.watch(completeTaskProvider) + 1;
-                if(!await ref.watch(socketClientControllerProvider.notifier).disconnect()) ref.invalidate(socketClientControllerProvider);
+                if(!await socketClient.disconnect()) ref.invalidate(socketClientControllerProvider);
                 await Future.delayed(const Duration(milliseconds: 500));
               }
 
               Fluttertoast.showToast(
-                msg: 'Success ${successTask} device (Fail ${ref.read(selectDevicesProvider).length - successTask} device)',
+                msg: 'Success $successTask device (Fail ${selectDevices.length - successTask} device)',
                 backgroundColor: Colors.black.withOpacity(.8),
                 textColor: Colors.white,
-                fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize
+                fontSize: .02875.sh
               ).whenComplete(() {
-                ref.watch(connectedDeviceControllerProvider.notifier).refresh();
+                ref.invalidate(connectedDeviceControllerProvider);
                 ref.invalidate(selectDevicesProvider);
                 ref.invalidate(totalTaskProvider);
                 ref.invalidate(completeTaskProvider);
-
                 progressOverlay.remove();
-                context.pop();
+                if(context.mounted) context.pop();
               });
             }
           ),
@@ -81,8 +87,8 @@ class DeviceResetModal extends ConsumerWidget {
               child: Text('Cancel', style: Theme.of(context).textTheme.labelLarge)
             )
           )
-        ],
-      ),
+        ]
+      )
     );
   }
 }

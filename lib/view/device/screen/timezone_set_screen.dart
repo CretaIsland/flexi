@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:go_router/go_router.dart';
 import '../../../component/search_bar.dart';
 import '../../../feature/device/controller/device_register_controller.dart';
@@ -19,30 +18,10 @@ class TimezoneSetScreen extends ConsumerStatefulWidget {
 
 class _TimezoneSetScreenState extends ConsumerState<TimezoneSetScreen> {
 
-  final ScrollController _scrollController = ScrollController();
   String _searchText = '';
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if(ref.watch(registerDataControllerProvider)['timeZone']!.isEmpty) {
-        ref.watch(registerDataControllerProvider.notifier).setTimezone(await FlutterTimezone.getLocalTimezone());
-      }
-      var index = ref.watch(timezonesProvider).indexWhere((timezone) => timezone['timezone'] == ref.watch(registerDataControllerProvider)['timeZone']);
-      _scrollController.jumpTo(index * .075.sh);
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _scrollController.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    var timezones = ref.watch(timezonesProvider);
     var selectTimezone = ref.watch(registerDataControllerProvider)['timeZone'];
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
@@ -54,18 +33,28 @@ class _TimezoneSetScreenState extends ConsumerState<TimezoneSetScreen> {
               children: [
                 IconButton(
                   onPressed: () => context.go('/device/list'), 
-                  icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary)
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    size: .03.sh,
+                    color: FlexiColor.primary
+                  )
                 ),
-                Text('Set Device Timezone', style: Theme.of(context).textTheme.displaySmall),
+                Text(
+                  'Set Device Timezone',
+                  style: Theme.of(context).textTheme.displaySmall
+                ),
                 TextButton(
                   onPressed: () => context.go('/device/setWifi'), 
-                  child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
+                  child: Text(
+                    'OK',
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary)
+                  )
                 )
               ]
             ),
             SizedBox(height: .03.sh),
             FlexiSearchBar(
-              hintText: 'Search your timezone', 
+              hintText: 'Search your timezone',
               onChanged: (value) => setState(() => _searchText = value)
             ),
             SizedBox(height: .02.sh),
@@ -76,35 +65,54 @@ class _TimezoneSetScreenState extends ConsumerState<TimezoneSetScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(.015.sh)
               ),
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: EdgeInsets.zero,
-                itemCount: timezones.length,
-                itemBuilder: (context, index) => timezones[index]['name']!.toLowerCase().contains(_searchText.toLowerCase()) ? GestureDetector(
-                  onTap: () => ref.watch(registerDataControllerProvider.notifier).setTimezone(timezones[index]['timezone']!),
-                  child: Container(
-                    padding: EdgeInsets.all(.02.sh),
-                    decoration: BoxDecoration(border: Border(bottom: BorderSide(color: FlexiColor.grey[400]!))),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: .7.sw,
-                          child: Text(
-                            timezones[index]['name']!,
-                            style: selectTimezone == timezones[index]['timezone']! ? 
-                              Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary) :
-                              Theme.of(context).textTheme.bodyMedium,
-                            overflow: TextOverflow.ellipsis
-                          ),
-                        ),
-                        Visibility(
-                          visible: selectTimezone == timezones[index]['timezone'],
-                          child: Icon(Icons.check, size: .025.sh, color: FlexiColor.primary)
+              child: ref.watch(timezonesProvider).when(
+                data: (data) => ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: data.length,
+                  itemBuilder: (context, index) => data[index]['name']!.toLowerCase().contains(_searchText.toLowerCase()) ? GestureDetector(
+                    onTap: () => ref.watch(registerDataControllerProvider.notifier).setTimezone(data[index]['timezone']!),
+                    child: Container(
+                      padding: EdgeInsets.all(.02.sh),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: FlexiColor.grey[400]!
+                          )
                         )
-                      ]
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: .7.sw,
+                            child: Text(
+                              data[index]['name']!,
+                              style: selectTimezone == data[index]['timezone'] ? 
+                                Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.primary) :
+                                Theme.of(context).textTheme.bodyMedium,
+                              overflow: TextOverflow.ellipsis
+                            )
+                          ),
+                          Visibility(
+                            visible: selectTimezone == data[index]['timezone'],
+                            child: Icon(
+                              Icons.check,
+                              size: .025.sh,
+                              color: FlexiColor.primary
+                            )
+                          )
+                        ]
+                      )
                     )
+                  ) : const SizedBox.shrink()
+                ), 
+                error: (error, stackTrace) => Center(
+                  child: Text( 
+                    'Error during get timezones',
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600])
                   )
-                ) : const SizedBox.shrink()
+                ), 
+                loading: () => null
               )
             )
           ]

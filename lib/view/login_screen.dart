@@ -125,7 +125,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   if(await ref.watch(userControllerProvider.notifier).loginByEmail(_emailController.text, _passwordController.text)) {
                     if(context.mounted) context.go('/device/list');
                   } else {
-                    FlexiUtils.showAlert('Incorrect email or password');
+                    FlexiUtils.showMsg('Incorrect email or password');
                   }
                 }
               )

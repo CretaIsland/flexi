@@ -55,7 +55,7 @@ GoRouter router = GoRouter(
         ),
         GoRoute(
           path: '/device/setWifi',
-          pageBuilder: (context, state) => NoTransitionPage(child: WifiSetScreen(rootContext: context)),
+          pageBuilder: (context, state) => const NoTransitionPage(child: WifiSetScreen()),
         ),
         GoRoute(
           path: '/device/register',

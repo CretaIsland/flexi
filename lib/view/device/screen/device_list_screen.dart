@@ -28,11 +28,12 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
   Widget build(BuildContext context) {
     var devices = ref.watch(connectedDeviceControllerProvider);
     var selectDevices = ref.watch(selectDevicesProvider);
+
     return GestureDetector(
       onTap: () {
         if(_selectMode) {
           setState(() {
-            _selectMode = false;     
+            _selectMode = false;
             _selectAll = false;
           });
           ref.invalidate(selectDevicesProvider);
@@ -46,10 +47,14 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Device', style: Theme.of(context).textTheme.displayLarge),
+                Text(
+                  'Device',
+                  style: Theme.of(context).textTheme.displayLarge
+                ),
                 GestureDetector(
                   onTap: () {
                     if(_selectMode) {
+                      if(selectDevices.isEmpty) return;
                       showModalBottomSheet(
                         backgroundColor: Colors.transparent,
                         context: widget.rootContext, 
@@ -66,14 +71,18 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
                       color: _selectMode ? FlexiColor.secondary : FlexiColor.primary,
                       borderRadius: BorderRadius.circular(.02.sh)
                     ),
-                    child: Icon(_selectMode ? Icons.link_off : Icons.add, size: .03.sh, color: Colors.white)
+                    child: Icon(
+                      _selectMode ? Icons.link_off : Icons.add, 
+                      size: .03.sh,
+                      color: Colors.white
+                    )
                   )
                 )
               ]
             ),
             SizedBox(height: .02.sh),
             FlexiSearchBar(
-              hintText: 'Search your device', 
+              hintText: 'Search your device',
               onChanged: (value) => setState(() => _searchText = value)
             ),
             SizedBox(height: .025.sh),
@@ -82,11 +91,18 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
               children: [
                 Row(
                   children: [
-                    Text('${devices.length} devices', style: Theme.of(context).textTheme.labelSmall!.copyWith(color: FlexiColor.grey[600])),
+                    Text(
+                      '${devices.length} devices',
+                      style: Theme.of(context).textTheme.labelSmall!.copyWith(color: FlexiColor.grey[600])
+                    ),
                     SizedBox(width: .01.sw),
                     GestureDetector(
                       onTap: () => ref.invalidate(connectedDeviceControllerProvider),
-                      child: Icon(Icons.refresh, size: .02.sh, color: FlexiColor.grey[600]),
+                      child: Icon(
+                        Icons.refresh, 
+                        size: .02.sh, 
+                        color: FlexiColor.grey[600]
+                      )
                     )
                   ]
                 ),
@@ -94,7 +110,10 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
                   visible: _selectMode,
                   child: Row(
                     children: [
-                      Text('Select All', style: Theme.of(context).textTheme.labelSmall!.copyWith(color: FlexiColor.grey[600])),
+                      Text(
+                        'Select All',
+                        style: Theme.of(context).textTheme.labelSmall!.copyWith(color: FlexiColor.grey[600])
+                      ),
                       SizedBox(width: .01.sw),
                       GestureDetector(
                         onTap: () {
@@ -105,8 +124,15 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
                             ref.watch(selectDevicesProvider.notifier).state = List.empty();
                           }
                         },
-                        child: _selectAll ? Icon(Icons.check_circle, size: .025.sh, color: FlexiColor.secondary) :
-                          Icon(Icons.check_circle_outline, size: .025.sh, color: FlexiColor.grey[600])
+                        child: _selectAll ? Icon(
+                          Icons.check_circle, 
+                          size: .025.sh, 
+                          color: FlexiColor.secondary
+                        ) : Icon(
+                          Icons.check_circle_outline, 
+                          size: .025.sh, 
+                          color: FlexiColor.grey[600]
+                        )
                       )
                     ]
                   )
@@ -127,7 +153,10 @@ class _DeviceListScreenState extends ConsumerState<DeviceListScreen> {
                     )
                   ),
                   SizedBox(height: .015.sh),
-                  Text('Scanning for nearby device', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600]))
+                  Text(
+                    'Scanning for nearby device',
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600])
+                  )
                 ]
               ) : ListView.builder(
                 padding: EdgeInsets.zero,

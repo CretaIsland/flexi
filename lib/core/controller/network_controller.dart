@@ -158,4 +158,54 @@ class SocketClientController extends _$SocketClientController {
     }
   }
 
+  Future<bool> registerBluetooth(String deviceId, String bluetoothName, String bluetoothId) async {
+    try {
+      final completer = Completer<bool>();
+
+      _socket.on('bluetooth pairing success', (data) {
+        if(!completer.isCompleted) completer.complete(true);
+      });
+      _socket.on('bluetooth pairing fail', (data) {
+        if(!completer.isCompleted) completer.complete(false);
+      });
+
+      _socket.emit(
+        'message', 
+        utf8.encode(jsonEncode({
+          'command': 'bluetoothRegister', 
+          'deviceId': deviceId, 
+          'bluetooth': bluetoothName,
+          'bluetoothId': bluetoothId
+        })
+      ));
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      return completer.future;
+    } catch (error) {
+      print('Error at SocketClientController.registerBluetooth >>> $error');
+      return false;
+    }
+  }
+
+  Future<bool> unregisterBluetooth(String deviceId) async {
+    try {
+      final completer = Completer<bool>();
+
+      _socket.on('bluetooth pairing success', (data) {
+        if(!completer.isCompleted) completer.complete(true);
+      });
+      _socket.on('bluetooth pairing fail', (data) {
+        if(!completer.isCompleted) completer.complete(false);
+      });
+
+      _socket.emit('message', utf8.encode(jsonEncode({'command': 'bluetoothUnregister', 'deviceId': deviceId})));
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      return completer.future;
+    } catch (error) {
+      print('Error at SocketClientController.unregisterBluetooth >>> $error');
+      return false;
+    }
+  }
+
 }

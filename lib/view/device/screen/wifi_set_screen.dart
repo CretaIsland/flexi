@@ -1,21 +1,15 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../component/text_field.dart';
 import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../util/design/colors.dart';
-import '../modal/device_setup_modal.dart';
 
 
 
 class WifiSetScreen extends ConsumerStatefulWidget {
-  const WifiSetScreen({super.key, required this.rootContext});
-  final BuildContext rootContext;
-
+  const WifiSetScreen({super.key});
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _WifiSetScreenState();
 }
@@ -46,7 +40,6 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(ref.watch(registerDataControllerProvider));
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
       child: SingleChildScrollView(
@@ -58,15 +51,29 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
               children: [
                 IconButton(
                   onPressed: () => context.go('/device/setTimezone'), 
-                  icon: Icon(Icons.arrow_back_ios_rounded, size: .025.sh, color: FlexiColor.primary)
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    size: .03.sh,
+                    color: FlexiColor.primary
+                  )
                 ),
-                Text('WiFi Setup', style: Theme.of(context).textTheme.displaySmall),
+                Text(
+                  'WiFi Setup',
+                  style: Theme.of(context).textTheme.displaySmall
+                ),
                 TextButton(
                   onPressed: () {
-                    ref.watch(registerDataControllerProvider.notifier).setNetwork(_ssidController.text, _typeController.text, _passwordController.text);
+                    ref.watch(registerDataControllerProvider.notifier).setNetwork(
+                      _ssidController.text, 
+                      _typeController.text, 
+                      _passwordController.text
+                    );
                     context.go('/device/register');
-                  },
-                  child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
+                  }, 
+                  child: Text(
+                    'OK',
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary)
+                  )
                 )
               ]
             ),
@@ -131,11 +138,18 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
                   color: FlexiColor.primary.withOpacity(.1),
                   borderRadius: BorderRadius.circular(.05.sh)
                 ),
-                child: Icon(icon, size: .05.sh, color: FlexiColor.primary)
+                child: Icon(
+                  icon, 
+                  size: .05.sh, 
+                  color: FlexiColor.primary
+                )
               )
             ),
             SizedBox(height: .025.sh),
-            Text(text, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.primary))
+            Text(
+              text, 
+              style: Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.primary)
+            )
           ]
         )
       )

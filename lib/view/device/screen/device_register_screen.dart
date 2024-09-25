@@ -1,11 +1,11 @@
+import 'package:flexi/feature/device/controller/device_register_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../component/search_bar.dart';
-import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../util/design/colors.dart';
-import '../modal/device_setup_modal.dart';
 
 
 
@@ -42,20 +42,29 @@ class _DeviceRegisterScreenState extends ConsumerState<DeviceRegisterScreen> {
               children: [
                 IconButton(
                   onPressed: () => context.go('/device/setWifi'), 
-                  icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary)
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    size: .03.sh,
+                    color: FlexiColor.primary
+                  )
                 ),
-                Text('Select Device', style: Theme.of(context).textTheme.displaySmall),
+                Text(
+                  'Select Device',
+                  style: Theme.of(context).textTheme.displaySmall
+                ),
                 TextButton(
                   onPressed: () {
-                    if(selectDevices.isNotEmpty) {
-                      showModalBottomSheet(
-                        backgroundColor: Colors.transparent,
-                        context: widget.rootContext,
-                        builder: (context) => const DeviceSetupModal()
-                      );
-                    }
+                    if(selectDevices.isEmpty) return;
+                    showModalBottomSheet(
+                      backgroundColor: Colors.transparent,
+                      context: widget.rootContext, 
+                      builder: (context) => const SizedBox()
+                    );
                   }, 
-                  child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: selectDevices.isEmpty ? FlexiColor.grey[700] : FlexiColor.primary))
+                  child: Text(
+                    'OK',
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary)
+                  )
                 )
               ]
             ),
@@ -84,7 +93,10 @@ class _DeviceRegisterScreenState extends ConsumerState<DeviceRegisterScreen> {
                     )
                   ),
                   SizedBox(height: .015.sh),
-                  Text('Scanning for nearby device', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600]))
+                  Text(
+                    'Scanning for nearby device',
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600])
+                  )
                 ]
               ) : ListView.builder(
                 padding: EdgeInsets.zero,
@@ -104,12 +116,27 @@ class _DeviceRegisterScreenState extends ConsumerState<DeviceRegisterScreen> {
                     child: Row(
                       children: [
                         selectDevices.contains(devices[index]) ? 
-                          Icon(Icons.check_circle, size: .025.sh, color: FlexiColor.primary) :
-                          Icon(Icons.check_circle_outline, size: .025.sh, color: FlexiColor.grey[600]),
+                          Icon(
+                            Icons.check_circle, 
+                            size: .025.sh, 
+                            color: FlexiColor.primary
+                          ) :
+                          Icon(
+                            Icons.check_circle_outline, 
+                            size: .025.sh, 
+                            color: FlexiColor.grey[600]
+                          ),
                         SizedBox(width: .025.sw),
-                        Icon(Icons.bluetooth, size: .025.sh, color: FlexiColor.primary),
+                        Icon(
+                          Icons.bluetooth, 
+                          size: .025.sh,
+                          color: FlexiColor.primary
+                        ),
                         SizedBox(width: .025.sw),
-                        Text(devices[index].advertisement.name!, style: Theme.of(context).textTheme.bodyMedium),
+                        Text(
+                          devices[index].advertisement.name!, 
+                          style: Theme.of(context).textTheme.bodyMedium
+                        )
                       ]
                     )
                   )

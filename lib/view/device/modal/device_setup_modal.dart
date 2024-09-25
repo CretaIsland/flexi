@@ -17,8 +17,7 @@ class DeviceSetupModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print(ref.watch(registerDataControllerProvider));
-    ref.watch(registerDataControllerProvider);
+    var registerData = ref.read(registerDataControllerProvider);
     return Container(
       width: .94.sw,
       height: .35.sh,
@@ -30,55 +29,59 @@ class DeviceSetupModal extends ConsumerWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Text('WiFi Setup', style: Theme.of(context).textTheme.displayMedium),
-          Text('Press Connect once \nthe device has rebooted', style: Theme.of(context).textTheme.bodyMedium),
+          Text(
+            'WiFi Setup',
+            style: Theme.of(context).textTheme.displayMedium
+          ),
+          Text(
+            'Press Connect once \nthe device has rebooted',
+            style: Theme.of(context).textTheme.bodyMedium
+          ),
           FlexiTextButton(
             width: .82.sw, 
             height: .06.sh, 
             text: 'Connect',
             backgroundColor: FlexiColor.primary,
             onPressed: () async {
-              Map<String, String> registerData = {
-                'command': 'register',
-                'deviceId': '',
-                'ssid': ref.watch(registerDataControllerProvider)['ssid']!,
-                'security': ref.watch(registerDataControllerProvider)['security']!,
-                'password': ref.watch(registerDataControllerProvider)['password']!,
-                'timeZone': ref.watch(registerDataControllerProvider)['timeZone']!
-              };
+              registerData.addAll({'command': 'register', 'deviceId': ''});
+              var selectDevices = ref.read(selectDeviceBluetoothsProvider);
 
-              var successDevice = 0;
-              ref.watch(totalTaskProvider.notifier).state = ref.read(selectDeviceBluetoothsProvider).length;
+              ref.watch(totalTaskProvider.notifier).state = selectDevices.length;
               OverlayEntry progressOverlay = OverlayEntry(builder: (context) => const ProgressOverlay());
               Navigator.of(context).overlay!.insert(progressOverlay);
 
-              for(var deviceBluetooth in ref.read(selectDeviceBluetoothsProvider)) {
-                registerData['deviceId'] = deviceBluetooth.advertisement.name!;
-                await ref.watch(bleCentralControllerProvider.notifier).sendData(deviceBluetooth.peripheral, registerData);
-                successDevice++;
+              var successTask = 0;
+              for(var device in selectDevices) {
+                registerData['deviceId'] = device.advertisement.name!;
+                await ref.watch(bleCentralControllerProvider.notifier).sendData(device.peripheral, registerData);
+                successTask++;
                 ref.watch(completeTaskProvider.notifier).state = ref.watch(completeTaskProvider) + 1;
                 await Future.delayed(const Duration(milliseconds: 500));
               }
-              
-              await ref.watch(networkControllerProvider.notifier).connectWiFi(registerData['ssid']!, registerData['security']!, registerData['password']!);
-              String resultMsg = 'Success $successDevice devices';
-              if(ref.watch(totalTaskProvider) > successDevice) resultMsg += ' (Fail ${ref.watch(totalTaskProvider) - successDevice} devices)';
-              
+
+              await ref.watch(networkControllerProvider.notifier).connectWifi(
+                registerData['ssid']!, 
+                registerData['security']!, 
+                registerData['password']!
+              );
+
               Fluttertoast.showToast(
-                msg: resultMsg,
+                msg: 'Success $successTask device (Fail ${selectDevices.length - successTask} device)',
                 backgroundColor: Colors.black.withOpacity(.8),
                 textColor: Colors.white,
-                fontSize: .02375.sh
+                fontSize: .02875.sh
               ).whenComplete(() {
                 ref.invalidate(totalTaskProvider);
                 ref.invalidate(completeTaskProvider);
                 progressOverlay.remove();
-                context.pop();
-                context.go('/device/list');
+                if(context.mounted) {
+                  context.pop();
+                  context.go('/device/list');
+                }
               });
-            },
+            }
           ),
           SizedBox(
             width: .82.sw, 
