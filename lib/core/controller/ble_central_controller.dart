@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -19,7 +18,7 @@ class BleCentralController extends _$BleCentralController {
     ref.onDispose(() {
       print('BleCentralController Dispose');
     });
-    print('bleCentralController Build');
+    print('BleCentralController Build');
     _centralManager = CentralManager();
   }
 
@@ -41,11 +40,11 @@ class BleCentralController extends _$BleCentralController {
     var start = 0;
     while(start < data.length) {
       final end = start + fragmentSize;
-      final fragmentedData = end < data.length ? data.sublist(start, end) : data.sublist(start);
+      final fragmentData = end < data.length ? data.sublist(start, end) : data.sublist(start);
       await _centralManager.writeCharacteristic(
         peripheral, 
         characteristic, 
-        value: fragmentedData, 
+        value: fragmentData, 
         type: writeType
       );
       start = end;

@@ -6,19 +6,18 @@ part 'local_storage_controller.g.dart';
 
 
 @riverpod
-class GalleryImageControlller extends _$GalleryImageControlller {
+class GalleryImageController extends _$GalleryImageController {
 
   int _pageIndex = 0;
   final int _pageCount = 30;
   late PermissionState _permissionState;
 
-
   @override
   List<AssetEntity> build() {
     ref.onDispose(() {
-      print('GalleryImageControlller Dispose');
+      print('GalleryImageController Dispose');
     });
-    print('GalleryImageControlller Build');
+    print('GalleryImageController Build');
     initialize();
     return List.empty();
   }
@@ -27,42 +26,49 @@ class GalleryImageControlller extends _$GalleryImageControlller {
     try {
       _permissionState = await PhotoManager.requestPermissionExtend();
       if(_permissionState.isAuth) {
-        state = await PhotoManager.getAssetListPaged(page: _pageIndex, pageCount: _pageCount, type: RequestType.image);
+        state = await PhotoManager.getAssetListPaged(
+          page: _pageIndex, 
+          pageCount: _pageCount, 
+          type: RequestType.image
+        );
         _pageIndex = 1;
       }
-    } catch (error) { 
-      print('Error at GalleryImageControlller.initialize >>> $error');
+    } catch (error) {
+      print('Error at GalleryImageController.initialize >>> $error');
     }
   }
 
   void loadNext() async {
     try {
       if(_permissionState.isAuth) {
-        var files = await PhotoManager.getAssetListPaged(page: _pageIndex, pageCount: _pageCount, type: RequestType.image);
-        state = [...state, ...files];
+        var images = await PhotoManager.getAssetListPaged(
+          page: _pageIndex, 
+          pageCount: _pageCount, 
+          type: RequestType.image
+        );
+        state = [...state, ...images];
         _pageIndex++;
       }
     } catch (error) {
-      print('Error at GalleryImageControlller.loadNext >>> $error');
+      print('Error at GalleryImageController.loadNext >>> $error');
     }
   }
 
 }
 
 @riverpod
-class GalleryControlller extends _$GalleryControlller {
+class GalleryController extends _$GalleryController {
 
   int _pageIndex = 0;
   final int _pageCount = 30;
   late PermissionState _permissionState;
 
-
   @override
   List<AssetEntity> build() {
     ref.onDispose(() {
-      print('GalleryControlller Dispose');
+      print('GalleryController Dispose');
     });
-    print('GalleryControlller Build');
+    print('GalleryController Build');
     initialize();
     return List.empty();
   }
@@ -71,23 +77,29 @@ class GalleryControlller extends _$GalleryControlller {
     try {
       _permissionState = await PhotoManager.requestPermissionExtend();
       if(_permissionState.isAuth) {
-        state = await PhotoManager.getAssetListPaged(page: _pageIndex, pageCount: _pageCount);
+        state = await PhotoManager.getAssetListPaged(
+          page: _pageIndex, 
+          pageCount: _pageCount
+        );
         _pageIndex = 1;
       }
-    } catch (error) { 
-      print('Error at GalleryControlller.initialize >>> $error');
+    } catch (error) {
+      print('Error at GalleryController.initialize >>> $error');
     }
   }
 
   void loadNext() async {
     try {
       if(_permissionState.isAuth) {
-        var files = await PhotoManager.getAssetListPaged(page: _pageIndex, pageCount: _pageCount);
-        state = [...state, ...files];
+        var images = await PhotoManager.getAssetListPaged(
+          page: _pageIndex, 
+          pageCount: _pageCount
+        );
+        state = [...state, ...images];
         _pageIndex++;
       }
     } catch (error) {
-      print('Error at GalleryControlller.loadNext >>> $error');
+      print('Error at GalleryController.loadNext >>> $error');
     }
   }
 

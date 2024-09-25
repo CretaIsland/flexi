@@ -15,6 +15,7 @@ part 'network_controller.g.dart';
 @riverpod
 class NetworkController extends _$NetworkController {
 
+  @override
   void build() {
     ref.onDispose(() {
       print('NetworkController Dispose');
@@ -34,28 +35,26 @@ class NetworkController extends _$NetworkController {
     return null;
   }
 
-  Future<bool> connectWiFi(String ssid, String security, String password) async {
+  Future<bool> connectWifi(String ssid, String security, String password) async {
     try {
       if(await Permission.location.request().isGranted) {
         var networkSecurity = security.contains('WPA') ? NetworkSecurity.WPA :
           security.contains('WEP') ? NetworkSecurity.WEP :
           NetworkSecurity.NONE;
-        
-        var connected = await WiFiForIoTPlugin.connect(
-          ssid, 
-          security: networkSecurity, 
-          password: password, 
-          joinOnce: true, 
-          withInternet: true, 
-          timeoutInSeconds: 30
+
+        var result = await WiFiForIoTPlugin.connect(
+          ssid,
+          security: networkSecurity,
+          password: password,
+          joinOnce: true,
+          withInternet: true,
+          timeoutInSeconds: 15
         );
 
-        if(connected) {
-          return ssid == await getSSID();
-        }
+        if(result) return ssid == await getSSID();
       }
     } catch (error) {
-      print('Error at NetworkController.connectWiFi >>> $error');
+      print('Error at NetworkController.connectWifi >>> $error');
     }
     return false;
   }
@@ -93,10 +92,10 @@ class SocketClientController extends _$SocketClientController {
       _socket.onConnect((event) {
         if(!completer.isCompleted) completer.complete(true);
       });
-      _socket.onConnectTimeout((event) {
+      _socket.onConnectError((event) {
         if(!completer.isCompleted) completer.complete(false);
       });
-      _socket.onConnectError((event) {
+      _socket.onConnectTimeout((event) {
         if(!completer.isCompleted) completer.complete(false);
       });
 
@@ -134,7 +133,7 @@ class SocketClientController extends _$SocketClientController {
       print('Error at SocketClientController.sendData >>> $error');
     }
   }
-
+    
   Future<void> sendFile(String fileName, File file) async {
     try {
       final completer = Completer<void>();
