@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../../core/constants/firebase_options.dart';
+import '../../../core/constant/firebase_options.dart';
 import '../model/user_model.dart';
 import '../repository/account_repository.dart';
 
@@ -27,7 +27,11 @@ class UserController extends _$UserController {
   }
 
   Future<void> initialize() async {
-    _firestore = FirebaseFirestore.instanceFor(app: await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform));
+    _firestore = FirebaseFirestore.instanceFor(
+      app: await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform
+      )
+    );
     _repository = AccountRepository();
   }
 
@@ -78,7 +82,7 @@ class UserController extends _$UserController {
         if(userProperty != null) {
           await _repository.save({
             'email': email,
-            'password': password,
+            'password': encryptPassword,
             'type': user['accountSignUpType'],
             'mId': user['userId']
           });
@@ -106,7 +110,16 @@ class UserController extends _$UserController {
       var account = await _repository.get();
       if(account == null) return false;
 
-      return await loginByEmail(account['email'], account['password']);
+      var user = await getUser(account['email']);
+      if(user == null) return false;
+
+      if(account['password'] == user['password']) {
+        var userProperty = await getUserProperty(user['userId']);
+        if(userProperty != null) {
+          state = userProperty;
+          return true;
+        }
+      }
     } catch (error) {
       print('Error at UserController.autoLogin >>> $error');
     }
