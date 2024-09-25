@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../util/design/colors.dart';
 
 
 
 class FlexiSearchBar extends StatelessWidget {
-  const FlexiSearchBar({super.key, required this.hintText, required this.onChanged});
+  const FlexiSearchBar({super.key, this.hintText, this.onChange});
   final String? hintText;
-  final void Function(String)? onChanged;
+  final void Function(String)? onChange;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +15,7 @@ class FlexiSearchBar extends StatelessWidget {
       width: .89.sw,
       height: .045.sh,
       child: TextField(
-        style: Theme.of(context).textTheme.bodyMedium,
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(decorationThickness: 0),
         decoration: InputDecoration(
           contentPadding: EdgeInsets.only(left: .025.sw),
           hintText: hintText,
@@ -31,9 +30,9 @@ class FlexiSearchBar extends StatelessWidget {
             borderSide: BorderSide.none,
             borderRadius: BorderRadius.circular(.025.sh)
           ),
-          prefixIcon: Icon(Icons.search_outlined, size: .025.sh, color: FlexiColor.grey[700])
+          prefixIcon: Icon(Icons.search, size: .025.sh, color: FlexiColor.grey[700])
         ),
-        onChanged: onChanged
+        onChanged: onChange
       )
     );
   }

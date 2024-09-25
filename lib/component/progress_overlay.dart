@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../util/design/colors.dart';
 
 
 
-final totalTaskProvider = StateProvider((ref) => 0);
-final completeTaskProvider = StateProvider((ref) => 0);
-
+final totalTaskProvider = StateProvider<int>((ref) => 0);
+final completeTaskProvider = StateProvider<int>((ref) => 0);
 class ProgressOverlay extends ConsumerWidget {
   const ProgressOverlay({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    var completeTask = ref.watch(completeTaskProvider);
     return Scaffold(
       backgroundColor: FlexiColor.grey[200]!.withOpacity(.8),
       body: SizedBox(
@@ -29,22 +28,28 @@ class ProgressOverlay extends ConsumerWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(.0125.sh)
               ),
-              child: Image.asset('assets/image/wifi_loading.gif', fit: BoxFit.cover)
+              child: Image.asset(
+                'assets/image/loading_gif',
+                fit: BoxFit.cover
+              )
             ),
             SizedBox(height: .05.sh),
             SizedBox(
               width: .5.sw,
               child: LinearProgressIndicator(
-                value: (1 / ref.read(totalTaskProvider)) * ref.watch(completeTaskProvider),
+                value: (1 / ref.read(totalTaskProvider)) * completeTask,
                 valueColor: AlwaysStoppedAnimation<Color>(FlexiColor.primary),
                 backgroundColor: FlexiColor.grey[400],
                 borderRadius: BorderRadius.circular(.01.sh)
               )
             ),
             SizedBox(height: .03.sh),
-            Text('${ref.watch(completeTaskProvider)}/${ref.read(totalTaskProvider)}', style: Theme.of(context).textTheme.bodySmall!.copyWith(color: FlexiColor.primary))
+            Text(
+              '$completeTask/${ref.read(totalTaskProvider)}',
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: FlexiColor.primary)
+            )
           ]
-        ),
+        )
       )
     );
   }

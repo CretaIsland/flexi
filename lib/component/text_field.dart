@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../util/design/colors.dart';
 
 
 
 class FlexiTextField extends StatelessWidget {
-  const FlexiTextField({super.key, required this.width, required this.height, this.controller, this.hintText, this.readOnly = false, this.onChanged});
+  const FlexiTextField({
+    super.key,
+    required this.width,
+    required this.height,
+    this.controller,
+    this.hintText,
+    this.readOnly = false,
+    this.onChanged
+  });
   final double width;
   final double height;
   final TextEditingController? controller;
@@ -27,7 +34,7 @@ class FlexiTextField extends StatelessWidget {
         decoration: InputDecoration(
           contentPadding: EdgeInsets.only(left: .025.sw),
           hintText: hintText,
-          hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.grey[700]),
+          hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.grey[600]),
           filled: true,
           fillColor: Colors.white,
           enabledBorder: OutlineInputBorder(
