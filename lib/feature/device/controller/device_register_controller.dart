@@ -50,8 +50,8 @@ class AccessibleDeviceBluetooths extends _$AccessibleDeviceBluetooths {
 
   @override
   List<DiscoveredEventArgs> build() {
-    ref.onDispose(() {
-      _manager.stopDiscovery();
+    ref.onDispose(() async {
+      await _manager.stopDiscovery();
     });
     _manager = CentralManager();
     initialize();

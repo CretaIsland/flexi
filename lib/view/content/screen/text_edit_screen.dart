@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../feature/content/controller/current_language_controller.dart';
-import '../../../feature/content/model/content_model.dart';
 import '../../../util/design/colors.dart';
+import '../../../util/utils.dart';
 import '../component/language_list_bar.dart';
 import '../component/text_edit_preview.dart';
 import '../modal/text_translate_modal.dart';
@@ -17,8 +16,7 @@ import '../modal/text_translate_modal.dart';
 
 final sttModeProvider = StateProvider<bool>((ref) => true);
 final isSpeakingProvider = StateProvider<bool>((ref) => false);
-final keyboardEventProvider = StateProvider<FocusNode>((ref) => FocusNode());
-
+final enableKeyboardProvider = StateProvider<FocusNode>((ref) => FocusNode());
 
 class TextEditScreen extends ConsumerStatefulWidget {
   const TextEditScreen({super.key});
@@ -35,23 +33,19 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
     Color(0xff42A5F5), Color(0xff8756D5), Color(0xffEA9BD7)
   ];
 
-  
   @override
   Widget build(BuildContext context) {
 
-    final textEditController = ref.watch(contentEditControllerProvider.notifier);
-    final sttController = ref.watch(sTTControllerProvider.notifier);
-
-    ContentModel backgroundInfo = ref.read(contentEditControllerProvider);
-    ContentModel textInfo = ref.watch(contentEditControllerProvider);
-
+    var contentEditController = ref.watch(contentEditControllerProvider.notifier);
+    var sttController = ref.watch(sTTControllerProvider.notifier);
+    var contentBackground = ref.read(contentEditControllerProvider);
+    var contentText = ref.watch(contentEditControllerProvider);
 
     return Scaffold(
-      backgroundColor: FlexiColor.stringToColor(backgroundInfo.backgroundColor),
+      backgroundColor: FlexiColor.stringToColor(contentBackground.backgroundColor),
       body: Column(
         children: [
           Container(
-            width: 1.sw,
             height: .275.sh,
             padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
             color: Colors.black.withOpacity(.6),
@@ -63,40 +57,38 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        ref.watch(sttModeProvider.notifier).state = true;
-                        ref.watch(currentInputLanguagesControllerProvider.notifier).saveChange();
-                        ref.watch(contentInfoControllerProvider.notifier).setContent(ref.watch(contentEditControllerProvider));
+                        ref.watch(contentInfoControllerProvider.notifier).setContent(contentText);
                         context.go('/content/info');
-                      }, 
+                      },
                       icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: Colors.white)
                     ),
                     TextButton(
-                      onPressed: () {
-                        ref.watch(currentInputLanguagesControllerProvider.notifier).saveChange();
-                        ref.watch(contentEditControllerProvider.notifier).undo();
-                      },
-                      child: Text('Reset', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white))
+                      onPressed: () => ref.watch(contentEditControllerProvider.notifier).undo(), 
+                      child: Text(
+                        'Undo',
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white)
+                      )
                     )
-                  ],
+                  ]
                 ),
                 SizedBox(height: .045.sh),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     for(var color in fontColors)
-                      InkWell(
-                        onTap: () => textEditController.setTextColor(color),
+                      GestureDetector(
+                        onTap: () => contentEditController.setTextColor(color),
                         child: Container(
                           width: .035.sh,
                           height: .035.sh,
                           decoration: BoxDecoration(
                             color: color,
-                            border: Border.all(color: textInfo.textColor == color.toString() ? FlexiColor.primary : Colors.white),
+                            border: Border.all(color: contentText.textColor == color.value.toString() ? FlexiColor.primary : Colors.white),
                             borderRadius: BorderRadius.circular(.0175.sh)
-                          ),
-                        ),
+                          )
+                        )
                       )
-                  ],
+                  ]
                 ),
                 SizedBox(height: .025.sh),
                 Row(
@@ -104,73 +96,42 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                   children: [
                     Row(
                       children: [
-                        fontSizeButton('Small', 'S', Theme.of(context).textTheme.labelSmall!),
+                        textSizeButton('Small', 18, Theme.of(context).textTheme.labelSmall!),
                         SizedBox(width: .02.sw),
-                        fontSizeButton('Medium', 'M', Theme.of(context).textTheme.labelMedium!),
+                        textSizeButton('Medium', 22, Theme.of(context).textTheme.labelSmall!),
                         SizedBox(width: .02.sw),
-                        fontSizeButton('Large', 'L', Theme.of(context).textTheme.labelLarge!)
-                      ],
+                        textSizeButton('Large', 28, Theme.of(context).textTheme.labelSmall!),
+                        SizedBox(width: .02.sw)
+                      ]
                     ),
                     Row(
                       children: [
-                        InkWell(
-                          onTap: () => textEditController.setTextWeight(!textInfo.bold),
-                          child: Container(
-                            width: .03.sh,
-                            height: .03.sh,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: textInfo.bold ? Border.all(color: FlexiColor.primary, width: 2) : null, 
-                              borderRadius: BorderRadius.circular(.005.sh)
-                            ),
-                            child: Center(
-                              child: Icon(Icons.format_bold, color: textInfo.bold ? FlexiColor.primary : Colors.black, size: .02.sh)
-                            ),
-                          ),
-                        ),
+                        textEffectButton(Icons.format_bold, contentText.bold, () => contentEditController.setTextWeight(!contentText.bold)),
                         SizedBox(width: .02.sw),
-                        InkWell(
-                          onTap: () => textEditController.setTextItalic(!textInfo.italic),
-                          child: Container(
-                            width: .03.sh,
-                            height: .03.sh,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: textInfo.italic ? Border.all(color: FlexiColor.primary, width: 2) : null, 
-                              borderRadius: BorderRadius.circular(.005.sh)
-                            ),
-                            child: Center(
-                              child: Icon(Icons.format_italic, color: textInfo.italic ? FlexiColor.primary : Colors.black, size: .02.sh)
-                            ),
-                          ),
-                        ),
-                      ],
+                        textEffectButton(Icons.format_italic, contentText.italic, () => contentEditController.setTextItalic(!contentText.italic)),
+                      ]
                     )
-                  ],
+                  ]
                 )
-              ],
-            ),
+              ]
+            )
           ),
-          // preview
-          TextEditPreview(content: ref.watch(contentEditControllerProvider)),
+          TextEditPreview(content: contentBackground),
           Expanded(
             child: Container(
-              width: 1.sw,
               color: Colors.black.withOpacity(.6),
               padding: EdgeInsets.only(left: .055.sw, right: .055.sw, bottom: .02.sh),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  InkWell(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) => const TextTranslateModal(),
-                      );
-                    },
+                  GestureDetector(
+                    onTap: () => showModalBottomSheet(
+                      backgroundColor: Colors.transparent,
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) => const TextTranslateModal()
+                    ),
                     child: Container(
                       width: .05.sh,
                       height: .05.sh,
@@ -179,20 +140,19 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                         borderRadius: BorderRadius.circular(.025.sh)
                       ),
                       child: Center(
-                        child: Icon(Icons.g_translate_outlined, color: FlexiColor.primary, size: .025.sh),
-                      ),
-                    ),
+                        child: Icon(Icons.g_translate_outlined, size: .025.sh, color: FlexiColor.primary)
+                      )
+                    )
                   ),
-                  InkWell(
-                    onTap: () {
+                  GestureDetector(
+                    onTap: () async {
                       if(ref.watch(sttModeProvider)) {
                         ref.watch(sttModeProvider.notifier).state = false;
-                        ref.watch(keyboardEventProvider).requestFocus();
+                        ref.watch(enableKeyboardProvider).requestFocus();
                       } else {
-                        ref.watch(keyboardEventProvider).unfocus();
-                        Future.delayed(const Duration(milliseconds: 500), () {
-                          ref.watch(sttModeProvider.notifier).state = true;
-                        });
+                        ref.watch(enableKeyboardProvider).unfocus();
+                        await Future.delayed(const Duration(milliseconds: 500));
+                        ref.watch(sttModeProvider.notifier).state = true;
                       }
                     },
                     child: Container(
@@ -205,14 +165,14 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                       child: Center(
                         child: Icon(
                           ref.watch(sttModeProvider) ? Icons.keyboard_outlined : Icons.mic_none, 
-                          color: FlexiColor.primary, 
-                          size: .025.sh
-                        ),
-                      ),
-                    ),
+                          size: .025.sh, 
+                          color: FlexiColor.primary
+                        )
+                      )
+                    )
                   )
-                ],
-              ),
+                ]
+              )
             )
           ),
           Visibility(
@@ -230,29 +190,27 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                       const InputLanguageListBar(),
                       SizedBox(height: .04.sh),
                       SizedBox(
-                        width: 1.sw,
                         height: .15.sh,
                         child: SingleChildScrollView(
-                          child: Text(ref.watch(isSpeakingProvider) ? 'Speak your text' : 'Press and hold the button to record', style: Theme.of(context).textTheme.bodyLarge),
-                        ),
+                          child: Text(
+                            ref.watch(isSpeakingProvider) ? 
+                              contentText.text.isEmpty ? 'Speak your text' : contentText.text
+                              : 'Press and hold the button to record',
+                            style: Theme.of(context).textTheme.bodyLarge
+                          )
+                        )
                       )
-                    ],
+                    ]
                   ),
                   GestureDetector(
                     onLongPressStart: (details) {
-                      if(ref.watch(selectInputLanguageProvider)['localeId'] == null || ref.watch(selectInputLanguageProvider)['localeId']!.isEmpty) {
-                        Fluttertoast.showToast(
-                          msg: 'select language',
-                          backgroundColor: Colors.black.withOpacity(.8),
-                          textColor: Colors.white,
-                          fontSize: .02375.sh
-                        );
+                      if(ref.watch(selectInputLanguageProvider)['localeId'] == null) {
+                        FlexiUtils.showMsg('Please select language');
                       } else {
                         ref.watch(isSpeakingProvider.notifier).state = true;
-                        textEditController.setLanguage(ref.watch(selectInputLanguageProvider)['localeId']!.replaceAll("_", "-"));
-                        sttController.startRecord(ref.watch(selectInputLanguageProvider)['localeId']!, (value) { 
-                          print(value);
-                          if(value.isNotEmpty) textEditController.setText(value);
+                        contentEditController.setLanguage(ref.watch(selectInputLanguageProvider)['localeId']!.replaceAll('_', '-'));
+                        sttController.startRecord(ref.watch(selectInputLanguageProvider)['localeId']!, (value) {
+                          if(value.isNotEmpty) contentEditController.setText(value);
                         });
                       }
                     },
@@ -264,40 +222,57 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                       margin: EdgeInsets.only(top: .15.sh),
                       child: Center(
                         child: Image.asset(ref.watch(isSpeakingProvider) ? 'assets/image/speaking.gif' : 'assets/image/speak.png'),
-                      ),
-                    ),
+                      )
+                    )
                   )
-                ],
-              ),
-            ),
+                ]
+              )
+            )
           )
-        ],
-      ),
+        ]
+      )
     );
   }
 
-
-  // font size button
-  Widget fontSizeButton(String label, String value, TextStyle labelStyle) {
-    return InkWell(
-      onTap: () => ref.watch(contentEditControllerProvider.notifier).setTextSize(value),
+  Widget textSizeButton(String text, int size, TextStyle textStyle) {
+    return GestureDetector(
+      onTap: () => ref.watch(contentEditControllerProvider.notifier).setTextSize(size),
       child: Container(
         width: .2.sw,
         height: .03.sh,
         decoration: BoxDecoration(
-          color: ref.watch(contentEditControllerProvider).textSizeType == value ? FlexiColor.primary : Colors.white,
+          color: ref.watch(contentEditControllerProvider).textSize == size ? FlexiColor.primary : Colors.white,
           borderRadius: BorderRadius.circular(.005.sh)
         ),
         child: Center(
-          child: Text(
-            label, 
-            style: ref.watch(contentEditControllerProvider).textSizeType == value 
-              ? labelStyle.copyWith(color: Colors.white, fontWeight: FontWeight.w500) : labelStyle
-            )
-        ),
-      ),
+          child: Text(text, style: ref.watch(contentEditControllerProvider).textSize == size 
+            ? textStyle.copyWith(color: Colors.white, fontWeight: FontWeight.bold)
+            : textStyle
+          )
+        )
+      )
     );
   }
 
+  Widget textEffectButton(IconData icon, bool enableEffect, void Function()? onPressed) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: .03.sh,
+        height: .03.sh,
+        decoration: BoxDecoration(
+          color: enableEffect ? FlexiColor.primary : Colors.white,
+          borderRadius: BorderRadius.circular(.005.sh)
+        ),
+        child: Center(
+          child: Icon(
+            icon, 
+            size: .02.sh, 
+            color: enableEffect ? Colors.white : FlexiColor.primary
+          )
+        )
+      )
+    );
+  }
 
 }

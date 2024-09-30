@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import '../model/content_model.dart';
 import '../repository/content_repository.dart';
 
@@ -20,9 +18,9 @@ class ContentInfoController extends _$ContentInfoController {
   @override
   ContentModel build() {
     ref.onDispose(() {
-      print('ContentInfoController Dispose!!!');
+      print('ContentInfoController Dispose');
     });
-    print('ContentInfoController Build!!!');
+    print('ContentInfoController Build');
     _contentRepository = ContentRepository();
     return ContentModel(contentId: '');
   }

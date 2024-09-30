@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:translator/translator.dart';
-
 import '../model/content_model.dart';
 import 'content_info_controller.dart';
 
@@ -21,9 +19,9 @@ class ContentEditController extends _$ContentEditController {
   @override
   ContentModel build() {
     ref.onDispose(() {
-      print('ContentEditController Dispose!!!');
+      print('ContentEditController Dispose');
     });
-    print('ContentEditController Build!!!');
+    print('ContentEditController Build');
     _original = ref.read(contentInfoControllerProvider);
     return ref.read(contentInfoControllerProvider);
   }
@@ -48,7 +46,8 @@ class ContentEditController extends _$ContentEditController {
       backgroundType: contentType,
       filePath: contentPath,
       fileName: contentName,
-      fileThumbnail: base64Encode(contentThumbnail)
+      fileThumbnail: base64Encode(contentThumbnail),
+      backgroundColor: '4282532418'
     );
   }
 
@@ -65,14 +64,8 @@ class ContentEditController extends _$ContentEditController {
     state = state.copyWith(textColor: color.value.toString());
   }
 
-  void setTextSize(String size) {
-    if(size == 'S') {
-      state = state.copyWith(textSize: 18, textSizeType: 'S');
-    } else if(size == 'M') {
-      state = state.copyWith(textSize: 22, textSizeType: 'M');
-    } else if(size == 'L') {
-      state = state.copyWith(textSize: 28, textSizeType: 'L');
-    }
+  void setTextSize(int size) {
+    state = state.copyWith(textSize: size);
   }
 
   void setTextWeight(bool isBold) {
@@ -104,13 +97,13 @@ class STTController extends _$STTController {
     return '';
   }
 
-  void startRecord(String localeId, void Function(String value) onEnd) async {
+  void startRecord(String localeId, void Function(String value) onRecord) async {
     try {
       if(_sttInit) {
         _stt.listen(
           listenOptions: SpeechListenOptions(cancelOnError: true),
           localeId: localeId,
-          onResult: (value) => onEnd(value.recognizedWords)
+          onResult: (value) => onRecord(value.recognizedWords)
         );
       }
     } catch (error) {
@@ -132,26 +125,26 @@ class TranslateController extends _$TranslateController {
   late GoogleTranslator _translator;
 
   @override
-  String build() {
+  void build() {
     ref.onDispose(() {
       print('TranslateController Dispose!!!');
     });
     print('TranslateController Build!!!');
     _translator = GoogleTranslator();
-    return '';
   }
 
   // 번역하기
-  Future<void> translate(String inputText, String from, String to) async {
+  Future<String?> translate({required String inputText, String from = 'auto', required String to}) async {
     try {
       var outputText = await _translator.translate(
         inputText,
         from: from, 
         to: to
       );
-      state = outputText.text;
+      return outputText.text;
     } catch (error) {
       print('Error at TextEditController.translate >>> ${error.toString()}');
+      return null;
     }
   }
 

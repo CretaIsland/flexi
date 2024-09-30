@@ -3,12 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photo_manager/photo_manager.dart';
-
 import '../../../core/controller/local_storage_controller.dart';
 import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../util/design/colors.dart';
-import '../../../util/utils.dart';
 import '../component/background_edit_preview.dart';
 
 
@@ -35,7 +33,8 @@ class _BackgroundEditScreenState extends State<BackgroundEditScreen> {
               return Container(
                 height: .6.sh,
                 color: FlexiColor.stringToColor(content.backgroundColor),
-                child: Column(
+                child: 
+                Column(
                   children: [
                     Container(
                       height: .275.sh,
@@ -49,17 +48,20 @@ class _BackgroundEditScreenState extends State<BackgroundEditScreen> {
                             onPressed: () {
                               ref.watch(contentInfoControllerProvider.notifier).setContent(content);
                               context.go('/content/info');
-                            }, 
+                            },
                             icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: Colors.white)
                           ),
                           TextButton(
                             onPressed: () => ref.watch(contentEditControllerProvider.notifier).undo(), 
-                            child: Text('Reset', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white))
+                            child: Text(
+                              'Undo',
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white)
+                            )
                           )
                         ]
                       )
                     ),
-                    BackgroundEditPreview(content: content),
+                    const BackgroundEditPreview(),
                     Expanded(
                       child: Container(
                         color: Colors.black.withOpacity(.6),
@@ -68,15 +70,27 @@ class _BackgroundEditScreenState extends State<BackgroundEditScreen> {
                           children: [
                             TextButton(
                               onPressed: () => setState(() => _tabIndex = 0), 
-                              child: Text('Asset', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: _tabIndex == 0 ? Colors.white : FlexiColor.grey[600]))
+                              child: Text(
+                                'Asset',
+                                style: _tabIndex == 0 ? Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white)
+                                  : Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.grey[600])
+                              )
                             ),
                             TextButton(
                               onPressed: () => setState(() => _tabIndex = 1), 
-                              child: Text('Palette', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: _tabIndex == 1 ? Colors.white : FlexiColor.grey[600]))
+                              child: Text(
+                                'Palette',
+                                style: _tabIndex == 1 ? Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white)
+                                  : Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.grey[600])
+                              )
                             ),
                             TextButton(
                               onPressed: () => setState(() => _tabIndex = 2), 
-                              child: Text('Gallery', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: _tabIndex == 2 ? Colors.white : FlexiColor.grey[600]))
+                              child: Text(
+                                'Gallery',
+                                style: _tabIndex == 2 ? Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white)
+                                  : Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.grey[600])
+                              )
                             )
                           ]
                         )
@@ -151,20 +165,17 @@ class _BackgroundEditScreenState extends State<BackgroundEditScreen> {
             itemBuilder: (context, index) => FutureBuilder(
               future: files[index].thumbnailData, 
               builder: (context, snapshot) {
-                if(snapshot.connectionState == ConnectionState.done) {
-                  if(snapshot.data == null) return const SizedBox.shrink();
+                if(snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
                   return GestureDetector(
                     onTap: () async {
                       var selectFile = await files[index].loadFile();
                       if(selectFile != null) {
                         ref.watch(contentEditControllerProvider.notifier).setBackgroundContent(
                           files[index].type.name, 
-                          selectFile.path,
+                          selectFile.path, 
                           selectFile.path.split('/').last, 
                           snapshot.data!
                         );
-                      } else {
-                        FlexiUtils.showMsg('Error during load file');
                       }
                     },
                     child: Container(
@@ -179,12 +190,8 @@ class _BackgroundEditScreenState extends State<BackgroundEditScreen> {
                         const SizedBox.shrink()
                     )
                   );
-                } else {
-                  return SizedBox(
-                    width: 1.sw,
-                    height: .06.sh
-                  );
-                }
+                } 
+                return const SizedBox.shrink();
               }
             )
           )

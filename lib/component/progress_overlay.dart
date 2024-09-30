@@ -29,7 +29,7 @@ class ProgressOverlay extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(.0125.sh)
               ),
               child: Image.asset(
-                'assets/image/loading_gif',
+                'assets/image/loading.gif',
                 fit: BoxFit.cover
               )
             ),

@@ -1,57 +1,41 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../feature/content/model/content_model.dart';
 import '../../../util/design/colors.dart';
 
 
 
-class ContentPreview extends ConsumerStatefulWidget {
+class ContentPreview extends ConsumerWidget {
   const ContentPreview({super.key, required this.width, required this.height, required this.content});
   final double width;
   final double height;
   final ContentModel content;
-  
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ContentPreviewState();
-}
-
-class _ContentPreviewState extends ConsumerState<ContentPreview> {
-
-  late double _contentWidth;
-  late double _textScaler;
 
   @override
-  void initState() {
-    super.initState();
-    
-    _contentWidth = widget.height * (widget.content.width / widget.content.height);
-    if(widget.height > widget.content.height) {
-      _textScaler = widget.height / widget.content.height;
-    } else {
-      _textScaler = widget.content.height / widget.height;
+  Widget build(BuildContext context, WidgetRef ref) {
+    double contentWidth = height * (content.width / content.height);
+    double textScaler = height / content.height;
+    if(height <= content.height) {
+      textScaler = content.height / height;
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return SizedBox(
-      width: widget.width,
-      height: widget.height,
+      width: width,
+      height: height,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Container(
-          width: _contentWidth,
-          height: widget.height,
+          width: contentWidth,
+          height: height,
           padding: EdgeInsets.only(
-            left: (_contentWidth / widget.content.width) * widget.content.x,
-            top: (widget.height / widget.content.height) * widget.content.y
+            left: (contentWidth / content.width) * content.x,
+            top: (height / content.height) * content.y
           ),
           decoration: BoxDecoration(
-            color: FlexiColor.stringToColor(widget.content.backgroundColor),
-            image: widget.content.backgroundType != 'color' && widget.content.fileThumbnail != null ? DecorationImage(
-              image: Image.memory(base64Decode(widget.content.fileThumbnail!)).image,
+            color: FlexiColor.stringToColor(content.backgroundColor),
+            image: content.backgroundType != 'color' && content.fileThumbnail != null ? DecorationImage(
+              image: Image.memory(base64Decode(content.fileThumbnail!)).image,
               fit: BoxFit.cover
             ) : null
           ),
@@ -60,12 +44,12 @@ class _ContentPreviewState extends ConsumerState<ContentPreview> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                widget.content.text,
+                content.text,
                 style: TextStyle(
-                  fontSize: (_textScaler * widget.content.textSize) - .0085.sh,
-                  color: FlexiColor.stringToColor(widget.content.textColor),
-                  fontWeight: widget.content.bold ? FontWeight.bold : FontWeight.normal,
-                  fontStyle: widget.content.italic ? FontStyle.italic : FontStyle.normal
+                  fontSize: (textScaler * content.textSize) * .75,
+                  color: FlexiColor.stringToColor(content.textColor),
+                  fontWeight: content.bold ? FontWeight.bold : FontWeight.normal,
+                  fontStyle: content.italic ? FontStyle.italic : FontStyle.normal
                 )
               )
             )

@@ -148,6 +148,7 @@ class SocketClientController extends _$SocketClientController {
         _socket.emitWithBinary('file', bytes);
         print('$count/$total');
       }, onDone: () {
+        print('done');
         _socket.emit('fileDone');
         completer.complete();
       });

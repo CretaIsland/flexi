@@ -1,9 +1,9 @@
-import 'package:flexi/feature/device/controller/device_register_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-
+import '../../../feature/device/controller/device_register_controller.dart';
+import '../modal/device_setup_modal.dart';
 import '../../../component/search_bar.dart';
 import '../../../util/design/colors.dart';
 
@@ -58,7 +58,7 @@ class _DeviceRegisterScreenState extends ConsumerState<DeviceRegisterScreen> {
                     showModalBottomSheet(
                       backgroundColor: Colors.transparent,
                       context: widget.rootContext, 
-                      builder: (context) => const SizedBox()
+                      builder: (context) => const DeviceSetupModal()
                     );
                   }, 
                   child: Text(

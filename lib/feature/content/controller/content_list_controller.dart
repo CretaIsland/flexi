@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import '../model/content_model.dart';
 import '../repository/content_repository.dart';
 
@@ -14,18 +13,17 @@ final selectContentsProvider = StateProvider<List<String>>((ref) => List.empty()
 class ContentListController extends _$ContentListController {
 
   late ContentRepository _contentRepository;
+  
 
-
-  @override
+  @override 
   Future<List<ContentModel>> build() async {
     ref.onDispose(() {
-      print('ContentListController Dispose!!!');
+      print('ContentListController Dispose');
     });
-    print('ContentListController Build!!!');
+    print('ContentListController Build');
     _contentRepository = ContentRepository();
     return await getContents();
   }
-
 
   Future<List<ContentModel>> getContents() async {
     return await _contentRepository.getAll();

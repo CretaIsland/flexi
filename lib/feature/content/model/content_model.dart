@@ -16,7 +16,6 @@ class ContentModel with _$ContentModel {
     @Default(0) int y,
     @Default(false) bool isReverse,
     @Default('Hello') String text,
-    @Default('M') String textSizeType,
     @Default(22) int textSize,
     @Default('4294967295') String textColor,
     @Default(false) bool bold,

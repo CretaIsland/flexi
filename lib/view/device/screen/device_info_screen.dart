@@ -7,6 +7,7 @@ import '../../../core/controller/network_controller.dart';
 import '../../../feature/device/controller/device_info_controller.dart';
 import '../../../util/design/colors.dart';
 import '../../../util/utils.dart';
+import '../modal/bluetooth_list_modal.dart';
 
 
 
@@ -136,7 +137,7 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                         backgroundColor: Colors.transparent,
                         isScrollControlled: true,
                         context: widget.rootContext,
-                        builder: (context) => const SizedBox()
+                        builder: (context) => const BluetoothListModal()
                       ),
                       child: Container(
                         width: .43.sw,
