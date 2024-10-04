@@ -19,8 +19,6 @@ class BluetoothListModal extends ConsumerStatefulWidget {
 
 class _BluetoothListModalState extends ConsumerState<BluetoothListModal> {
 
-  bool _executingCommand = false;
-
   @override
   Widget build(BuildContext context) {
     var device = ref.watch(deviceInfoControllerProvider);
@@ -84,21 +82,14 @@ class _BluetoothListModalState extends ConsumerState<BluetoothListModal> {
                     device.bluetooth,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary)
                   ),
-                  _executingCommand ? SizedBox(
-                    width: .03.sh,
-                    height: .03.sh,
-                    child: CircularProgressIndicator(
-                      color: FlexiColor.grey[600],
-                      strokeWidth: 1
-                    )
-                  ) : GestureDetector(
+                  GestureDetector(
                     onTap: () async {
                       if(await ref.watch(socketClientControllerProvider.notifier).connect(device.ip)) {
-                        setState(() => _executingCommand = true);
-                        if(await ref.watch(socketClientControllerProvider.notifier).unregisterBluetooth(device.deviceId)) {
-                          ref.watch(deviceInfoControllerProvider.notifier).unregisterBluetooth();
-                        }
-                        setState(() => _executingCommand = false);
+                        await ref.watch(socketClientControllerProvider.notifier).sendData({
+                          'command': 'bluetoothUnregister', 
+                          'deviceId': device.deviceId
+                        });
+                        ref.watch(deviceInfoControllerProvider.notifier).unregisterBluetooth();
                       }
                     },
                     child: Icon(
@@ -143,11 +134,13 @@ class _BluetoothListModalState extends ConsumerState<BluetoothListModal> {
           itemBuilder: (context, index) => GestureDetector(
             onTap: () async {
               if(await ref.watch(socketClientControllerProvider.notifier).connect(device.ip)) {
-                setState(() => _executingCommand = true);
-                if(await ref.watch(socketClientControllerProvider.notifier).registerBluetooth(device.deviceId, data[index]['name']!, data[index]['remoteId']!)) {
-                  ref.watch(deviceInfoControllerProvider.notifier).registerBluetooth(data[index]['name']!, data[index]['remoteId']!);
-                }
-                setState(() => _executingCommand = false);
+                ref.watch(socketClientControllerProvider.notifier).sendData({
+                  'command': 'bluetoothRegister',
+                  'deviceId': device.deviceId,
+                  'bluetooth': data[index]['name']!,
+                  'bluetoothId': data[index]['remoteId']!
+                });
+                ref.watch(deviceInfoControllerProvider.notifier).registerBluetooth(data[index]['name']!, data[index]['remoteId']!);
               }
             },
             child: Padding(
@@ -198,11 +191,13 @@ class _BluetoothListModalState extends ConsumerState<BluetoothListModal> {
               itemBuilder: (context, index) => GestureDetector(
                 onTap: () async {
                   if(await ref.watch(socketClientControllerProvider.notifier).connect(device.ip)) {
-                    setState(() => _executingCommand = true);
-                    if(await ref.watch(socketClientControllerProvider.notifier).registerBluetooth(device.deviceId, data[index]['name']!, data[index]['remoteId']!)) {
-                      ref.watch(deviceInfoControllerProvider.notifier).registerBluetooth(data[index]['name']!, data[index]['remoteId']!);
-                    }
-                    setState(() => _executingCommand = false);
+                    ref.watch(socketClientControllerProvider.notifier).sendData({
+                      'command': 'bluetoothRegister',
+                      'deviceId': device.deviceId,
+                      'bluetooth': data[index]['name']!,
+                      'bluetoothId': data[index]['remoteId']!
+                    });
+                    ref.watch(deviceInfoControllerProvider.notifier).registerBluetooth(data[index]['name']!, data[index]['remoteId']!);
                   }
                 },
                 child: Padding(

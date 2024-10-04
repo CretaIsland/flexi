@@ -165,7 +165,8 @@ class _BackgroundEditScreenState extends State<BackgroundEditScreen> {
             itemBuilder: (context, index) => FutureBuilder(
               future: files[index].thumbnailData, 
               builder: (context, snapshot) {
-                if(snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
+                if(snapshot.connectionState == ConnectionState.done) {
+                  if(snapshot.data == null) return const SizedBox.shrink();
                   return GestureDetector(
                     onTap: () async {
                       var selectFile = await files[index].loadFile();
@@ -190,8 +191,12 @@ class _BackgroundEditScreenState extends State<BackgroundEditScreen> {
                         const SizedBox.shrink()
                     )
                   );
-                } 
-                return const SizedBox.shrink();
+                } else {
+                  return SizedBox(
+                    width: 1.sw,
+                    height: .06.sh
+                  );
+                }
               }
             )
           )
