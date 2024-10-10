@@ -10,15 +10,16 @@ import '../../../util/utils.dart';
 
 
 
-final selectImageIndex = StateProvider((ref) => -1);
+final selectImageIndexProvider = StateProvider<int>((ref) => -1);
 
 class QrcodeLoadScreen extends ConsumerWidget {
   const QrcodeLoadScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(registerDataControllerProvider);
     var images = ref.watch(galleryImageControllerProvider);
+    ref.watch(galleryImageControllerProvider);
+    
     return Scaffold(
       backgroundColor: FlexiColor.backgroundColor,
       body: Column(
@@ -32,32 +33,44 @@ class QrcodeLoadScreen extends ConsumerWidget {
                   onPressed: () => context.go('/device/setWifi'), 
                   icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary)
                 ),
-                Text('Set Device Timezone', style: Theme.of(context).textTheme.displaySmall),
+                Text('Load QR-Code', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
                   onPressed: () async {
-                    if(ref.read(selectImageIndex) != -1) {
-                      var fileBytes = await images[ref.read(selectImageIndex)].originBytes;
-                      if(fileBytes == null) {
-                        FlexiUtils.showMsg('Error Load QR-Code');
-                        return;
-                      }
-                      var value = await QRCodeDartScanDecoder(formats: [BarcodeFormat.qrCode]).decodeFile(XFile.fromData(fileBytes));
-                      if(value == null) {
-                        FlexiUtils.showMsg('Invalid QR-Code');
-                        return;
-                      }
-                      var credential = FlexiUtils.getWifiCredential(value.text);
-                      if(credential == null) {
-                        FlexiUtils.showMsg('Invalid QR-Code');
-                        return;
-                      }
-                      ref.watch(registerDataControllerProvider.notifier).setNetwork(credential['ssid']!, credential['security']!, credential['password']!);
-                      if(context.mounted) context.go('/device/setWifi');
-                    } else {
-                      FlexiUtils.showMsg('Select image');
+                    if(ref.read(selectImageIndexProvider) == -1) {
+                      FlexiUtils.showAlertMsg('Please select image');
+                      return;
                     }
-                  }, 
-                  child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
+                    
+                    var fileBytes = await images[ref.read(selectImageIndexProvider)].originBytes;
+                    if(fileBytes == null) {
+                      FlexiUtils.showAlertMsg('Error during load QR-Code');
+                      return;
+                    }
+
+                    var codeValue = await QRCodeDartScanDecoder(formats: [BarcodeFormat.qrCode]).decodeFile(XFile.fromData(fileBytes));
+                    if(codeValue == null) {
+                      FlexiUtils.showAlertMsg('Invalid QR-Code');
+                      return;
+                    }
+
+                    var wifiCredential = FlexiUtils.getWifiCredential(codeValue.text);
+                    if(wifiCredential == null) {
+                      FlexiUtils.showAlertMsg('Invalid QR-Code');
+                      return;
+                    }
+
+                    var registerData = ref.watch(registerDataProvider);
+                    registerData['ssid'] = wifiCredential['ssid']!;
+                    registerData['security'] = wifiCredential['security']!;
+                    registerData['password'] = wifiCredential['password']!;
+                    ref.watch(registerDataProvider.notifier).state = registerData;
+
+                    if(context.mounted) {
+                      ref.invalidate(selectImageIndexProvider);
+                      context.go('/device/setWifi');
+                    }
+                  },
+                  child: Text('Load', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
               ]
             )
@@ -75,7 +88,7 @@ class QrcodeLoadScreen extends ConsumerWidget {
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
                 itemCount: images.length,
                 itemBuilder: (context, index) => GestureDetector(
-                  onTap: () => ref.watch(selectImageIndex.notifier).state = index,
+                  onTap: () => ref.watch(selectImageIndexProvider.notifier).state = index,
                   child: FutureBuilder(
                     future: images[index].thumbnailData, 
                     builder: (context, snapshot) {
@@ -83,15 +96,14 @@ class QrcodeLoadScreen extends ConsumerWidget {
                         return Consumer(
                           builder: (context, ref, child) => Container(
                             decoration: BoxDecoration(
-                              border: ref.watch(selectImageIndex) == index ?
-                                Border.all(color: FlexiColor.primary, width: 3) :
-                                Border.all(color: FlexiColor.grey[400]!)
+                              border: ref.watch(selectImageIndexProvider) == index ? Border.all(color: FlexiColor.primary, width: 3)
+                                : Border.all(color: FlexiColor.grey[400]!)
                             ),
                             child: Image.memory(snapshot.data!, fit: BoxFit.cover)
                           )
                         );
                       }
-                      return const SizedBox.shrink();
+                      return const SizedBox();
                     }
                   )
                 )

@@ -5,7 +5,7 @@ import '../util/design/colors.dart';
 
 
 class FlexiSearchBar extends StatelessWidget {
-  const FlexiSearchBar({super.key, this.hintText, this.onChanged});
+  const FlexiSearchBar({super.key, required this.hintText, required this.onChanged});
   final String? hintText;
   final void Function(String)? onChanged;
 
@@ -15,6 +15,8 @@ class FlexiSearchBar extends StatelessWidget {
       width: .89.sw,
       height: .045.sh,
       child: TextField(
+        cursorColor: Colors.black,
+        cursorWidth: 1.0,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(decorationThickness: 0),
         decoration: InputDecoration(
           contentPadding: EdgeInsets.only(left: .025.sw),

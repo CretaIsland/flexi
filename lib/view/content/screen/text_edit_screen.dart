@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../feature/content/controller/content_edit_controller.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
 import '../../../feature/content/controller/current_language_controller.dart';
@@ -15,7 +14,6 @@ import '../modal/text_translate_modal.dart';
 
 
 final sttModeProvider = StateProvider<bool>((ref) => true);
-final isSpeakingProvider = StateProvider<bool>((ref) => false);
 final enableKeyboardProvider = StateProvider<FocusNode>((ref) => FocusNode());
 
 class TextEditScreen extends ConsumerStatefulWidget {
@@ -27,28 +25,24 @@ class TextEditScreen extends ConsumerStatefulWidget {
 
 class _TextEditScreenState extends ConsumerState<TextEditScreen> {
 
-  List<Color> fontColors = const [
+  final List<Color> textColorList = const [
     Color(0xff000000), Color(0xffFFFFFF), Color(0xffE53935), 
     Color(0xffFFB74D), Color(0xffFFEE58), Color(0xff388E5A), 
     Color(0xff42A5F5), Color(0xff8756D5), Color(0xffEA9BD7)
   ];
+  bool _isSpeaking = false;
 
   @override
   Widget build(BuildContext context) {
-
-    var contentEditController = ref.watch(contentEditControllerProvider.notifier);
-    var sttController = ref.watch(sTTControllerProvider.notifier);
-    var contentBackground = ref.read(contentEditControllerProvider);
-    var contentText = ref.watch(contentEditControllerProvider);
-
+    var content = ref.watch(contentEditControllerProvider);
     return Scaffold(
-      backgroundColor: FlexiColor.stringToColor(contentBackground.backgroundColor),
+      backgroundColor: FlexiColor.stringToColor(ref.read(contentEditControllerProvider).backgroundColor),
       body: Column(
         children: [
           Container(
             height: .275.sh,
-            padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
             color: Colors.black.withOpacity(.6),
+            padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -57,17 +51,14 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                   children: [
                     IconButton(
                       onPressed: () {
-                        ref.watch(contentInfoControllerProvider.notifier).setContent(contentText);
-                        context.go('/content/info');
-                      },
+                        ref.watch(contentInfoControllerProvider.notifier).setContent(content);
+                        context.go('/content/detail');
+                      }, 
                       icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: Colors.white)
                     ),
                     TextButton(
-                      onPressed: () => ref.watch(contentEditControllerProvider.notifier).undo(), 
-                      child: Text(
-                        'Undo',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white)
-                      )
+                      onPressed: () => ref.watch(contentEditControllerProvider.notifier).undo, 
+                      child: Text('Undo', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white))
                     )
                   ]
                 ),
@@ -75,15 +66,15 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    for(var color in fontColors)
+                    for(var color in textColorList)
                       GestureDetector(
-                        onTap: () => contentEditController.setTextColor(color),
+                        onTap: () => ref.watch(contentEditControllerProvider.notifier).setTextColor(color),
                         child: Container(
                           width: .035.sh,
                           height: .035.sh,
                           decoration: BoxDecoration(
                             color: color,
-                            border: Border.all(color: contentText.textColor == color.value.toString() ? FlexiColor.primary : Colors.white),
+                            border: Border.all(color: content.textColor == color.value.toString() ? FlexiColor.primary : Colors.white),
                             borderRadius: BorderRadius.circular(.0175.sh)
                           )
                         )
@@ -106,9 +97,9 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                     ),
                     Row(
                       children: [
-                        textEffectButton(Icons.format_bold, contentText.bold, () => contentEditController.setTextWeight(!contentText.bold)),
+                        textEffectButton(Icons.format_bold, content.bold, () => ref.watch(contentEditControllerProvider.notifier).setTextWeight(!content.bold)),
                         SizedBox(width: .02.sw),
-                        textEffectButton(Icons.format_italic, contentText.italic, () => contentEditController.setTextItalic(!contentText.italic)),
+                        textEffectButton(Icons.format_italic, content.italic, () => ref.watch(contentEditControllerProvider.notifier).setTextItalic(!content.italic)),
                       ]
                     )
                   ]
@@ -116,7 +107,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
               ]
             )
           ),
-          TextEditPreview(content: contentBackground),
+          TextEditPreview(content: ref.read(contentEditControllerProvider)),
           Expanded(
             child: Container(
               color: Colors.black.withOpacity(.6),
@@ -145,14 +136,15 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                     )
                   ),
                   GestureDetector(
-                    onTap: () async {
+                    onTap: () {
                       if(ref.watch(sttModeProvider)) {
                         ref.watch(sttModeProvider.notifier).state = false;
                         ref.watch(enableKeyboardProvider).requestFocus();
                       } else {
                         ref.watch(enableKeyboardProvider).unfocus();
-                        await Future.delayed(const Duration(milliseconds: 500));
-                        ref.watch(sttModeProvider.notifier).state = true;
+                        Future.delayed(const Duration(milliseconds: 500), () {
+                          ref.watch(sttModeProvider.notifier).state = true;
+                        });
                       }
                     },
                     child: Container(
@@ -163,11 +155,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                         borderRadius: BorderRadius.circular(.025.sh)
                       ),
                       child: Center(
-                        child: Icon(
-                          ref.watch(sttModeProvider) ? Icons.keyboard_outlined : Icons.mic_none, 
-                          size: .025.sh, 
-                          color: FlexiColor.primary
-                        )
+                        child: Icon(ref.watch(sttModeProvider) ? Icons.keyboard_outlined : Icons.mic_none, size: .025.sh, color: FlexiColor.primary)
                       )
                     )
                   )
@@ -192,10 +180,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                       SizedBox(
                         height: .15.sh,
                         child: SingleChildScrollView(
-                          child: Text(
-                            ref.watch(isSpeakingProvider) ? 
-                              contentText.text.isEmpty ? 'Speak your text' : contentText.text
-                              : 'Press and hold the button to record',
+                          child: Text(_isSpeaking ? content.text.isEmpty ? 'Speak your text' : content.text : 'Press and hold the button to record',
                             style: Theme.of(context).textTheme.bodyLarge
                           )
                         )
@@ -205,23 +190,23 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
                   GestureDetector(
                     onLongPressStart: (details) {
                       if(ref.watch(selectInputLanguageProvider)['localeId'] == null) {
-                        FlexiUtils.showMsg('Please select language');
+                        FlexiUtils.showAlertMsg('Please select language');
                       } else {
-                        ref.watch(isSpeakingProvider.notifier).state = true;
-                        contentEditController.setLanguage(ref.watch(selectInputLanguageProvider)['localeId']!.replaceAll('_', '-'));
-                        sttController.startRecord(ref.watch(selectInputLanguageProvider)['localeId']!, (value) {
-                          if(value.isNotEmpty) contentEditController.setText(value);
+                        setState(() => _isSpeaking = true);
+                        ref.watch(contentEditControllerProvider.notifier).setLanguage(ref.watch(selectInputLanguageProvider)['localeId']!.replaceAll('_', '-'));
+                        ref.watch(sTTControllerProvider.notifier).startRecord(ref.watch(selectInputLanguageProvider)['localeId']!, (value) {
+                          if(value.isNotEmpty) ref.watch(contentEditControllerProvider.notifier).setText(value);
                         });
                       }
                     },
                     onLongPressEnd: (details) {
-                      ref.watch(isSpeakingProvider.notifier).state = false;
-                      sttController.stopRecord();
+                      ref.watch(sTTControllerProvider.notifier).stopRecord();
+                      setState(() => _isSpeaking = false);
                     },
                     child: Container(
                       margin: EdgeInsets.only(top: .15.sh),
                       child: Center(
-                        child: Image.asset(ref.watch(isSpeakingProvider) ? 'assets/image/speaking.gif' : 'assets/image/speak.png'),
+                        child: Image.asset(_isSpeaking ? 'assets/image/speaking.gif' : 'assets/image/speak.png'),
                       )
                     )
                   )
@@ -265,11 +250,7 @@ class _TextEditScreenState extends ConsumerState<TextEditScreen> {
           borderRadius: BorderRadius.circular(.005.sh)
         ),
         child: Center(
-          child: Icon(
-            icon, 
-            size: .02.sh, 
-            color: enableEffect ? Colors.white : FlexiColor.primary
-          )
+          child: Icon(icon, size: .02.sh, color: enableEffect ? Colors.white : FlexiColor.primary)
         )
       )
     );

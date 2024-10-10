@@ -38,20 +38,19 @@ class NetworkController extends _$NetworkController {
   Future<bool> connectWifi(String ssid, String security, String password) async {
     try {
       if(await Permission.location.request().isGranted) {
-        var networkSecurity = security.contains('WPA') ? NetworkSecurity.WPA :
+        var wifiSecurity = security.contains('WPA') ? NetworkSecurity.WPA :
           security.contains('WEP') ? NetworkSecurity.WEP :
           NetworkSecurity.NONE;
-
-        var result = await WiFiForIoTPlugin.connect(
+        
+        var isConnected = await WiFiForIoTPlugin.connect(
           ssid,
-          security: networkSecurity,
+          security: wifiSecurity,
           password: password,
-          joinOnce: true,
           withInternet: true,
           timeoutInSeconds: 15
         );
 
-        if(result) return ssid == await getSSID();
+        if(isConnected) return ssid == await getSSID();
       }
     } catch (error) {
       print('Error at NetworkController.connectWifi >>> $error');
@@ -70,7 +69,7 @@ class SocketClientController extends _$SocketClientController {
   void build() {
     ref.onDispose(() {
       print('SocketClientController Dispose');
-      _socket.disconnect();
+      if(_socket.connected) _socket.disconnect();
       _socket.close();
       _socket.dispose();
     });
@@ -78,16 +77,17 @@ class SocketClientController extends _$SocketClientController {
     _socket = socket.io('', socket.OptionBuilder()
       .setTransports(['websocket'])
       .disableAutoConnect()
-      .setTimeout(15000)
+      .setTimeout(10000)
       .build()
     );
   }
 
   Future<bool> connect(String ip) async {
     try {
-      final completer = Completer<bool>();
       String url = 'http://$ip:${NetworkConfig.socketIOPort}';
       if(_socket.io.uri == url && _socket.connected) return true;
+
+      final completer = Completer<bool>();
 
       _socket.onConnect((event) {
         if(!completer.isCompleted) completer.complete(true);
@@ -95,23 +95,20 @@ class SocketClientController extends _$SocketClientController {
       _socket.onConnectError((event) {
         if(!completer.isCompleted) completer.complete(false);
       });
-      _socket.onConnectTimeout((event) {
-        if(!completer.isCompleted) completer.complete(false);
-      });
 
       _socket.io.uri = url;
       _socket.connect();
       return completer.future;
     } catch (error) {
-      print('Error at SocketClientController.connect >>> $error');
       return false;
     }
   }
 
   Future<bool> disconnect() async {
     try {
-      final completer = Completer<bool>();
       if(!_socket.connected) return true;
+
+      final completer = Completer<bool>();
 
       _socket.onDisconnect((event) {
         if(!completer.isCompleted) completer.complete(true);
@@ -120,7 +117,6 @@ class SocketClientController extends _$SocketClientController {
       _socket.disconnect();
       return completer.future;
     } catch (error) {
-      print('Error at SocketClientController.disconnect >>> $error');
       return false;
     }
   }
@@ -133,10 +129,10 @@ class SocketClientController extends _$SocketClientController {
       print('Error at SocketClientController.sendData >>> $error');
     }
   }
-    
+
   Future<void> sendFile(String fileName, File file) async {
     try {
-      final completer = Completer<void>();
+      final completer = Completer();
       _socket.emit('fileStart', utf8.encode(fileName));
 
       int total = await file.length();
@@ -145,7 +141,7 @@ class SocketClientController extends _$SocketClientController {
 
       openRead.listen((bytes) {
         count += bytes.length;
-        _socket.emitWithBinary('file', bytes);
+        _socket.emit('file', bytes);
         print('$count/$total');
       }, onDone: () {
         print('done');
@@ -156,56 +152,6 @@ class SocketClientController extends _$SocketClientController {
       await completer.future;
     } catch (error) {
       print('Error at SocketClientController.sendFile >>> $error');
-    }
-  }
-
-  Future<bool> registerBluetooth(String deviceId, String bluetoothName, String bluetoothId) async {
-    try {
-      final completer = Completer<bool>();
-
-      _socket.on('bluetooth pairing success', (data) {
-        if(!completer.isCompleted) completer.complete(true);
-      });
-      _socket.on('bluetooth pairing fail', (data) {
-        if(!completer.isCompleted) completer.complete(false);
-      });
-
-      _socket.emit(
-        'message', 
-        utf8.encode(jsonEncode({
-          'command': 'bluetoothRegister', 
-          'deviceId': deviceId, 
-          'bluetooth': bluetoothName,
-          'bluetoothId': bluetoothId
-        })
-      ));
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      return completer.future;
-    } catch (error) {
-      print('Error at SocketClientController.registerBluetooth >>> $error');
-      return false;
-    }
-  }
-
-  Future<bool> unregisterBluetooth(String deviceId) async {
-    try {
-      final completer = Completer<bool>();
-
-      _socket.on('bluetooth pairing success', (data) {
-        if(!completer.isCompleted) completer.complete(true);
-      });
-      _socket.on('bluetooth pairing fail', (data) {
-        if(!completer.isCompleted) completer.complete(false);
-      });
-
-      _socket.emit('message', utf8.encode(jsonEncode({'command': 'bluetoothUnregister', 'deviceId': deviceId})));
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      return completer.future;
-    } catch (error) {
-      print('Error at SocketClientController.unregisterBluetooth >>> $error');
-      return false;
     }
   }
 

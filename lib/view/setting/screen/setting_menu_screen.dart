@@ -15,13 +15,10 @@ class SettingMenuScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Setting', 
-            style: Theme.of(context).textTheme.displayLarge
-          ),
+          Text('Setting', style: Theme.of(context).textTheme.displayLarge),
           SizedBox(height: .05.sh),
           menuButton(context, 'Account', '/setting/account')
-        ]
+        ],
       )
     );
   }
@@ -40,15 +37,8 @@ class SettingMenuScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              text, 
-              style: Theme.of(context).textTheme.bodyMedium
-            ),
-            Icon(
-              Icons.arrow_forward_ios_rounded, 
-              size: .03.sh, 
-              color: FlexiColor.grey[600]
-            )
+            Text(text, style: Theme.of(context).textTheme.bodyMedium),
+            Icon(Icons.arrow_forward_ios, size: .03.sh, color: FlexiColor.grey[600])
           ]
         )
       )

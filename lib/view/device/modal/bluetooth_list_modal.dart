@@ -1,8 +1,10 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../../core/controller/network_controller.dart';
 import '../../../feature/device/controller/device_info_controller.dart';
 import '../../../feature/device/provider/bluetooth_provider.dart';
@@ -33,7 +35,6 @@ class _BluetoothListModalState extends ConsumerState<BluetoothListModal> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // bluetooth status
           Container(
             width: .89.sw,
             height: .06.sh,
@@ -45,10 +46,7 @@ class _BluetoothListModalState extends ConsumerState<BluetoothListModal> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Device's Bluetooth", 
-                  style: Theme.of(context).textTheme.bodySmall
-                ),
+                Text("Device's Bluetooth", style: Theme.of(context).textTheme.bodySmall),
                 AdvancedSwitch(
                   width: .11.sw,
                   height: .025.sh,
@@ -60,10 +58,7 @@ class _BluetoothListModalState extends ConsumerState<BluetoothListModal> {
             )
           ),
           SizedBox(height: .025.sh),
-          Text(
-            'Connected Device', 
-            style: Theme.of(context).textTheme.bodySmall
-          ),
+          Text('Connected Device', style: Theme.of(context).textTheme.bodySmall),
           SizedBox(height: .01.sh),
           Container(
             width: .89.sw,
@@ -78,32 +73,19 @@ class _BluetoothListModalState extends ConsumerState<BluetoothListModal> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    device.bluetooth,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary)
-                  ),
+                  Text(device.bluetooth, style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary)),
                   GestureDetector(
-                    onTap: () async {
-                      if(await ref.watch(socketClientControllerProvider.notifier).connect(device.ip)) {
-                        await ref.watch(socketClientControllerProvider.notifier).sendData({
-                          'command': 'bluetoothUnregister', 
-                          'deviceId': device.deviceId
-                        });
-                        ref.watch(deviceInfoControllerProvider.notifier).unregisterBluetooth();
-                      }
+                    onTap: () {
+
                     },
-                    child: Icon(
-                      Icons.cancel,
-                      size: .03.sh,
-                      color: FlexiColor.grey[600]
-                    ),
+                    child: Icon(Icons.cancel, size: .03.sh, color: FlexiColor.primary)
                   )
                 ]
               )
             )
           ),
           SizedBox(height: .025.sh),
-          if(Platform.isAndroid) 
+          if(Platform.isAndroid)
             ...[
               Text('Saved Device', style: Theme.of(context).textTheme.bodySmall),
               SizedBox(height: .01.sh),
@@ -144,27 +126,23 @@ class _BluetoothListModalState extends ConsumerState<BluetoothListModal> {
               }
             },
             child: Padding(
-              padding: EdgeInsets.only(left: .045.sw, top: .015.sh, bottom: .015.sh),
-              child: Text(
-                data[index]['name']!, 
-                style: Theme.of(context).textTheme.bodyMedium
-              )
+              padding: EdgeInsets.only(left: .045.sw, top: .015.sh, right: .045.sw, bottom: .015.sh),
+              child: Text(data[index]['name']!, style: Theme.of(context).textTheme.bodyMedium, overflow: TextOverflow.ellipsis)
             )
-          ), 
+          ),
           separatorBuilder: (context, index) => Divider(color: FlexiColor.grey[400])
         ), 
         error: (error, stackTrace) => Center(
-          child: Text(
-            'Error during get bonded device', 
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600])
-          )
+          child: Text('Error during get saved device(s)', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600]))
         ), 
-        loading: () => SizedBox(
-          width: .04.sh,
-          height: .04.sh,
-          child: CircularProgressIndicator(
-            color: FlexiColor.grey[600], 
-            strokeWidth: 2.5
+        loading: () => Center(
+          child: SizedBox(
+            width: .04.sh,
+            height: .04.sh,
+            child: CircularProgressIndicator(
+              color: FlexiColor.grey[600], 
+              strokeWidth: 2.5
+            )
           )
         )
       )
@@ -185,6 +163,18 @@ class _BluetoothListModalState extends ConsumerState<BluetoothListModal> {
           stream: stream, 
           builder: (context, snapshot) {
             var data = snapshot.data ?? List.empty();
+            if(data.isEmpty) {
+              return Center(
+                child: SizedBox(
+                  width: .04.sh,
+                  height: .04.sh,
+                  child: CircularProgressIndicator(
+                    color: FlexiColor.grey[600], 
+                    strokeWidth: 2.5
+                  )
+                )
+              );
+            }
             return ListView.separated(
               padding: EdgeInsets.zero,
               itemCount: data.length,
@@ -201,29 +191,25 @@ class _BluetoothListModalState extends ConsumerState<BluetoothListModal> {
                   }
                 },
                 child: Padding(
-                  padding: EdgeInsets.only(left: .045.sw, top: .015.sh, bottom: .015.sh),
-                  child: Text(
-                    data[index]['name']!, 
-                    style: Theme.of(context).textTheme.bodyMedium
-                  )
+                  padding: EdgeInsets.only(left: .045.sw, top: .015.sh, right: .045.sw, bottom: .015.sh),
+                  child: Text(data[index]['name']!, style: Theme.of(context).textTheme.bodyMedium, overflow: TextOverflow.ellipsis)
                 )
-              ), 
+              ),
               separatorBuilder: (context, index) => Divider(color: FlexiColor.grey[400])
             );
-          }
-        ), 
+          },
+        ),
         error: (error, stackTrace) => Center(
-          child: Text(
-            'Error during scan nearby device', 
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600])
-          )
+          child: Text('Error during get saved device(s)', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600]))
         ), 
-        loading: () => SizedBox(
-          width: .04.sh,
-          height: .04.sh,
-          child: CircularProgressIndicator(
-            color: FlexiColor.grey[600], 
-            strokeWidth: 2.5
+        loading: () => Center(
+          child: SizedBox(
+            width: .04.sh,
+            height: .04.sh,
+            child: CircularProgressIndicator(
+              color: FlexiColor.grey[600], 
+              strokeWidth: 2.5
+            )
           )
         )
       )

@@ -17,7 +17,6 @@ class DeviceSetupModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var registerData = ref.read(registerDataControllerProvider);
     return Container(
       width: .94.sw,
       height: .35.sh,
@@ -31,23 +30,18 @@ class DeviceSetupModal extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Text(
-            'WiFi Setup',
-            style: Theme.of(context).textTheme.displayMedium
-          ),
-          Text(
-            'Press Connect once \nthe device has rebooted',
-            style: Theme.of(context).textTheme.bodyMedium
-          ),
+          Text('WiFi Setup', style: Theme.of(context).textTheme.displayMedium),
+          Text('Press Connect once \nthe device has rebooted', style: Theme.of(context).textTheme.bodyMedium),
           FlexiTextButton(
             width: .82.sw, 
-            height: .06.sh, 
+            height: .06.sh,  
             text: 'Connect',
             backgroundColor: FlexiColor.primary,
             onPressed: () async {
-              registerData.addAll({'command': 'register', 'deviceId': ''});
               var selectDevices = ref.read(selectDeviceBluetoothsProvider);
-
+              var registerData = ref.read(registerDataProvider);
+              registerData.addAll({'command': 'register', 'deviceId': ''});
+              
               ref.watch(totalTaskProvider.notifier).state = selectDevices.length;
               OverlayEntry progressOverlay = OverlayEntry(builder: (context) => const ProgressOverlay());
               Navigator.of(context).overlay!.insert(progressOverlay);
@@ -55,17 +49,16 @@ class DeviceSetupModal extends ConsumerWidget {
               var successTask = 0;
               for(var device in selectDevices) {
                 registerData['deviceId'] = device.advertisement.name!;
-                await ref.watch(bleCentralControllerProvider.notifier).sendData(device.peripheral, registerData);
-                successTask++;
+                if(await ref.watch(bleCentralControllerProvider.notifier).sendData(device.peripheral, registerData)) {
+                  successTask++;
+                } else {
+                  ref.invalidate(bleCentralControllerProvider);
+                }
                 ref.watch(completeTaskProvider.notifier).state = ref.watch(completeTaskProvider) + 1;
                 await Future.delayed(const Duration(milliseconds: 500));
               }
 
-              await ref.watch(networkControllerProvider.notifier).connectWifi(
-                registerData['ssid']!, 
-                registerData['security']!, 
-                registerData['password']!
-              );
+              await ref.watch(networkControllerProvider.notifier).connectWifi(registerData['ssid']!, registerData['security']!, registerData['password']!);
 
               Fluttertoast.showToast(
                 msg: 'Success $successTask device (Fail ${selectDevices.length - successTask} device)',
@@ -85,7 +78,7 @@ class DeviceSetupModal extends ConsumerWidget {
           ),
           SizedBox(
             width: .82.sw, 
-            height: .06.sh, 
+            height: .06.sh,
             child: TextButton(
               onPressed: () => context.pop(), 
               child: Text('Cancel', style: Theme.of(context).textTheme.labelLarge)

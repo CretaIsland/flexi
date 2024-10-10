@@ -22,7 +22,7 @@ class _TimezoneSetScreenState extends ConsumerState<TimezoneSetScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var selectTimezone = ref.watch(registerDataControllerProvider)['timeZone'];
+    var selectTimezone = ref.watch(registerDataProvider)['timeZone'];
     return Padding(
       padding: EdgeInsets.only(left: .055.sw, top: .04.sh, right: .055.sw),
       child: SingleChildScrollView(
@@ -32,29 +32,19 @@ class _TimezoneSetScreenState extends ConsumerState<TimezoneSetScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: () => context.go('/device/list'), 
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    size: .03.sh,
-                    color: FlexiColor.primary
-                  )
+                  onPressed: () => context.go('/device/list'),
+                  icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary)
                 ),
-                Text(
-                  'Set Device Timezone',
-                  style: Theme.of(context).textTheme.displaySmall
-                ),
+                Text('Set Device Timezone', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
-                  onPressed: () => context.go('/device/setWifi'), 
-                  child: Text(
-                    'OK',
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary)
-                  )
+                  onPressed: () => context.go('/device/setWifi'),
+                  child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
               ]
             ),
             SizedBox(height: .03.sh),
             FlexiSearchBar(
-              hintText: 'Search your timezone',
+              hintText: 'Search your timezone', 
               onChanged: (value) => setState(() => _searchText = value)
             ),
             SizedBox(height: .02.sh),
@@ -70,15 +60,15 @@ class _TimezoneSetScreenState extends ConsumerState<TimezoneSetScreen> {
                   padding: EdgeInsets.zero,
                   itemCount: data.length,
                   itemBuilder: (context, index) => data[index]['name']!.toLowerCase().contains(_searchText.toLowerCase()) ? GestureDetector(
-                    onTap: () => ref.watch(registerDataControllerProvider.notifier).setTimezone(data[index]['timezone']!),
+                    onTap: () {
+                      var registerData = ref.watch(registerDataProvider);
+                      registerData['tiemZone'] = data[index]['timezone']!;
+                      ref.watch(registerDataProvider.notifier).state = registerData;
+                    },
                     child: Container(
                       padding: EdgeInsets.all(.02.sh),
                       decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: FlexiColor.grey[400]!
-                          )
-                        )
+                        border: Border(bottom: BorderSide(color: FlexiColor.grey[400]!))
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -86,20 +76,15 @@ class _TimezoneSetScreenState extends ConsumerState<TimezoneSetScreen> {
                           SizedBox(
                             width: .7.sw,
                             child: Text(
-                              data[index]['name']!,
-                              style: selectTimezone == data[index]['timezone'] ? 
-                                Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.primary) :
-                                Theme.of(context).textTheme.bodyMedium,
+                              data[index]['name']!, 
+                              style: selectTimezone == data[index]['timezone'] ? Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.primary)
+                                : Theme.of(context).textTheme.bodyMedium,
                               overflow: TextOverflow.ellipsis
                             )
                           ),
                           Visibility(
                             visible: selectTimezone == data[index]['timezone'],
-                            child: Icon(
-                              Icons.check,
-                              size: .025.sh,
-                              color: FlexiColor.primary
-                            )
+                            child: Icon(Icons.check, size: .025.sh, color: FlexiColor.primary)
                           )
                         ]
                       )
@@ -107,12 +92,16 @@ class _TimezoneSetScreenState extends ConsumerState<TimezoneSetScreen> {
                   ) : const SizedBox.shrink()
                 ), 
                 error: (error, stackTrace) => Center(
-                  child: Text( 
-                    'Error during get timezones',
-                    style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600])
-                  )
+                  child: Text('Error during get timezones', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600]))
                 ), 
-                loading: () => null
+                loading: () => SizedBox(
+                  width: .03.sh, 
+                  height: .03.sh, 
+                  child: CircularProgressIndicator(
+                    color: FlexiColor.grey[600],
+                    strokeWidth: 2.5
+                  )
+                )
               )
             )
           ]

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:qr_code_dart_scan/qr_code_dart_scan.dart';
 import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../util/design/colors.dart';
 import '../../../util/utils.dart';
@@ -18,7 +18,7 @@ class QrcodeScanScreen extends ConsumerStatefulWidget {
 
 class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
 
-  final MobileScannerController _controller = MobileScannerController();
+  final QRCodeDartScanController _controller = QRCodeDartScanController();
 
   @override
   void dispose() {
@@ -28,44 +28,38 @@ class _QrcodeScanScreenState extends ConsumerState<QrcodeScanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(registerDataControllerProvider);
+    ref.watch(registerDataProvider);
     return Scaffold(
-      backgroundColor: Colors.black,
       body: Stack(
         children: [
           SizedBox(
             width: 1.sw,
             height: 1.sh,
-            child: MobileScanner(
+            child: QRCodeDartScanView(
               controller: _controller,
-              onDetect: (capture) async {
-                try {
-                  await _controller.stop();
-                  if(capture.barcodes.first.wifi != null) {
-                    ref.watch(registerDataControllerProvider.notifier).setNetwork(
-                      capture.barcodes.first.wifi!.ssid ?? '', 
-                      capture.barcodes.first.wifi!.encryptionType.name.toUpperCase(), 
-                      capture.barcodes.first.wifi!.password ?? ''
-                    );
-                    if(context.mounted) context.go('/device/setWifi');
-                  } else {
-                    await _controller.start();
-                    FlexiUtils.showMsg('Invalid QR-Code');
-                  }
-                } catch (error) {
-                  print('Error at Scan QR-Code >>> $error');
-                  await _controller.start();
-                  FlexiUtils.showMsg('Invalid QR-Code');
+              typeScan: TypeScan.live,
+              formats: const [BarcodeFormat.qrCode],
+              onCapture: (capture) {
+                var wifiCredential = FlexiUtils.getWifiCredential(capture.text);
+                if(wifiCredential != null) {
+                  var registerData = ref.watch(registerDataProvider);
+                  registerData['ssid'] = wifiCredential['ssid']!;
+                  registerData['security'] = wifiCredential['security']!;
+                  registerData['password'] = wifiCredential['password']!;
+                  ref.watch(registerDataProvider.notifier).state = registerData;
+                  context.go('/device/setWifi');
+                } else {
+                  FlexiUtils.showAlertMsg('Invalid QR-Code');
                 }
               }
             )
           ),
           Padding(
-            padding: EdgeInsets.only(left: .055.sw, top: .065.sh),
-            child: IconButton(
-              onPressed: () => context.go('/device/setWifi'),
-              icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary)
-            )
+            padding: EdgeInsets.only(left: .055.sw, top: .04.sh),
+            child: GestureDetector(
+              onTap: () => context.go('/device/setWifi'),
+              child: Icon(Icons.arrow_back_ios, size: .025.sh, color: FlexiColor.primary)
+            ),
           )
         ]
       )

@@ -1,6 +1,8 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../feature/content/model/content_model.dart';
 import '../../../util/design/colors.dart';
 
@@ -19,7 +21,7 @@ class ContentPreview extends ConsumerWidget {
     if(height <= content.height) {
       textScaler = content.height / height;
     }
-
+    
     return SizedBox(
       width: width,
       height: height,

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import '../../../feature/device/controller/device_register_controller.dart';
-import '../modal/device_setup_modal.dart';
 import '../../../component/search_bar.dart';
+import '../../../feature/device/controller/device_register_controller.dart';
 import '../../../util/design/colors.dart';
+import '../../../util/utils.dart';
+import '../modal/device_setup_modal.dart';
 
 
 
@@ -24,12 +25,14 @@ class _DeviceRegisterScreenState extends ConsumerState<DeviceRegisterScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => ref.invalidate(selectDeviceBluetoothsProvider));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.invalidate(selectDeviceBluetoothsProvider);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(registerDataControllerProvider);
+    ref.watch(registerDataProvider);
     var devices = ref.watch(accessibleDeviceBluetoothsProvider);
     var selectDevices = ref.watch(selectDeviceBluetoothsProvider);
     return Padding(
@@ -41,36 +44,29 @@ class _DeviceRegisterScreenState extends ConsumerState<DeviceRegisterScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: () => context.go('/device/setWifi'), 
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    size: .03.sh,
-                    color: FlexiColor.primary
-                  )
+                  onPressed: () => context.go('/device/setWifi'),
+                  icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary)
                 ),
-                Text(
-                  'Select Device',
-                  style: Theme.of(context).textTheme.displaySmall
-                ),
+                Text('Select Device', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
                   onPressed: () {
-                    if(selectDevices.isEmpty) return;
-                    showModalBottomSheet(
-                      backgroundColor: Colors.transparent,
-                      context: widget.rootContext, 
-                      builder: (context) => const DeviceSetupModal()
-                    );
-                  }, 
-                  child: Text(
-                    'OK',
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary)
-                  )
+                    if(selectDevices.isEmpty) {
+                      FlexiUtils.showAlertMsg('Select device');
+                    } else {
+                      showModalBottomSheet(
+                        backgroundColor: Colors.transparent,
+                        context: context, 
+                        builder: (context) => const DeviceSetupModal()
+                      );
+                    }
+                  },
+                  child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
               ]
             ),
             SizedBox(height: .03.sh),
             FlexiSearchBar(
-              hintText: 'Search your device', 
+              hintText: 'Search your timezone', 
               onChanged: (value) => setState(() => _searchText = value)
             ),
             SizedBox(height: .02.sh),
@@ -85,18 +81,15 @@ class _DeviceRegisterScreenState extends ConsumerState<DeviceRegisterScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    width: .03.sh,
-                    height: .03.sh,
+                    width: .03.sh, 
+                    height: .03.sh, 
                     child: CircularProgressIndicator(
                       color: FlexiColor.grey[600],
                       strokeWidth: 2.5
                     )
                   ),
                   SizedBox(height: .015.sh),
-                  Text(
-                    'Scanning for nearby device',
-                    style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600])
-                  )
+                  Text('Scanning for nearby device', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600]))
                 ]
               ) : ListView.builder(
                 padding: EdgeInsets.zero,
@@ -115,28 +108,12 @@ class _DeviceRegisterScreenState extends ConsumerState<DeviceRegisterScreen> {
                     decoration: BoxDecoration(border: Border(bottom: BorderSide(color: FlexiColor.grey[400]!))),
                     child: Row(
                       children: [
-                        selectDevices.contains(devices[index]) ? 
-                          Icon(
-                            Icons.check_circle, 
-                            size: .025.sh, 
-                            color: FlexiColor.primary
-                          ) :
-                          Icon(
-                            Icons.check_circle_outline, 
-                            size: .025.sh, 
-                            color: FlexiColor.grey[600]
-                          ),
+                        selectDevices.contains(devices[index]) ? Icon(Icons.check_circle, size: .025.sh, color: FlexiColor.primary)
+                          : Icon(Icons.check_circle_outline, size: .025.sh, color: FlexiColor.grey[600]),
                         SizedBox(width: .025.sw),
-                        Icon(
-                          Icons.bluetooth, 
-                          size: .025.sh,
-                          color: FlexiColor.primary
-                        ),
+                        Icon(Icons.bluetooth, size: .025.sh, color: FlexiColor.primary),
                         SizedBox(width: .025.sw),
-                        Text(
-                          devices[index].advertisement.name!, 
-                          style: Theme.of(context).textTheme.bodyMedium
-                        )
+                        Text(devices[index].advertisement.name!, style: Theme.of(context).textTheme.bodyMedium)
                       ]
                     )
                   )

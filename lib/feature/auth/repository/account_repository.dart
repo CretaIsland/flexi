@@ -8,10 +8,9 @@ class AccountRepository {
   final _store = stringMapStoreFactory.store('setting');
   Future<Database> get _dbClient async => await AppDatabase.instance.database;
 
-
-  Future<void> save(Map<String, dynamic> account) async {
+  Future<void> save(Map<String, dynamic> data) async {
     try {
-      await _store.record('account').put(await _dbClient, account);
+      await _store.record('account').put(await _dbClient, data);
     } catch (error) {
       print('Error at AccountRepository.save >>> $error');
     }
@@ -21,7 +20,7 @@ class AccountRepository {
     try {
       return await _store.record('account').get(await _dbClient);
     } catch (error) {
-      print('Error at AccountRepository.get >>> $error');
+      print('Error at AccountRepository.save >>> $error');
     }
     return null;
   }

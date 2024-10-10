@@ -46,7 +46,7 @@ GoRouter router = GoRouter(
           pageBuilder: (context, state) => NoTransitionPage(child: DeviceListScreen(rootContext: context)),
         ),
         GoRoute(
-          path: '/device/info',
+          path: '/device/detail',
           pageBuilder: (context, state) => NoTransitionPage(child: DeviceInfoScreen(rootContext: context)),
         ),
         GoRoute(
@@ -67,7 +67,7 @@ GoRouter router = GoRouter(
           pageBuilder: (context, state) => NoTransitionPage(child: ContentListScreen(rootContext: context)),
         ),
         GoRoute(
-          path: '/content/info',
+          path: '/content/detail',
           pageBuilder: (context, state) => const NoTransitionPage(child: ContentInfoScreen()),
         ),
         // ********** Setting **********

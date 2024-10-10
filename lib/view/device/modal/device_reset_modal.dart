@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../component/progress_overlay.dart';
 import '../../../component/text_button.dart';
 import '../../../core/controller/network_controller.dart';
-import '../../../feature/device/controller/device_list_controller.dart';
+import '../../../feature/device/controller/connected_device_controller.dart';
 import '../../../util/design/colors.dart';
 
 
@@ -29,17 +29,11 @@ class DeviceResetModal extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Text(
-            'Are you sure?',
-            style: Theme.of(context).textTheme.displayMedium
-          ),
-          Text(
-            'This will reset the wifi credentials \of the device(s)',
-            style: Theme.of(context).textTheme.bodyMedium
-          ),
+          Text('Are you sure?', style: Theme.of(context).textTheme.displayMedium),
+          Text('This will reset the wifi credentials \of the device(s)', style: Theme.of(context).textTheme.bodyMedium),
           FlexiTextButton(
             width: .82.sw, 
-            height: .06.sh, 
+            height: .06.sh,  
             text: 'Reset',
             backgroundColor: FlexiColor.secondary,
             onPressed: () async {
@@ -50,17 +44,13 @@ class DeviceResetModal extends ConsumerWidget {
               Navigator.of(context).overlay!.insert(progressOverlay);
 
               var successTask = 0;
-              var socketClient = ref.watch(socketClientControllerProvider.notifier);
               for(var device in selectDevices) {
-                if(await socketClient.connect(device.ip)) {
-                  await socketClient.sendData({
-                    'command': 'unregister',
-                    'deviceId': device.deviceId
-                  });
+                if(await ref.watch(socketClientControllerProvider.notifier).connect(device.ip)) {
+                  await ref.watch(socketClientControllerProvider.notifier).sendData({'command': 'unregister', 'deviceId': device.deviceId});
                   successTask++;
                 }
                 ref.watch(completeTaskProvider.notifier).state = ref.watch(completeTaskProvider) + 1;
-                if(!await socketClient.disconnect()) ref.invalidate(socketClientControllerProvider);
+                if(!await ref.watch(socketClientControllerProvider.notifier).disconnect()) ref.invalidate(socketClientControllerProvider);
                 await Future.delayed(const Duration(milliseconds: 500));
               }
 
@@ -75,13 +65,15 @@ class DeviceResetModal extends ConsumerWidget {
                 ref.invalidate(totalTaskProvider);
                 ref.invalidate(completeTaskProvider);
                 progressOverlay.remove();
-                if(context.mounted) context.pop();
+                if(context.mounted) {
+                  context.pop();
+                }
               });
             }
           ),
           SizedBox(
             width: .82.sw, 
-            height: .06.sh, 
+            height: .06.sh,
             child: TextButton(
               onPressed: () => context.pop(), 
               child: Text('Cancel', style: Theme.of(context).textTheme.labelLarge)

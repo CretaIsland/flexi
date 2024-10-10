@@ -20,8 +20,10 @@ Future<List<Map<String, String>>> timezones(TimezonesRef ref) async {
   if(index != -1) {
     timezones.insert(0, timezones[index]);
     timezones.removeAt(index + 1);
-    if(ref.read(registerDataControllerProvider)['timeZone']!.isEmpty) {
-      ref.watch(registerDataControllerProvider.notifier).setTimezone(myTimezone);
+    if(ref.read(registerDataProvider)['timeZone']!.isEmpty) {
+      var newRegisterData = ref.read(registerDataProvider);
+      newRegisterData['timeZone'] = myTimezone;
+      ref.watch(registerDataProvider.notifier).state = newRegisterData;
     }
   }
 

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../component/text_button.dart';
-import '../feature/setting/controller/user_controller.dart';
+import '../feature/auth/controller/user_controller.dart';
 import '../util/design/colors.dart';
 import '../util/utils.dart';
 
@@ -44,14 +44,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: Image.asset('assets/image/login_illustration.png')
               ),
               SizedBox(height: .03.sh),
-              Text(
-                'Login', 
-                style: Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.white)
-              ),
-              Text(
-                'Hi there! Nice to see you', 
-                style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white)
-              ),
+              Text('Login', style: Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.white)),
+              Text('Hi there! Nice to see you', style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.white)),
               SizedBox(height: .025.sh),
               SizedBox(
                 width: .82.sw,
@@ -61,7 +55,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   cursorColor: Colors.white,
                   cursorWidth: 1.0,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Colors.white, 
+                    color: Colors.white,
                     decorationThickness: 0
                   ),
                   decoration: InputDecoration(
@@ -89,7 +83,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   cursorWidth: 1.0,
                   obscureText: _hidePassword,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Colors.white, 
+                    color: Colors.white,
                     decorationThickness: 0
                   ),
                   decoration: InputDecoration(
@@ -106,9 +100,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     suffixIcon: GestureDetector(
                       onTap: () => setState(() => _hidePassword = !_hidePassword),
-                      child: Icon(
-                        _hidePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined, 
-                        size: .025.sh, 
+                      child: Icon(_hidePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                        size: .025.sh,
                         color: Colors.white
                       )
                     )
@@ -117,15 +110,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               SizedBox(height: .025.sh),
               FlexiTextButton(
-                width: .82.sw, 
-                height: .06.sh,
+                width: .82.sw,
+                height: .06.sh, 
                 text: 'Login',
                 backgroundColor: FlexiColor.secondary,
                 onPressed: () async {
                   if(await ref.watch(userControllerProvider.notifier).loginByEmail(_emailController.text, _passwordController.text)) {
-                    if(context.mounted) context.go('/device/list');
+                    if(context.mounted) {
+                      context.go('/device/list');
+                    }
                   } else {
-                    FlexiUtils.showMsg('Incorrect email or password');
+                    FlexiUtils.showAlertMsg('Incorrect email or password');
                   }
                 }
               )

@@ -10,6 +10,7 @@ import '../../../util/design/colors.dart';
 
 class WifiSetScreen extends ConsumerStatefulWidget {
   const WifiSetScreen({super.key});
+
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _WifiSetScreenState();
 }
@@ -24,9 +25,9 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _ssidController.text = ref.watch(registerDataControllerProvider)['ssid']!;
-      _typeController.text = ref.watch(registerDataControllerProvider)['security']!;
-      _passwordController.text = ref.watch(registerDataControllerProvider)['password']!;
+      _ssidController.text = ref.watch(registerDataProvider)['ssid']!;
+      _typeController.text = ref.watch(registerDataProvider)['security']!;
+      _passwordController.text = ref.watch(registerDataProvider)['password']!;
     });
   }
 
@@ -50,30 +51,20 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: () => context.go('/device/setTimezone'), 
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    size: .03.sh,
-                    color: FlexiColor.primary
-                  )
+                  onPressed: () => context.go('/device/setTimezone'),
+                  icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary)
                 ),
-                Text(
-                  'WiFi Setup',
-                  style: Theme.of(context).textTheme.displaySmall
-                ),
+                Text('Set Device Timezone', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
                   onPressed: () {
-                    ref.watch(registerDataControllerProvider.notifier).setNetwork(
-                      _ssidController.text, 
-                      _typeController.text, 
-                      _passwordController.text
-                    );
+                    var registerData = ref.watch(registerDataProvider);
+                    registerData['ssid'] = _ssidController.text;
+                    registerData['security'] = _typeController.text;
+                    registerData['password'] = _passwordController.text;
+                    ref.watch(registerDataProvider.notifier).state = registerData;
                     context.go('/device/register');
-                  }, 
-                  child: Text(
-                    'OK',
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary)
-                  )
+                  },
+                  child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
               ]
             ),
@@ -128,7 +119,6 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Center(
               child: Container(
@@ -138,18 +128,11 @@ class _WifiSetScreenState extends ConsumerState<WifiSetScreen> {
                   color: FlexiColor.primary.withOpacity(.1),
                   borderRadius: BorderRadius.circular(.05.sh)
                 ),
-                child: Icon(
-                  icon, 
-                  size: .05.sh, 
-                  color: FlexiColor.primary
-                )
+                child: Icon(icon, size: .05.sh, color: FlexiColor.primary)
               )
             ),
             SizedBox(height: .025.sh),
-            Text(
-              text, 
-              style: Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.primary)
-            )
+            Text(text, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.primary))
           ]
         )
       )

@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/constant/config.dart';
 import '../model/device_model.dart';
 
-part 'device_list_controller.g.dart';
+part 'connected_device_controller.g.dart';
 
 
 
@@ -13,7 +13,7 @@ final selectDevicesProvider = StateProvider<List<DeviceModel>>((ref) => List.emp
 
 @riverpod
 class ConnectedDeviceController extends _$ConnectedDeviceController {
-  
+
   late RawDatagramSocket _socket;
 
   @override

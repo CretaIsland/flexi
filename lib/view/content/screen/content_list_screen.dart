@@ -46,12 +46,9 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Content',
-                  style: Theme.of(context).textTheme.displayLarge
-                ),
+                Text('Content', style: Theme.of(context).textTheme.displayLarge),
                 GestureDetector(
-                  onTap: () async {
+                  onTap: () {
                     if(_selectMode) {
                       if(selectContents.isEmpty) return;
                       showModalBottomSheet(
@@ -60,11 +57,11 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                         builder: (context) => ContentDeleteModal(deleteAll: _selectAll)
                       );
                     } else {
-                      var newContent = await ref.watch(contentListControllerProvider.notifier).createContent();
-                      if(newContent != null) {
+                      ref.watch(contentListControllerProvider.notifier).createContent().then((newContent) {
+                        if(newContent == null) return;
                         ref.watch(contentInfoControllerProvider.notifier).setContent(newContent);
-                        if(context.mounted) context.go('/content/info');
-                      }
+                        context.go('/content/detail');
+                      });
                     }
                   },
                   child: Container(
@@ -74,11 +71,7 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                       color: _selectMode ? FlexiColor.secondary : FlexiColor.primary,
                       borderRadius: BorderRadius.circular(.02.sh)
                     ),
-                    child: Icon(
-                      _selectMode ? Icons.delete_outline : Icons.add, 
-                      size: .03.sh,
-                      color: Colors.white
-                    )
+                    child: Icon(_selectMode ? Icons.delete_outline : Icons.add, size: .03.sh, color: Colors.white)
                   )
                 )
               ]
@@ -92,25 +85,16 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
             Visibility(
               visible: _selectMode,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    'Select All',
-                    style: Theme.of(context).textTheme.labelSmall!.copyWith(color: FlexiColor.grey[600])
-                  ),
+                  Text('Select All', style: Theme.of(context).textTheme.labelSmall!.copyWith(color: FlexiColor.grey[600])),
                   SizedBox(width: .01.sw),
                   GestureDetector(
                     onTap: () => setState(() => _selectAll = !_selectAll),
-                    child: _selectAll ? Icon(
-                      Icons.check_circle, 
-                      size: .025.sh, 
-                      color: FlexiColor.secondary
-                    ) : Icon(
-                      Icons.check_circle_outline, 
-                      size: .025.sh, 
-                      color: FlexiColor.grey[600]
-                    )
+                    child: _selectAll ? Icon(Icons.check_circle, size: .025.sh, color: FlexiColor.secondary)
+                      : Icon(Icons.check_circle_outline, size: .025.sh, color: FlexiColor.grey[600])
                   )
-                ]
+                ],
               )
             ),
             SizedBox(height: .015.sh),
@@ -119,10 +103,7 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                 data: (data) {
                   if(data.isEmpty) {
                     return Center(
-                      child: Text(
-                        'No Content',
-                        style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600])
-                      )
+                      child: Text('No content', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600]))
                     );
                   }
                   return ListView.builder(
@@ -139,7 +120,7 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                           }
                         } else {
                           ref.watch(contentInfoControllerProvider.notifier).setContent(data[index]);
-                          context.go('/content/info');
+                          context.go('/content/detail');
                         }
                       },
                       onLongPress: () {
@@ -166,9 +147,8 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                                 Text(data[index].contentName, style: Theme.of(context).textTheme.bodySmall),
                                 Visibility(
                                   visible: _selectMode,
-                                  child: selectContents.contains(data[index].contentId) ?
-                                    Icon(Icons.check_circle, size: .025.sh, color: FlexiColor.secondary) :
-                                    Icon(Icons.check_circle_outline, size: .025.sh, color: FlexiColor.grey[600])
+                                  child: selectContents.contains(data[index].contentId) || _selectAll ? Icon(Icons.check_circle, size: .025.sh, color: FlexiColor.secondary)
+                                    : Icon(Icons.check_circle_outline, size: .025.sh, color: FlexiColor.grey[600])
                                 )
                               ]
                             ),
@@ -181,18 +161,22 @@ class _ContentListScreenState extends ConsumerState<ContentListScreen> {
                   );
                 }, 
                 error: (error, stackTrace) => Center(
-                  child: Text(
-                    'Error during load contents',
-                    style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600])
-                  )
+                  child: Text('Error during load content', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600]))
                 ), 
-                loading: () => SizedBox(
-                  width: .03.sh,
-                  height: .03.sh,
-                  child: CircularProgressIndicator(
-                    color: FlexiColor.grey[600],
-                    strokeWidth: 2.5
-                  )
+                loading: () => Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: .03.sh, 
+                      height: .03.sh, 
+                      child: CircularProgressIndicator(
+                        color: FlexiColor.grey[600],
+                        strokeWidth: 2.5
+                      )
+                    ),
+                    SizedBox(height: .015.sh),
+                    Text('Loading', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600]))
+                  ]
                 )
               )
             )

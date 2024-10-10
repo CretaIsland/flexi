@@ -5,8 +5,9 @@ import '../util/design/colors.dart';
 
 
 
-final totalTaskProvider = StateProvider<int>((ref) => 0);
-final completeTaskProvider = StateProvider<int>((ref) => 0);
+final totalTaskProvider = StateProvider((ref) => 0);
+final completeTaskProvider = StateProvider((ref) => 0);
+
 class ProgressOverlay extends ConsumerWidget {
   const ProgressOverlay({super.key});
 
@@ -28,10 +29,7 @@ class ProgressOverlay extends ConsumerWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(.0125.sh)
               ),
-              child: Image.asset(
-                'assets/image/loading.gif',
-                fit: BoxFit.cover
-              )
+              child: Image.asset('assets/image/loading.gif', fit: BoxFit.cover)
             ),
             SizedBox(height: .05.sh),
             SizedBox(

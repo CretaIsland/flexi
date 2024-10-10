@@ -10,6 +10,10 @@ class DeviceInfoController extends _$DeviceInfoController {
 
   @override
   DeviceModel build() {
+    ref.onDispose(() {
+      print('DeviceInfoController Dispose');
+    });
+    print('DeviceInfoController Build');
     return DeviceModel();
   }
 

@@ -22,16 +22,12 @@ class DeviceInfoScreen extends ConsumerStatefulWidget {
 class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
 
   final TextEditingController _deviceNameController = TextEditingController();
-  final TextEditingController _timeZoneController = TextEditingController();
-  final TextEditingController _registeredSSIDController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _deviceNameController.text = ref.watch(deviceInfoControllerProvider).deviceName;
-      _timeZoneController.text = ref.watch(deviceInfoControllerProvider).timeZone;
-      _registeredSSIDController.text = ref.watch(deviceInfoControllerProvider).registeredSSID;
     });
   }
 
@@ -39,8 +35,6 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
   void dispose() {
     super.dispose();
     _deviceNameController.dispose();
-    _timeZoneController.dispose();
-    _registeredSSIDController.dispose();
   }
 
   @override
@@ -56,17 +50,10 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: () => context.go('/device/list'), 
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    size: .03.sh,
-                    color: FlexiColor.primary
-                  )
+                  onPressed: () => context.go('/device/list'),
+                  icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: FlexiColor.primary)
                 ),
-                Text(
-                  'Device Detail',
-                  style: Theme.of(context).textTheme.displaySmall
-                ),
+                Text('Device Detail', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
                   onPressed: () async {
                     if(await ref.watch(socketClientControllerProvider.notifier).connect(device.ip)) {
@@ -77,13 +64,10 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                         'name': _deviceNameController.text,
                         'volume': device.volume
                       });
-                      FlexiUtils.showMsg('Send setting value');
+                      FlexiUtils.showAlertMsg('Send setting value');
                     }
                   }, 
-                  child: Text(
-                    'OK',
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary)
-                  )
+                  child: Text('OK', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
               ]
             ),
@@ -94,10 +78,7 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Network',
-                      style: Theme.of(context).textTheme.bodySmall
-                    ),
+                    Text('Network', style: Theme.of(context).textTheme.bodySmall),
                     SizedBox(height: .01.sh),
                     Container(
                       width: .43.sw,
@@ -109,16 +90,9 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.wifi_rounded, 
-                            size: .045.sh, 
-                            color: FlexiColor.primary
-                          ),
+                          Icon(Icons.wifi_rounded, size: .045.sh, color: FlexiColor.primary),
                           SizedBox(height: .015.sh),
-                          Text(
-                            'Connected', 
-                            style: Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.primary)
-                          )
+                          Text('Connected', style: Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.primary))
                         ]
                       )
                     )
@@ -127,10 +101,7 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Speaker',
-                      style: Theme.of(context).textTheme.bodySmall
-                    ),
+                    Text('Speaker', style: Theme.of(context).textTheme.bodySmall),
                     SizedBox(height: .01.sh),
                     GestureDetector(
                       onTap: () => showModalBottomSheet(
@@ -149,36 +120,21 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            device.bluetoothBonded ? Icon(
-                              Icons.bluetooth, 
-                              size: .045.sh, 
-                              color: FlexiColor.primary
-                            ) : Icon(
-                              Icons.bluetooth_disabled, 
-                              size: .045.sh, 
-                              color: FlexiColor.secondary
-                            ),
+                            device.bluetoothBonded ? Icon(Icons.bluetooth, size: .045.sh, color: FlexiColor.primary)
+                              : Icon(Icons.bluetooth_disabled, size: .045.sh, color: FlexiColor.secondary),
                             SizedBox(height: .015.sh),
-                            device.bluetoothBonded ? Text(
-                              device.bluetooth,
-                              style: Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.primary)
-                            ) : Text(
-                              'Bluetooth OFF',
-                              style: Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.secondary)
-                            )
+                            device.bluetoothBonded ? Text(device.bluetooth, style: Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.primary))
+                              : Text('Bluetooth OFF', style: Theme.of(context).textTheme.labelLarge!.copyWith(color: FlexiColor.secondary))
                           ]
                         )
-                      )
+                      ),
                     )
                   ]
                 )
               ]
             ),
             SizedBox(height: .03.sh),
-            Text(
-              'Device Name', 
-              style: Theme.of(context).textTheme.bodySmall
-            ),
+            Text('Device Name', style: Theme.of(context).textTheme.bodySmall),
             SizedBox(height: .01.sh),
             FlexiTextField(
               width: .89.sw, 
@@ -186,7 +142,7 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
               controller: _deviceNameController
             ),
             SizedBox(height: .015.sh),
-            Text('Device Volume', style: Theme.of(context).textTheme.bodySmall),
+            Text('Device Name', style: Theme.of(context).textTheme.bodySmall),
             SizedBox(height: .01.sh),
             Container(
               width: .89.sw, 
@@ -201,12 +157,8 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
-                    onTap: () => ref.watch(deviceInfoControllerProvider.notifier).setVolume(0), 
-                    child: Icon(
-                      Icons.volume_mute_rounded, 
-                      size: .03.sh, 
-                      color: FlexiColor.primary
-                    )
+                    onTap: () => ref.watch(deviceInfoControllerProvider.notifier).setVolume(0),
+                    child: Icon(Icons.volume_mute_rounded, size: .03.sh, color: FlexiColor.primary)
                   ),
                   SizedBox(
                     width: .65.sw,
@@ -220,40 +172,31 @@ class _DeviceInfoScreenState extends ConsumerState<DeviceInfoScreen> {
                     )
                   ),
                   GestureDetector(
-                    onTap: () => ref.watch(deviceInfoControllerProvider.notifier).setVolume(100), 
-                    child: Icon(
-                      Icons.volume_up_rounded, 
-                      size: .03.sh, 
-                      color: FlexiColor.primary
-                    )
+                    onTap: () => ref.watch(deviceInfoControllerProvider.notifier).setVolume(100),
+                    child: Icon(Icons.volume_up, size: .03.sh, color: FlexiColor.primary)
                   )
                 ]
               )
             ),
             SizedBox(height: .015.sh),
-            Text(
-              'Device Timezone', 
-              style: Theme.of(context).textTheme.bodySmall
-            ),
+            Text('Device Timezone', style: Theme.of(context).textTheme.bodySmall),
             SizedBox(height: .01.sh),
             FlexiTextField(
               width: .89.sw, 
               height: .06.sh,
-              controller: _timeZoneController,
-              readOnly: true
+              readOnly: true,
+              hintText: device.timeZone
             ),
             SizedBox(height: .015.sh),
-            Text(
-              'Connected Network', 
-              style: Theme.of(context).textTheme.bodySmall
-            ),
+            Text('Connected Network', style: Theme.of(context).textTheme.bodySmall),
             SizedBox(height: .01.sh),
             FlexiTextField(
               width: .89.sw, 
               height: .06.sh,
-              controller: _registeredSSIDController,
-              readOnly: true
-            )
+              readOnly: true,
+              hintText: device.registeredSSID
+            ),
+            SizedBox(height: .015.sh),
           ]
         )
       )

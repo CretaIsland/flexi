@@ -1,47 +1,16 @@
-import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
+import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../../util/utils.dart';
+import 'package:bluetooth_low_energy/bluetooth_low_energy.dart';
+import 'package:permission_handler/permission_handler.dart';
+import '../../auth/controller/user_controller.dart';
 
 part 'device_register_controller.g.dart';
 
 
 
+final registerDataProvider = StateProvider<Map<String, String>>((ref) => {'timeZone': '', 'ssid': '', 'security': '', 'password': ''});
 final selectDeviceBluetoothsProvider = StateProvider<List<DiscoveredEventArgs>>((ref) => List.empty());
-
-@riverpod
-class RegisterDataController extends _$RegisterDataController {
-
-  @override
-  Map<String, String> build() {
-    return {
-      'timeZone': '',
-      'ssid': '',
-      'security': '',
-      'password': ''
-    };
-  }
-
-  void setTimezone(String timeZone) {
-    state = {
-      'timeZone': timeZone,
-      'ssid': state['ssid']!,
-      'security': state['security']!,
-      'password': state['password']!
-    };
-  }
-
-  void setNetwork(String ssid, String security, String password) {
-    state = {
-      'timeZone': state['timeZone']!,
-      'ssid': ssid,
-      'security': security,
-      'password': password
-    };
-  }
-
-}
 
 @riverpod
 class AccessibleDeviceBluetooths extends _$AccessibleDeviceBluetooths {
@@ -59,13 +28,16 @@ class AccessibleDeviceBluetooths extends _$AccessibleDeviceBluetooths {
   }
 
   void initialize() async {
-    if(await Permission.locationWhenInUse.request().isGranted 
-      && await Permission.bluetoothScan.request().isGranted
-        && await Permission.bluetoothConnect.request().isGranted) {
+    var permissionState = Platform.isIOS ? 
+      await Permission.locationWhenInUse.request().isGranted : 
+      (await Permission.locationWhenInUse.request().isGranted && 
+        await Permission.bluetoothScan.request().isGranted && 
+          await Permission.bluetoothConnect.request().isGranted);
 
+    if(permissionState) {
       await _manager.startDiscovery();
       _manager.discovered.listen((result) {
-        if(result.advertisement.name != null && FlexiUtils.checkDevice(result.advertisement.name!, '')) {
+        if(result.advertisement.name != null && checkDeviceID(result.advertisement.name!)) {
           final peripheral = result.peripheral;
           final index = state.indexWhere((element) => element.peripheral == peripheral);
           if(index != -1) {
@@ -77,6 +49,12 @@ class AccessibleDeviceBluetooths extends _$AccessibleDeviceBluetooths {
         }
       });
     }
+  }
+
+  bool checkDeviceID(String deviceId) {
+    RegExp regExp = RegExp(RegExp.escape(ref.watch(userControllerProvider)!.enterprise) + r'-\d{6}');
+    if(regExp.hasMatch(deviceId)) return true;
+    return false;
   }
 
 }

@@ -1,5 +1,4 @@
 import 'package:sembast/sembast.dart';
-
 import '../../database/app_database.dart';
 
 
@@ -10,15 +9,14 @@ class CurrentLanguageRepository {
   final _outputLangStore = intMapStoreFactory.store('current_output_langs');
   Future<Database> get _dbClient async => await AppDatabase.instance.database;
 
-
   Future<List<Map<String, String>>> getInputLangs() async {
     try {
       var results = await _inputLangStore.find(await _dbClient);
       return results.map((element) => Map<String, String>.from(element.value)).toList();
     } catch (error) {
       print('Error at LanguageRepository.getInputLangs >>> $error');
+      return List.empty();
     }
-    return List.empty();
   }
 
   Future<List<Map<String, String>>> getOutputLangs() async {
@@ -27,8 +25,8 @@ class CurrentLanguageRepository {
       return results.map((element) => Map<String, String>.from(element.value)).toList();
     } catch (error) {
       print('Error at LanguageRepository.getOutputLangs >>> $error');
+      return List.empty();
     }
-    return List.empty();
   }
 
   Future<void> updateInputLangs(List<Map<String, String>> updateInputLangs) async {

@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../component/search_bar.dart';
 import '../../../feature/content/controller/content_info_controller.dart';
-import '../../../feature/device/controller/device_list_controller.dart';
+import '../../../feature/device/controller/connected_device_controller.dart';
 import '../../../util/design/colors.dart';
 import '../modal/content_send_modal.dart';
 
@@ -37,27 +37,20 @@ class _ContentSendScreenState extends ConsumerState<ContentSendScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  onPressed: () => context.go('/content/info'), 
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    size: .03.sh,
-                    color: FlexiColor.primary
-                  )
+                  onPressed: () => context.go('/content/detail'), 
+                  icon: Icon(Icons.arrow_back_ios, color: FlexiColor.primary, size: .03.sh)
                 ),
-                Text(
-                  'Select Device',
-                  style: Theme.of(context).textTheme.displaySmall
-                ),
+                Text('Select Device', style: Theme.of(context).textTheme.displaySmall),
                 TextButton(
-                  onPressed: () => showModalBottomSheet(
-                    backgroundColor: Colors.transparent,
-                    context: context,
-                    builder: (context) => const ContentSendModal()
-                  ),
-                  child: Text(
-                    'Send',
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary)
-                  )
+                  onPressed: () {
+                    if(selectDevices.isEmpty) return;
+                    showModalBottomSheet(
+                      backgroundColor: Colors.transparent,
+                      context: context, 
+                      builder: (context) => const ContentSendModal(),
+                    );
+                  },
+                  child: Text('Send', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
               ]
             ),
@@ -72,18 +65,15 @@ class _ContentSendScreenState extends ConsumerState<ContentSendScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    width: .03.sh,
-                    height: .03.sh,
+                    width: .03.sh, 
+                    height: .03.sh, 
                     child: CircularProgressIndicator(
                       color: FlexiColor.grey[600],
                       strokeWidth: 2.5
                     )
                   ),
                   SizedBox(height: .015.sh),
-                  Text(
-                    'Scanning for nearby device',
-                    style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600])
-                  )
+                  Text('Scanning for nearby device', style: Theme.of(context).textTheme.labelMedium!.copyWith(color: FlexiColor.grey[600]))
                 ]
               ) : ListView.builder(
                 padding: EdgeInsets.zero,
@@ -126,8 +116,8 @@ class _ContentSendScreenState extends ConsumerState<ContentSendScreen> {
                             )
                           ]
                         ),
-                        selectDevices.contains(devices[index]) ? Icon(Icons.check_circle, size: .025.sh, color: FlexiColor.primary) :
-                          Icon(Icons.check_circle_outline, size: .025.sh, color: FlexiColor.grey[600])
+                        selectDevices.contains(devices[index]) ? Icon(Icons.check_circle, size: .025.sh, color: FlexiColor.primary) 
+                          : Icon(Icons.check_circle_outline, size: .025.sh, color: FlexiColor.grey[600])
                       ]
                     )
                   )

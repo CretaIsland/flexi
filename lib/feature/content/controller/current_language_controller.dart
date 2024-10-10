@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import '../repository/current_language_repository.dart';
 
 part 'current_language_controller.g.dart';
@@ -10,30 +9,28 @@ part 'current_language_controller.g.dart';
 final selectInputLanguageProvider = StateProvider<Map<String, String>>((ref) => {});
 final selectOutputLanguageProvider = StateProvider<Map<String, String>>((ref) => {});
 
-
 @riverpod
 class CurrentInputLanguagesController extends _$CurrentInputLanguagesController {
 
-  late CurrentLanguageRepository _currentLanguagesRepository;
-
+  late CurrentLanguageRepository _repository;
 
   @override
   List<Map<String, String>> build() {
     ref.onDispose(() {
-      print("<<<<<<< CurrentInputLanguagesController dispose <<<<<<<");
+      print("CurrentInputLanguagesController Dispose");
     });
-    print("<<<<<<< CurrentInputLanguagesController build <<<<<<<");
-    _currentLanguagesRepository = CurrentLanguageRepository();
+    print("CurrentInputLanguagesController Build");
+    _repository = CurrentLanguageRepository();
     getCurrentLanguages();
     return List.empty();
   }
 
   Future<void> getCurrentLanguages() async {
-    state = await _currentLanguagesRepository.getInputLangs();
+    state = await _repository.getInputLangs();
   }
 
   Future<void> saveChange() async {
-    await _currentLanguagesRepository.updateInputLangs(state);
+    await _repository.updateInputLangs(state);
   }
 
   Future<void> updateCurrentLanguage(Map<String, String> currentLanguage) async {
@@ -50,26 +47,25 @@ class CurrentInputLanguagesController extends _$CurrentInputLanguagesController 
 @riverpod
 class CurrentOutputLanguagesController extends _$CurrentOutputLanguagesController {
 
-  late CurrentLanguageRepository _currentLanguagesRepository;
-
+  late CurrentLanguageRepository _repository;
 
   @override
   List<Map<String, String>> build() {
     ref.onDispose(() {
-      print("<<<<<<< CurrentOutputLanguagesController dispose <<<<<<<");
+      print("CurrentOutputLanguagesController Dispose");
     });
-    print("<<<<<<< CurrentOutputLanguagesController build <<<<<<<");
-    _currentLanguagesRepository = CurrentLanguageRepository();
+    print("CurrentOutputLanguagesController Build");
+    _repository = CurrentLanguageRepository();
     getCurrentLanguages();
     return List.empty();
   }
 
   Future<void> getCurrentLanguages() async {
-    state = await _currentLanguagesRepository.getOutputLangs();
+    state = await _repository.getOutputLangs();
   }
 
   Future<void> saveChange() async {
-    await _currentLanguagesRepository.updateOutputLangs(state);
+    await _repository.updateOutputLangs(state);
   }
 
   Future<void> updateCurrentLanguage(Map<String, String> currentLanguage) async {

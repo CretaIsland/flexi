@@ -27,11 +27,7 @@ class UserController extends _$UserController {
   }
 
   Future<void> initialize() async {
-    _firestore = FirebaseFirestore.instanceFor(
-      app: await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform
-      )
-    );
+    _firestore = FirebaseFirestore.instanceFor(app: await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform));
     _repository = AccountRepository();
   }
 

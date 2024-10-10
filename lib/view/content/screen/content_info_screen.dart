@@ -31,7 +31,7 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _nameController.text = ref.watch(contentInfoControllerProvider).contentName;
+      _nameController.text = ref.read(contentInfoControllerProvider).contentName;
       _widthController.text = ref.watch(contentInfoControllerProvider).width.toString();
       _heightController.text = ref.watch(contentInfoControllerProvider).height.toString();
       _xController.text = ref.watch(contentInfoControllerProvider).x.toString();
@@ -77,7 +77,7 @@ class _ContentInfoScreenState extends ConsumerState<ContentInfoScreen> {
                   }),
                   child: Text('Send', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: FlexiColor.primary))
                 )
-              ],
+              ]
             ),
             SizedBox(height: .03.sh),
             ContentPreview(width: .89.sw, height: .04.sh, content: content),

@@ -36,19 +36,8 @@ class FlexiBottomNavigationBar extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            icon,
-            size: .035.sh,
-            color: ref.watch(currentTabProvider) == tabIndex ? FlexiColor.primary :
-              FlexiColor.grey[600]
-          ),
-          Text(
-            text, 
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(
-              color: ref.watch(currentTabProvider) == tabIndex ? FlexiColor.primary :
-                FlexiColor.grey[600]
-            )
-          )
+          Icon(icon, size: .035.sh, color: ref.watch(currentTabProvider) == tabIndex ? FlexiColor.primary : FlexiColor.grey[600]),
+          Text(text, style: Theme.of(context).textTheme.labelMedium!.copyWith(color: ref.watch(currentTabProvider) == tabIndex ? FlexiColor.primary : FlexiColor.grey[600]))
         ]
       )
     );

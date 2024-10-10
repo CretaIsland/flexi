@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'router.dart';
 import 'util/design/fonts.dart';
 
@@ -24,6 +22,10 @@ class FlexiApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           routerConfig: router,
           theme: ThemeData(
+            textSelectionTheme: TextSelectionThemeData(
+              selectionColor: Colors.black.withOpacity(.25),
+              selectionHandleColor: Colors.white
+            ),
             textTheme: Platform.isAndroid ? FlexiFont.android : FlexiFont.ios
           )
         );

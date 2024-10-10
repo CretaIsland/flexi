@@ -12,36 +12,34 @@ final selectContentsProvider = StateProvider<List<String>>((ref) => List.empty()
 @riverpod
 class ContentListController extends _$ContentListController {
 
-  late ContentRepository _contentRepository;
-  
+  late ContentRepository _repository;
 
-  @override 
   Future<List<ContentModel>> build() async {
     ref.onDispose(() {
       print('ContentListController Dispose');
     });
     print('ContentListController Build');
-    _contentRepository = ContentRepository();
+    _repository = ContentRepository();
     return await getContents();
   }
 
   Future<List<ContentModel>> getContents() async {
-    return await _contentRepository.getAll();
+    return await _repository.getAll();
   }
 
   Future<ContentModel?> createContent() async {
-    return await _contentRepository.create();
+    return await _repository.create();
   }
 
   Future<void> deleteContent(List<String> contentIds) async {
     for(var contentId in contentIds) {
-      await _contentRepository.delete(contentId);
+      await _repository.delete(contentId);
     }
     state = AsyncValue.data(await getContents());
   }
 
   Future<void> deleteAllContent() async {
-    await _contentRepository.deleteAll();
+    await _repository.deleteAll();
     state = AsyncValue.data(List.empty());
   }
 
