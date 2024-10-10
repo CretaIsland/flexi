@@ -62,7 +62,7 @@ class _BackgroundEditScreenState extends ConsumerState<BackgroundEditScreen> {
                   icon: Icon(Icons.arrow_back_ios, size: .03.sh, color: Colors.white)
                 ),
                 TextButton(
-                  onPressed: () => ref.watch(contentEditControllerProvider.notifier).undo, 
+                  onPressed: () => ref.watch(contentEditControllerProvider.notifier).undo(), 
                   child: Text('Undo', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white))
                 )
               ]
